@@ -14,6 +14,7 @@ html, body {
 body {
     /* Tailwind utility for setting the background color */
     @apply bg-[#D3EDEB];
+    @apply font-outfit
 }
 
 @layer base {
