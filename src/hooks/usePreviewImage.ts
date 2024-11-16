@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const usePreviewImage = () => {
   //const showToast = useShowToast()
-    const [imgUrl, setImgUrl] = useState<String>('')
+    const [imgUrl, setImgUrl] = useState<string>('')
 const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {

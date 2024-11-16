@@ -1,4 +1,5 @@
 
+import { UploadImage } from '@/components/uploadImage';
 import React, { useState } from 'react';
 
 enum Gender {
@@ -42,6 +43,7 @@ const DetailForm: React.FC = () => {
           <InputField label="Phone No." value={phoneNo} onChange={setPhoneNo} />
           
         </form>
+        <UploadImage label="Upload Image" text="Upload Image" />
         <div className="flex justify-center mt-10">
           <button onClick={handleSubmit} className="bg-[#02968A] text-white text-lg md:text-2xl font-bold py-3 px-12 rounded-2xl shadow-lg hover:bg-[#027368] transition-colors">
             Submit
