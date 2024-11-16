@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+
+
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import usePreviewImage from '@/hooks/usePreviewImage';
+import React, { useState , useRef } from 'react';
 
 enum Gender {
   Male = 'Male',
@@ -18,6 +23,10 @@ const DetailForm: React.FC = () => {
   const [gender, setGender] = useState<Gender | ''>('');
   const [phoneNo, setPhoneNo] = useState('');
   const [disability, setDisability] = useState<Disability | ''>('');
+//   const fileRef = useRef(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  const {handleImageChange , imgUrl} = usePreviewImage()
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -39,7 +48,15 @@ const DetailForm: React.FC = () => {
           <InputField label="City" value={city} onChange={setCity} />
           <SelectField label="Gender" value={gender} options={Gender} onChange={(value) => setGender(value as Gender)} />
           <InputField label="Phone No." value={phoneNo} onChange={setPhoneNo} />
-          <SelectField label="Disability (If Any)" value={disability} options={Disability} onChange={(value) => setDisability(value as Disability)} />
+          <label className="block text-lg md:text-xl font-medium text-gray-700">Upload picture</label>
+          <Button onClick={() => fileRef.current?.click()}>
+          Change Avatar
+        </Button>
+                {/* //using useRef hook to refernce it */}
+                <Input type='file' hidden ref={fileRef}
+
+                  onChange={handleImageChange}
+                />
         </form>
         <div className="flex justify-center mt-10">
           <button onClick={handleSubmit} className="bg-[#02968A] text-white text-lg md:text-2xl font-bold py-3 px-12 rounded-2xl shadow-lg hover:bg-[#027368] transition-colors">

@@ -6,6 +6,8 @@ import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
 import HomePage from './pages/Patient/HomePage';
 import NotesPage from './pages/Patient/NotesPage';
 import Prescription from './pages/Patient/Prescriptions';
+import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
+import ThankYouPage from './pages/Doctor/ThankYouPage';
 
 const AppRoutes = () => {
 
@@ -23,6 +25,8 @@ const AppRoutes = () => {
             <Route path='/patient/history' element={<Prescription/>} />
             {/* doctor routes  */}
             <Route path='/doctor/home' element={<LoginPage/> } />
+            <Route path='/doctor/detailForm' element={<DoctorDetailForm/>} />
+            <Route path='/doctor/thankyoupage' element={<ThankYouPage/>} />
         </Routes>
     )
 }
