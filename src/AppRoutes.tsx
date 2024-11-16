@@ -9,6 +9,7 @@ import Prescription from './pages/Patient/Prescriptions';
 import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
 import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
+import AdminLogin from './pages/Admin/AdminLogin';
 
 const AppRoutes = () => {
 
@@ -29,7 +30,8 @@ const AppRoutes = () => {
             <Route path='/doctor/detailForm' element={<DoctorDetailForm/>} />
             <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm/>} />
             <Route path='/doctor/thankyoupage' element={<ThankYouPage/>} />
-
+            {/* admin routes  */}
+            <Route path='/admin/login' element={<AdminLogin/>} />
             {/* testing routes */}
             {/* <Route path='/test' element={<UploadImage/>} /> */}
 
