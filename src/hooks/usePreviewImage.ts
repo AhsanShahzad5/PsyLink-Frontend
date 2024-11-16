@@ -5,6 +5,7 @@ const usePreviewImage = () => {
   //const showToast = useShowToast()
     const [imgUrl, setImgUrl] = useState<string>('')
 const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    e.preventDefault();
     const file: File | undefined = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();

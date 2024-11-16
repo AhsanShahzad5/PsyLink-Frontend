@@ -1,12 +1,15 @@
 
+import { InputField } from '@/components/InputField';
+import { SelectField } from '@/components/SelectField';
+import { UploadImage } from '@/components/uploadImage';
 import React, { useState } from 'react';
 
-enum Gender {
+export enum Gender {
   Male = 'Male',
   Female = 'Female'
 }
 
-enum Disability {
+export enum Disability {
   Yes = 'Yes',
   No = 'No'
 }
@@ -18,11 +21,14 @@ const DetailForm: React.FC = () => {
   const [city, setCity] = useState('');
   const [gender, setGender] = useState<Gender | ''>('');
   const [phoneNo, setPhoneNo] = useState('');
+  const [imgUrl, setImgUrl] = useState<string>("");
 
-
+  const handleImageChange = (url: string) => {
+    setImgUrl(url);
+};
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    console.log("Form Submission:", { fullName, country, age, city, gender, phoneNo });
+    console.log("Form Submission:", { fullName, country, age, city, gender, phoneNo , imgUrl });
   }
 
   return (
@@ -42,6 +48,9 @@ const DetailForm: React.FC = () => {
           <InputField label="Phone No." value={phoneNo} onChange={setPhoneNo} />
           
         </form>
+        <UploadImage label="Upload Image" text="Upload Image" onImageChange={handleImageChange} />
+        {imgUrl && <img src={imgUrl} alt="Preview" className="mt-4 rounded-[15px]" />}
+
         <div className="flex justify-center mt-10">
           <button onClick={handleSubmit} className="bg-[#02968A] text-white text-lg md:text-2xl font-bold py-3 px-12 rounded-2xl shadow-lg hover:bg-[#027368] transition-colors">
             Submit
@@ -52,51 +61,5 @@ const DetailForm: React.FC = () => {
   );
 }
 
-interface InputFieldProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-}
-
-const InputField: React.FC<InputFieldProps> = ({ label, value, onChange }) => {
-  return (
-    <div>
-      <label className="block text-lg md:text-xl font-medium text-gray-700">{label}</label>
-      <input 
-        type="text" 
-        value={value} 
-        onChange={(e) => onChange(e.target.value)} 
-        className="mt-1 p-3 block w-full border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 rounded-xl"
-      />
-    </div>
-  );
-}
-
-interface SelectFieldProps {
-  label: string;
-  value: string | Gender | Disability;
-  options: typeof Gender | typeof Disability;
-  onChange: (value: string) => void;
-}
-
-const SelectField: React.FC<SelectFieldProps> = ({ label, value, options, onChange }) => {
-  return (
-    <div>
-      <label className="block text-lg md:text-xl font-medium text-gray-700">{label}</label>
-      <select 
-        value={value} 
-        onChange={(e) => onChange(e.target.value)} 
-        className="mt-1 p-3 block w-full border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 rounded-xl"
-      >
-        <option value="">Select {label}</option>
-        {Object.values(options).map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 export default DetailForm;
