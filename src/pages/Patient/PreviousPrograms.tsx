@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Course {
   id: number;
@@ -13,6 +14,9 @@ interface PreviousProgramsProps {
 }
 
 export default function PreviousPrograms({ courses }: PreviousProgramsProps) {
+
+  const navigate = useNavigate();
+
   return (
     <div className="px-4 sm:px-8 md:px-16 py-4 md:py-8">
       {/* Table Header */}
@@ -46,7 +50,10 @@ export default function PreviousPrograms({ courses }: PreviousProgramsProps) {
 
             {/* View Button */}
             <div className="flex justify-start sm:justify-end w-full sm:w-auto">
-              <button className="bg-teal-600 text-white px-4 py-2 hover:bg-teal-700 transition-colors flex items-center rounded-md">
+              <button 
+                  className="bg-teal-600 text-white px-4 py-2 hover:bg-teal-700 transition-colors flex items-center rounded-md"
+                  onClick={ () => navigate(`/patient/program-details`)}
+                  >
                 View
                 <ArrowRight size={16} className="ml-2" />
               </button>

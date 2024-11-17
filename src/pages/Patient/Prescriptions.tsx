@@ -4,6 +4,7 @@ import Navbar from '../../Components/Navbar'
 import ActiveTab from '../../Components/ActiveTab';
 import MoodTrackerPage from './MoodProgress';
 import PreviousPrograms from './PreviousPrograms';
+import PrescriptionPage from '@/Components/PrescriptionPopUp';
 
 
 interface Appointment {
@@ -87,6 +88,17 @@ const courses = [
   
 export default function Prescription(): JSX.Element {
   const [activeTab, setActiveTab] = useState<'Prescriptions' | 'Mood Progress' | 'Previous Programs'>('Prescriptions')
+
+  const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
+
+  const handleViewClick = () => {
+    setModalOpen(true); // Open the modal when "View" is clicked
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false); // Close the modal
+  };
+
 
   return (
    <>
@@ -212,7 +224,10 @@ export default function Prescription(): JSX.Element {
                    
                   
                    <div> 
-                    <button className="bg-teal-600 text-white px-12 py-2 hover:bg-teal-700 transition-colors flex items-center rounded-[6px]">
+                    <button 
+                        className="bg-teal-600 text-white px-12 py-2 hover:bg-teal-700 transition-colors flex items-center rounded-[6px]"
+                        onClick={handleViewClick}
+                    >
                       View
                       <ArrowRight size={16} className="ml-2" />
                     </button>
@@ -223,6 +238,25 @@ export default function Prescription(): JSX.Element {
             </div>
           </div>
         )}
+
+    {/* Modal for Prescription */}
+{isModalOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto">
+    <div className="relative bg-transparent rounded-lg p-6 w-full max-w-[1000px] max-h-[500px] sm:w-[95%] sm:max-h-screen sm:overflow-y-scroll sm:[&::-webkit-scrollbar]:hidden sm:scrollbar-hide">
+      {/* Close Button */}
+      <button
+        onClick={handleCloseModal}
+        className="absolute top-6 right-4 text-black hover:text-black text-2xl z-50 transition-transform transform hover:scale-125"
+      >
+        ✖
+      </button>
+      <PrescriptionPage />
+    </div>
+  </div>
+)}
+
+
+
 
         {activeTab === 'Mood Progress' && (
           

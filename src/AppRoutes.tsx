@@ -6,6 +6,8 @@ import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
 import HomePage from './pages/Patient/HomePage';
 import NotesPage from './pages/Patient/NotesPage';
 import Prescription from './pages/Patient/Prescriptions';
+import ProgramDetails from './pages/Patient/ProgramDetails';
+import PrescriptionPopUp from './Components/PrescriptionPopUp';
 
 const AppRoutes = () => {
 
@@ -21,6 +23,9 @@ const AppRoutes = () => {
             <Route path='/patient/Home' element={<HomePage/>} />
             <Route path='/patient/Notes' element={<NotesPage/>} />
             <Route path='/patient/history' element={<Prescription/>} />
+            <Route path='/patient/program-details' element={<ProgramDetails/>} />
+            <Route path='/patient/prescription' element={<PrescriptionPopUp/>} />
+            
             {/* doctor routes  */}
             <Route path='/doctor/home' element={<LoginPage/> } />
         </Routes>
