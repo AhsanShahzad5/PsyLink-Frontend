@@ -19,6 +19,7 @@ export default {
 			},
 			fontFamily: {
 				outfit: ['Outfit', 'sans-serif'], // Add Outfit font
+				syne: ['Syne', 'sans-serif'],   
 			},
 		}
 	},

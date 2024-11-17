@@ -6,8 +6,14 @@ import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
 import HomePage from './pages/Patient/HomePage';
 import NotesPage from './pages/Patient/NotesPage';
 import Prescription from './pages/Patient/Prescriptions';
+
 import ProgramDetails from './pages/Patient/ProgramDetails';
 import PrescriptionPopUp from './Components/PrescriptionPopUp';
+import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
+import ThankYouPage from './pages/Doctor/ThankYouPage';
+import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
+import AdminLogin from './pages/Admin/AdminLogin';
+
 
 const AppRoutes = () => {
 
@@ -28,6 +34,14 @@ const AppRoutes = () => {
             
             {/* doctor routes  */}
             <Route path='/doctor/home' element={<LoginPage/> } />
+            <Route path='/doctor/detailForm' element={<DoctorDetailForm/>} />
+            <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm/>} />
+            <Route path='/doctor/thankyoupage' element={<ThankYouPage/>} />
+            {/* admin routes  */}
+            <Route path='/admin/login' element={<AdminLogin/>} />
+            {/* testing routes */}
+            {/* <Route path='/test' element={<UploadImage/>} /> */}
+
         </Routes>
     )
 }
