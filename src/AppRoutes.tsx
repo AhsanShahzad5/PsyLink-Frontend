@@ -9,6 +9,7 @@ import Prescription from './pages/Patient/Prescriptions';
 import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
 import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
+import DoctorHome from './pages/Doctor/DoctorHome';
 
 const AppRoutes = () => {
 
@@ -25,7 +26,8 @@ const AppRoutes = () => {
             <Route path='/patient/Notes' element={<NotesPage/>} />
             <Route path='/patient/history' element={<Prescription/>} />
             {/* doctor routes  */}
-            <Route path='/doctor/home' element={<LoginPage/> } />
+            <Route path='/doctor/login' element={<LoginPage/> } />
+            <Route path='/doctor/home' element={<DoctorHome/> } />
             <Route path='/doctor/detailForm' element={<DoctorDetailForm/>} />
             <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm/>} />
             <Route path='/doctor/thankyoupage' element={<ThankYouPage/>} />

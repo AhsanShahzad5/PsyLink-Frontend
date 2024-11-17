@@ -1,8 +1,9 @@
+import Navbar from '@/Components/Navbar'
 import React from 'react'
 
 function Home() {
   return (
-    <div>Doctor Home page is here </div>
+    <Navbar/>
   )
 }
 

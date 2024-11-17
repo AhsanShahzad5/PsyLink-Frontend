@@ -1,6 +1,6 @@
 import { InputField } from '@/components/InputField';
 import { SelectField } from '@/components/SelectField';
-import { UploadImage } from '@/components/uploadImage';
+import { UploadImage } from '@/components/UploadImage';
 import { TimeOptions } from '@/lib/types';
 import React, { useState } from 'react';
 
