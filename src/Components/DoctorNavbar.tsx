@@ -1,26 +1,27 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import NavbarSideUserProfileMenu from './NavbarSideUserProfileMenu';
 
 export default function Navbar() {
 
-    const [activeNav, setActiveNav] = useState("Home");
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const navigate = useNavigate();
+  const [activeNav, setActiveNav] = useState("Home");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-    const handleNavClick = (link:any) => {
-        navigate(`/patient/${link}`);
-        setActiveNav(link);
-        
-    }
+  const handleNavClick = (link: any) => {
+    setActiveNav(link);
+    const lowercaseLink = link.charAt(0).toLowerCase() + link.slice(1);
+    navigate(`/doctor/${lowercaseLink}`);
+  }
 
   return (
     <div>
-         {/* Navbar */}
-       <nav className="flex justify-between items-center w-full p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
+      {/* Navbar */}
+      <nav className="flex justify-between items-center w-full p-2 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
         {/* Logo Section */}
-        <div className="flex items-center space-x-3">
-          <img src="/src/assets/patient/homepage/Logo.png" alt="Logo" className="h-12" />
-          <span className="text-2xl font-semibold">PsyLink</span>
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>navigate('/doctor/home')}>
+          <img src="/Psylink_Logo.png" alt="Logo" className="h-9" />
+          <span className="text-[22.5px] font-semibold cursor-pointer">PsyLink</span>
         </div>
 
         {/* Toggle Button for Small Screens */}
@@ -31,25 +32,21 @@ export default function Navbar() {
         </div>
 
         {/* Navigation Links for Large Screens */}
-        <div className="hidden md:flex space-x-2 text-lg text-center items-center justify-items-center font-semibold border-4 rounded-full px-4 gap-x-12">
-            {["Home", "Bookings", "Allen", "Psync", "Programs"].map((link) => (
-                <button
-                key={link}
-                onClick={() => handleNavClick(link)}
-                className={`px-4 py-2 rounded-full ${
-                    activeNav === link ? "bg-[#02968A] text-white" : "text-black bg-transparent"
-                } ${link === "Allen" ? "bg-gradient-to-b from-[#9E00CA] to-[#4F0064] text-white" : ""}
-                transition-all duration-300 ease-in-out flex justify-center items-center min-w-[120px]`}
-                >
-                {link}
-                </button>
-            ))}
+        <div className="hidden md:flex space-x-1  text-center items-center justify-items-center border-4 rounded-full px-4 gap-x-12 mr-20 text-xl font-semibold">
+          {["Home", "Appointments", "Clinic", "Psync"].map((link) => (
+            <button
+              key={link}
+              onClick={() => handleNavClick(link)}
+              className={`px-4 py-2 rounded-full ${activeNav === link ? "bg-[#02968A] text-white" : "text-black bg-transparent"
+                } transition-all duration-300 ease-in-out flex justify-center items-center min-w-[120px]`}
+            >
+              {link}
+            </button>
+          ))}
         </div>
 
         {/* User Profile Icon */}
-        <div className="hidden md:block">
-          <img src="/src/assets/patient/homepage/Vector.png" alt="User" className="h-10 w-10 rounded-full object-contain" />
-        </div>
+        <NavbarSideUserProfileMenu />
       </nav>
 
       {/* Sidebar for Small Screens */}
@@ -64,21 +61,19 @@ export default function Navbar() {
               ×
             </button>
             <div className="flex flex-col space-y-6 text-lg font-semibold">
-              {["Home", "Bookings", "Allen", "Psync", "Programs"].map((link) => (
-                <a
+              {["Home", "Appointments", "Clinic", "Psync"].map((link) => (
+                <button
                   key={link}
-                  href=''
                   onClick={() => {
                     setIsSidebarOpen(false);
                     handleNavClick(link);
 
                   }}
-                  className={`${
-                    activeNav === link ? "text-[#319F43]" : "text-black"
-                  } ${link === "Allen" ? "bg-gradient-to-b from-[#9E00CA] to-[#4F0064] rounded-full px-4 py-2 text-white" : ""}`}
+                  className={`${activeNav === link ? "text-primary" : "text-black"
+                    }`}
                 >
                   {link}
-                </a>
+                </button>
               ))}
             </div>
           </div>
