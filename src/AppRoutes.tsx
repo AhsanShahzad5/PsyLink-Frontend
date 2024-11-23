@@ -8,11 +8,29 @@ import NotesPage from './pages/Patient/NotesPage';
 import Prescription from './pages/Patient/Prescriptions';
 
 import ProgramDetails from './pages/Patient/ProgramDetails';
-import PrescriptionPopUp from './Components/PrescriptionPopUp';
+import PrescriptionPopUp from './Components/patient/PrescriptionPopUp';
 import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
 import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
+import DoctorHome from './pages/Doctor/DoctorHome';
 import AdminLogin from './pages/Admin/AdminLogin';
+
+import ExploreDoctor from './pages/Patient/Bookings';
+import VideoConsulation from './pages/Patient/VideoConsulation';
+import DoctorReviewPage from './pages/Patient/DoctorReview';
+import DoctorDetails from './pages/Patient/DoctorDetails';
+import LandingPage from './pages/Patient/landingPage';
+import AIChatbotPage from './pages/Patient/AIChatbot';
+import ProgramsPage from './pages/Patient/Programs';
+import ExerciseDetails from './pages/Patient/ExerciseDetails';
+
+import DoctorNavbar from './components/DoctorNavbar';
+import DoctorAppointments from './pages/Doctor/DoctorAppointments';
+import DoctorClinic from './pages/Doctor/DoctorClinic';
+import DoctorPsync from './pages/Doctor/DoctorPsync';
+import DoctorLayout from './layouts/DoctorLayout';
+import NavbarSideUserProfileMenu from './components/NavbarSideUserProfileMenu';
+
 import Dashboard from './pages/Admin/Dashboard';
 import Layout from './pages/Admin/Layout';
 import Patients from './pages/Admin/Patients';
@@ -29,8 +47,9 @@ const AppRoutes = () => {
     return (
         <Routes>
             {/* general routes  */}
-            <Route path='/' element={<App/> } />
+            <Route path='/' element={<App />} />
             <Route path='*' element={<Navigate to='/' />} />
+
             <Route path='/login' element={<LoginPage/> } />
             {/* patient routes  */}     
             <Route path='/patient/detailForm' element={<DetailForm/>} />
@@ -40,13 +59,28 @@ const AppRoutes = () => {
             <Route path='/patient/history' element={<Prescription/>} />
             <Route path='/patient/program-details' element={<ProgramDetails/>} />
             <Route path='/patient/prescription' element={<PrescriptionPopUp/>} />
+            <Route path='/patient/Bookings' element={<ExploreDoctor/>} />
+            <Route path='/patient/video-consultation' element={<VideoConsulation/>} />
+            <Route path='/patient/doctor-review' element={<DoctorReviewPage/>} />
+            <Route path='/patient/doctor-details' element={<DoctorDetails/>} />
+            <Route path='/patient/landing-page' element={<LandingPage/>} />
+            <Route path='/patient/Allen' element={<AIChatbotPage/>} />
+            <Route path='/patient/Programs' element={<ProgramsPage/>} />
+            <Route path='/patient/exercise-details' element={<ExerciseDetails/>} />
             
+
             {/* doctor routes  */}
-            <Route path='/doctor/home' element={<LoginPage/> } />
-            <Route path='/doctor/detailForm' element={<DoctorDetailForm/>} />
-            <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm/>} />
-            <Route path='/doctor/thankyoupage' element={<ThankYouPage/>} />
+            <Route path='/doctor/login' element={<LoginPage />} />
+            <Route path='/doctor/home' element={<DoctorLayout> <DoctorHome/> </DoctorLayout> }/>
+            <Route path='/doctor/appointments' element={ <DoctorLayout><DoctorAppointments /></DoctorLayout>}/>
+            <Route path='/doctor/clinic' element={ <DoctorLayout>  <DoctorClinic/>  </DoctorLayout> } />
+            <Route path='/doctor/psync' element={<DoctorLayout><DoctorPsync /></DoctorLayout>}/>
+
+            <Route path='/doctor/detailForm' element={<DoctorDetailForm />} />
+            <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm />} />
+            <Route path='/doctor/thankyoupage' element={<ThankYouPage />} />
             {/* admin routes  */}
+            <Route path='/admin/login' element={<AdminLogin />} />
             <Route path='/admin/login' element={<AdminLogin/>} />
             <Route path="/" element={<Layout />}>
                     <Route path="/admin/dashboard" element={<Dashboard />} />
@@ -63,7 +97,7 @@ const AppRoutes = () => {
                     {/* <Route path="/admin/settings" element={<Settings />} /> */}
                 </Route>
             {/* testing routes */}
-            {/* <Route path='/test' element={<UploadImage/>} /> */}
+            <Route path='/test' element={<NavbarSideUserProfileMenu/>} />
 
         </Routes>
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
@@ -31,7 +31,7 @@ export default function Navbar() {
         </div>
 
         {/* Navigation Links for Large Screens */}
-        <div className="hidden md:flex space-x-2 text-lg text-center items-center justify-items-center font-semibold border-4 rounded-full px-4 gap-x-12">
+        <div className="hidden md:flex space-x-2 text-lg text-center items-center justify-items-center font-semibold border rounded-full px-4 gap-x-12">
             {["Home", "Bookings", "Allen", "Psync", "Programs"].map((link, index) => (
                 <button
                 key={link}

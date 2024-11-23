@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GenerateReport from '../../Components/GenerateReport';
+import GenerateReport from '../../Components/patient/GenerateReport';
 
 
 const moodData = [
