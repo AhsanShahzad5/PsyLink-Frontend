@@ -56,7 +56,7 @@ const BreathingExercisePage: React.FC = () => {
     {
       task: "Paced Breathing",
       description:
-        "Control the pace of your breathing to maintain a steady, slow rhythm.",
+        "Control the pace of your breathing to maintain a steady, slow rhythm..",
       repetitions: "5-10 minutes",
     },
   ];
