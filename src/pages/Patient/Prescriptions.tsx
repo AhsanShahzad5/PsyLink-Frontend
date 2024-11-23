@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { ArrowLeft, Search, MapPin, Clock, ArrowRight } from 'lucide-react'
 import Navbar from '../../Components/Navbar'
-import ActiveTab from '../../Components/ActiveTab';
+import ActiveTab from '../../Components/patient/ActiveTab';
 import MoodTrackerPage from './MoodProgress';
 import PreviousPrograms from './PreviousPrograms';
-import PrescriptionPage from '@/Components/PrescriptionPopUp';
+import PrescriptionPage from '@/Components/patient/PrescriptionPopUp';
+import SearchByNameAndLoc from '@/Components/patient/SearchByNameAndLoc';
 
 
 interface Appointment {
@@ -99,6 +100,8 @@ export default function Prescription(): JSX.Element {
     setModalOpen(false); // Close the modal
   };
 
+  const tabs = ['Prescriptions', 'Mood Progress', 'Previous Programs'];
+
 
   return (
    <>
@@ -109,90 +112,19 @@ export default function Prescription(): JSX.Element {
       {/* Main Content */}
    <div className="bg-[#fffff] min-h-screen w-full flex justify-center mt-32 ">
        <div className="w-full max-w-screen-xl p-4 bg-[#fff] mt-4">
-       <nav className="flex justify-between items-center w-full p-2 sm:p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10 mt-24">
-  <ArrowLeft className="text-teal-600 mr-2 sm:mr-4" />
-
-  {/* Tabs visible on small screens only */}
-  <div className="flex-1 flex sm:hidden overflow-x-auto space-x-2 justify-center px-2">
-    <button
-      className={`py-1 px-2 min-w-[80px] font-medium text-xs sm:text-sm whitespace-nowrap ${
-        activeTab === 'Prescriptions' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Prescriptions')}
-    >
-      Prescriptions
-    </button>
-    <button
-      className={`py-1 px-2 min-w-[80px] font-medium text-xs sm:text-sm whitespace-nowrap ${
-        activeTab === 'Mood Progress' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Mood Progress')}
-    >
-      Mood Progress
-    </button>
-    <button
-      className={`py-1 px-2 min-w-[80px] font-medium text-xs sm:text-sm whitespace-nowrap ${
-        activeTab === 'Previous Programs' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Previous Programs')}
-    >
-      Previous Programs
-    </button>
-  </div>
-
-  {/* Tabs visible on larger screens only */}
-  <div className="hidden sm:flex justify-between flex-1 px-20 border-b border-gray-200">
-    <button
-      className={`py-2 px-4 font-medium text-base sm:text-lg ${
-        activeTab === 'Prescriptions' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Prescriptions')}
-    >
-      Prescriptions
-    </button>
-    <button
-      className={`py-2 px-4 font-medium text-base sm:text-lg ${
-        activeTab === 'Mood Progress' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Mood Progress')}
-    >
-      Mood Progress
-    </button>
-    <button
-      className={`py-2 px-4 font-medium text-base sm:text-lg ${
-        activeTab === 'Previous Programs' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'
-      }`}
-      onClick={() => setActiveTab('Previous Programs')}
-    >
-      Previous Programs
-    </button>
-  </div>
-</nav>
+     
+       <ActiveTab
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabClick={(tab) => setActiveTab(tab as 'Prescriptions' | 'Mood Progress' | 'Previous Programs')}
+      />
 
 
         {activeTab === 'Prescriptions' && (
           <div className="bg-white rounded-xl shadow p-6 mb-6">
-            <div className="flex flex-col md:flex-row gap-4 mb-4 rounded-2xl">
-              <div className="flex-1 relative rounded-2xl">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 " size={20} />
-                <input
-                  type="text"
-                  placeholder="Search By Name"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <input
-                  type="text"
-                  placeholder="Location"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-              <button className="bg-teal-600 text-white px-4 py-2 rounded-xl hover:bg-teal-700 transition-colors self-start md:self-center">
-                Search
-              </button>
-            </div>
+            
+            {/* Search Section */}
+            <SearchByNameAndLoc />
 
             <div className="space-y-4">
               {appointments.map((appointment) => (
