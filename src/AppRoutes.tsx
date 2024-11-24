@@ -14,8 +14,7 @@ import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
 import DoctorHome from './pages/Doctor/DoctorHome';
 import AdminLogin from './pages/Admin/AdminLogin';
-<<<<<<< HEAD
-=======
+
 import ExploreDoctor from './pages/Patient/Bookings';
 import VideoConsulation from './pages/Patient/VideoConsulation';
 import DoctorReviewPage from './pages/Patient/DoctorReview';
@@ -26,7 +25,6 @@ import ProgramsPage from './pages/Patient/Programs';
 import ExerciseDetails from './pages/Patient/ExerciseDetails';
 
 import DoctorNavbar from './Components/DoctorNavbar';
->>>>>>> 9fef078bfd98f38d14173c58f70ea33ce5620bea
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorPsync from './pages/Doctor/DoctorPsync';
