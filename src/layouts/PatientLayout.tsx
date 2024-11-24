@@ -1,5 +1,4 @@
-
-import DoctorNavbar from '@/Components/DoctorNavbar';
+import Navbar from '@/Components/Navbar';
 import React from 'react'
 
 type Props = {
@@ -8,14 +7,14 @@ type Props = {
 }
 
 
-function DoctorLayout({ children }: Props) {
+function PatientLayout({ children }: Props) {
     return (
         <>
-        <DoctorNavbar/>
+        <Navbar/>
             {children}
             
         </>
     )
 }
 
-export default DoctorLayout;
+export default PatientLayout;

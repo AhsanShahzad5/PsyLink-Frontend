@@ -6,6 +6,7 @@ import { Input } from "@/Components/ui/input";
 import { Camera, FileText, Image, Mic, PhoneOff, Send } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ReviewModalProps {
     isOpen: boolean;
@@ -105,27 +106,69 @@ export default function Component() {
 
     const [showReviewModal, setShowReviewModal] = useState(false);
 
+    const navigate = useNavigate();
+
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-emerald-600 p-4 flex items-center justify-between text-white">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold">Consultation Room</h1>
-          <span className="text-sm opacity-80">Session ID: 572937</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="hover:bg-emerald-700">
-            <Camera className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="hover:bg-emerald-700">
-            <Mic className="h-5 w-5" />
-          </Button>
-          <Button variant="destructive" size="icon" onClick={() => setShowReviewModal(true)}>
-            <PhoneOff className="h-5 w-5" />
-          </Button>
-        </div>
-      </header>
+      <header className="bg-emerald-600 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-white gap-4 sm:gap-0">
+  {/* Left Section: Back Button and Session Info */}
+  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+    {/* Back button */}
+    <button
+      onClick={() => navigate(-1)} // Navigate back to the previous page
+      className="flex items-center text-lg sm:text-xl font-medium text-black transition-transform transform hover:scale-110"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6 mr-2"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M15.75 19.5L8.25 12l7.5-7.5"
+        />
+      </svg>
+      Back
+    </button>
+    <div className="flex flex-col items-start sm:flex sm:items-cente sm:justify-centerr gap-1">
+  <h1 className="text-lg sm:text-xl font-semibold">Consultation Room</h1>
+  <span className="text-sm opacity-80">Session ID: 572937</span>
+</div>
+  </div>
+
+  {/* Right Section: Action Buttons */}
+  <div className="flex items-center justify-start sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+    <Button
+      variant="ghost"
+      size="icon"
+      className="hover:bg-emerald-700 flex items-center justify-center"
+    >
+      <Camera className="h-5 w-5" />
+    </Button>
+    <Button
+      variant="ghost"
+      size="icon"
+      className="hover:bg-emerald-700 flex items-center justify-center"
+    >
+      <Mic className="h-5 w-5" />
+    </Button>
+    <Button
+      variant="destructive"
+      size="icon"
+      onClick={() => setShowReviewModal(true)}
+      className="flex items-center justify-center"
+    >
+      <PhoneOff className="h-5 w-5" />
+    </Button>
+  </div>
+</header>
+
 
       <ReviewModal isOpen={showReviewModal} onClose={() => setShowReviewModal(false)} />
 

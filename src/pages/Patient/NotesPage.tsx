@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { ArrowLeft, Plus, Save, Trash2} from 'lucide-react'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import Navbar from '@/Components/Navbar'
+import { ScrollArea } from '@/Components/ui/scroll-area'
+import { Button } from '@/Components/ui/button'
+import { Textarea } from '@/Components/ui/textarea'
+import { Input } from '@/Components/ui/input'
+import { useNavigate } from 'react-router-dom'
+
 
 interface Note {
   id: number
@@ -62,23 +63,37 @@ export default function Component() {
 
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
 
-  
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#D3EDEB]">
+    <div className="min-h-screen bg-[#D3EDEB] mx-10">
 
-    <Navbar/>    
 
       {/* Main Content */}
-<div className="min-h-screen bg-[#fff] rounded-2xl mt-20">
+<div className="min-h-screen bg-[#fff] rounded-2xl mt-24">
   <div className="flex flex-col h-full">
     <header className="flex items-center justify-between px-4 py-3 border-b">
-      <div className="flex items-center gap-2 ">
-        <Button variant="ghost" size="icon">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-semibold">Notes</h1>
-      </div>
+    <button
+  className="text-[#02968A] text-lg font-bold sm:mb-4 lg:mb-0 flex items-center space-x-2"
+  onClick={() => navigate(-1)}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 19.5L8.25 12l7.5-7.5"
+    />
+  </svg>
+  <span>Notes</span>
+</button>
+
       <div className="flex gap-2 "> {/* it include 3 button only plus copy and delete */}
         {
           selectedNote ? (
@@ -133,7 +148,7 @@ export default function Component() {
               onChange={(e) =>
                 setSelectedNote({ ...selectedNote, content: e.target.value })
               }
-              className="min-h-[300px] text-[#000] md:min-h-[500px] bg-[#F5F5F5] w-full resize-none border-0 focus-visible:ring-0"
+              className="min-h-[400px] text-xl  bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
             />
           </div>
         ) : (
@@ -148,7 +163,7 @@ export default function Component() {
               placeholder="Write your text here..."
               value={notesText}
               onChange={(e) => setNotesText(e.target.value)}
-              className="min-h-[300px] text-[#000] md:min-h-[500px] bg-[#F5F5F5] w-full resize-none border-0 focus-visible:ring-0"
+              className="min-h-[400px] text-xl  bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
             />
           </div>
         )}

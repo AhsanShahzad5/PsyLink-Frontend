@@ -203,7 +203,7 @@ export default function Bookings(): JSX.Element {
 
   return (
    <>
-    <Navbar/>    
+    {/* <Navbar/>     */}
 
     
 

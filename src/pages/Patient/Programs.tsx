@@ -2,7 +2,7 @@ import Navbar from "@/Components/Navbar";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProgramsPage: React.FC = () => {
+const Programs: React.FC = () => {
 
   // Data for each section
   const popular = [
@@ -42,186 +42,186 @@ const ProgramsPage: React.FC = () => {
   const [yourCoursesIndex, setYourCoursesIndex] = useState(0);
   const [calmingIndex, setCalmingIndex] = useState(0);
 
-  const maxVisibleCards = 4;
+  const maxVisibleCards = 5;
 
 
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
-    navigate("/patient/exercise-details");
+  const handleCardClick = (item: { title: string; bgColor: string }) => {
+    navigate("/patient/exercise-details", { state: item });
   };
 
   return (
     <>
-      <Navbar />
-      <div className="flex justify-between items-center w-full p-4 bg-white shadow-md mt-24 rounded-2xl">
-        <div className="min-h-screen bg-[#FFFFFF] p-8">
-          {/* Header Section */}
-          <header className="flex items-center justify-between mb-8">
-            <h1 className="text-4xl font-bold font-syne">Programs</h1>
-            <div className="relative flex items-center">
-              <input
+      
+      {/* <div className="flex justify-between items-center w-full p-4 bg-white shadow-md mt-24 rounded-2xl"> */}
+        <div className="min-h-screen bg-[#FFFFFF] p-8 my-24 mx-4 rounded-xl ">
+         {/* Header Section */}
+            <header className="flex flex-col sm:flex-row items-center justify-between mb-8">
+            <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-0">Programs</h1>
+            <div className="relative w-full sm:w-auto">
+                <input
                 type="text"
                 placeholder="Search for Course"
-                className="px-4 py-2 w-80 border rounded-lg text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#02968A]"
-              />
-              <button className="absolute right-3 top-2 text-[#02968A]">
+                className="px-4 py-2 w-full border rounded-lg text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+                />
+                <button className="absolute right-3 top-2 text-[#02968A]">
                 <span className="material-icons">search</span>
-              </button>
+                </button>
             </div>
-          </header>
+            </header>
+
 
           {/* Categories Section */}
           <div className="space-y-8">
-            {/* Popular Section */}
+           {/* Popular Section */}
             <div>
-              <h2 className="text-2xl font-outfit mb-4 text-[#02968A] bg-[#fff] border border-gray-200 rounded-2xl px-4">
+            <h2 className="text-xl sm:text-2xl font-outfit mb-4 text-[#02968A] bg-white border border-gray-200 rounded-2xl px-4 py-2">
                 Popular
-              </h2>
-              <div className="flex overflow-x-auto space-x-4 scrollbar-hide">
+            </h2>
+            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4 scrollbar-hide">
                 {/* Left Button */}
                 {popularIndex > 0 && (
-                  <button
+                <button
                     onClick={() => setPopularIndex((prev) => Math.max(0, prev - 1))}
-                    className="text-[#02968A] text-2xl p-2"
-                  >
+                    className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                >
                     &larr;
-                  </button>
+                </button>
                 )}
-                <div className="flex space-x-4">
-                  {popular
-                    .slice(popularIndex, popularIndex + maxVisibleCards)
-                    .map((item, index) => (
-                      <div
-                        key={index}
-                        className="p-4 rounded-xl shadow-md min-w-[250px]"
-                        style={{ backgroundColor: item.bgColor }}
-                        onClick={handleCardClick}
-                      >
-                        <p className="text-xl font-bold font-outfit text-center text-[#000] mt-24">
-                          {item.title}
-                        </p>
-                      </div>
-                    ))}
+                {/* Cards Container */}
+                <div className="flex space-x-2 sm:space-x-4">
+                {popular.slice(popularIndex, popularIndex + maxVisibleCards).map((item, index) => (
+                    <div
+                    key={index}
+                    className="p-2 sm:p-4 rounded-xl shadow-md min-w-[180px] sm:min-w-[250px]"
+                    style={{ backgroundColor: item.bgColor }}
+                    onClick={() => handleCardClick(item)}
+                    >
+                    <p className="text-base sm:text-xl font-bold font-outfit text-center text-black mt-12 sm:mt-24">
+                        {item.title}
+                    </p>
+                    </div>
+                ))}
                 </div>
                 {/* Right Button */}
                 {popularIndex + maxVisibleCards < popular.length && (
-                  <button
+                <button
                     onClick={() =>
-                      setPopularIndex((prev) =>
+                    setPopularIndex((prev) =>
                         Math.min(popular.length - maxVisibleCards, prev + 1)
-                      )
+                    )
                     }
-                    className="text-[#02968A] text-2xl p-2"
-                  >
+                    className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                >
                     &rarr;
-                  </button>
+                </button>
                 )}
-              </div>
+            </div>
             </div>
 
-            {/* Your Courses Section */}
+
+           {/* Your Courses Section */}
             <div>
-              <h2 className="text-2xl font-outfit mb-4 text-[#02968A] bg-[#fff] border border-gray-200 rounded-2xl px-4">
+            <h2 className="text-xl sm:text-2xl font-outfit mb-4 text-[#02968A] bg-white border border-gray-200 rounded-2xl px-4 py-2">
                 Your Courses
-              </h2>
-              <div className="flex overflow-x-auto space-x-4 scrollbar-hide">
+            </h2>
+            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4 scrollbar-hide">
                 {/* Left Button */}
                 {yourCoursesIndex > 0 && (
-                  <button
-                    onClick={() =>
-                      setYourCoursesIndex((prev) => Math.max(0, prev - 1))
-                    }
-                    className="text-[#02968A] text-2xl p-2"
-                  >
+                <button
+                    onClick={() => setYourCoursesIndex((prev) => Math.max(0, prev - 1))}
+                    className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                >
                     &larr;
-                  </button>
+                </button>
                 )}
-                <div className="flex space-x-4">
-                  {yourCourses
-                    .slice(yourCoursesIndex, yourCoursesIndex + maxVisibleCards)
-                    .map((item, index) => (
-                        <div
-                        key={index}
-                        className="p-4 rounded-xl shadow-md min-w-[250px]"
-                        style={{ backgroundColor: item.bgColor }}
-                        onClick={handleCardClick}
-                      >
-                        <p className="text-xl font-bold font-outfit text-center text-[#000] mt-24">
-                          {item.title}
-                        </p>
-                      </div>
-                    ))}
+                {/* Courses Container */}
+                <div className="flex space-x-2 sm:space-x-4">
+                {yourCourses.slice(yourCoursesIndex, yourCoursesIndex + maxVisibleCards).map((item, index) => (
+                    <div
+                    key={index}
+                    className="p-2 sm:p-4 rounded-xl shadow-md min-w-[180px] sm:min-w-[250px]"
+                    style={{ backgroundColor: item.bgColor }}
+                    onClick={() => handleCardClick(item)}
+                    >
+                    <p className="text-base sm:text-xl font-bold font-outfit text-center text-black mt-12 sm:mt-24">
+                        {item.title}
+                    </p>
+                    </div>
+                ))}
                 </div>
                 {/* Right Button */}
                 {yourCoursesIndex + maxVisibleCards < yourCourses.length && (
-                  <button
+                <button
                     onClick={() =>
-                      setYourCoursesIndex((prev) =>
+                    setYourCoursesIndex((prev) =>
                         Math.min(yourCourses.length - maxVisibleCards, prev + 1)
-                      )
+                    )
                     }
-                    className="text-[#02968A] text-2xl p-2"
-                  >
+                    className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                >
                     &rarr;
-                  </button>
+                </button>
                 )}
-              </div>
+            </div>
             </div>
 
-            {/* Calming Section */}
-            <div>
-              <h2 className="text-2xl font-outfit mb-4 text-[#02968A] bg-[#fff] border border-gray-200 rounded-2xl px-4">
-                Calming
-              </h2>
-              <div className="flex overflow-x-auto space-x-4 scrollbar-hide">
-                {/* Left Button */}
-                {calmingIndex > 0 && (
-                  <button
-                    onClick={() =>
-                      setCalmingIndex((prev) => Math.max(0, prev - 1))
-                    }
-                    className="text-[#02968A] text-2xl p-2"
-                  >
-                    &larr;
-                  </button>
-                )}
-                <div className="flex space-x-4">
-                  {calming
-                    .slice(calmingIndex, calmingIndex + maxVisibleCards)
-                    .map((item, index) => (
+
+           {/* Calming Section */}
+                <div>
+                <h2 className="text-xl sm:text-2xl font-outfit mb-4 text-[#02968A] bg-white border border-gray-200 rounded-2xl px-4 py-2">
+                    Calming
+                </h2>
+                <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4 scrollbar-hide">
+                    {/* Left Button */}
+                    {calmingIndex > 0 && (
+                    <button
+                        onClick={() => setCalmingIndex((prev) => Math.max(0, prev - 1))}
+                        className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                    >
+                        &larr;
+                    </button>
+                    )}
+                    {/* Cards Container */}
+                    <div className="flex space-x-2 sm:space-x-4">
+                    {calming.slice(calmingIndex, calmingIndex + maxVisibleCards).map((item, index) => (
                         <div
                         key={index}
-                        className="p-4 rounded-xl shadow-md min-w-[250px]"
+                        className="p-2 sm:p-4 rounded-xl shadow-md min-w-[180px] sm:min-w-[250px]"
                         style={{ backgroundColor: item.bgColor }}
-                        onClick={handleCardClick}
-                      >
-                        <p className="text-xl font-bold font-outfit text-center text-[#000] mt-24">
-                          {item.title}
+                        onClick={() => handleCardClick(item)}
+                        >
+                        <p className="text-base sm:text-xl font-bold font-outfit text-center text-black mt-12 sm:mt-24">
+                            {item.title}
                         </p>
-                      </div>
+                        </div>
                     ))}
+                    </div>
+                    {/* Right Button */}
+                    {calmingIndex + maxVisibleCards < calming.length && (
+                    <button
+                        onClick={() =>
+                        setCalmingIndex((prev) =>
+                            Math.min(calming.length - maxVisibleCards, prev + 1)
+                        )
+                        }
+                        className="text-[#02968A] text-xl sm:text-2xl p-2 h-full flex items-center justify-center"
+                    >
+                        &rarr;
+                    </button>
+                    )}
                 </div>
-                {/* Right Button */}
-                {calmingIndex + maxVisibleCards < calming.length && (
-                  <button
-                    onClick={() =>
-                      setCalmingIndex((prev) =>
-                        Math.min(calming.length - maxVisibleCards, prev + 1)
-                      )
-                    }
-                    className="text-[#02968A] text-2xl p-2"
-                  >
-                    &rarr;
-                  </button>
-                )}
-              </div>
-            </div>
+                </div>
+
+
+
+
           </div>
         </div>
-      </div>
+      
     </>
   );
 };
 
-export default ProgramsPage;
+export default Programs;

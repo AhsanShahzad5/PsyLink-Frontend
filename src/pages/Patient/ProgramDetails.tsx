@@ -1,5 +1,6 @@
 import Navbar from "@/Components/Navbar";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Exercise {
   id: number;
@@ -50,14 +51,43 @@ const ProgramDetails: React.FC = () => {
     }));
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
-      <Navbar />
+      
       <div className="w-full max-w-[1200px] bg-[#fff] rounded-[20px] shadow-lg mx-auto mt-24">
         {/* Main Layout */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between p-6 space-y-6 lg:space-y-0">
+
+
+          
           {/* Left Section */}
           <div className="flex-1 lg:w-1/2 text-center lg:text-left p-6">
+                    {/* Back button */}
+                    <div className="flex items-center mb-6">
+                        <button
+                          onClick={() => navigate(-1)} // Navigate back to the previous page
+                          className="flex items-center text-xl font-medium text-[#02968A]  transition-transform transform hover:scale-110 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6 mr-2"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.75 19.5L8.25 12l7.5-7.5"
+                            />
+                          </svg>
+                          Back
+                        </button>
+                      </div>
+            
             <h1 className="text-[24px] lg:text-[30px] font-medium leading-[40px] mb-4">
               {programData.title}
             </h1>
