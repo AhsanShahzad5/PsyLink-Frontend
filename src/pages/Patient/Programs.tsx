@@ -2,7 +2,7 @@ import Navbar from "@/Components/Navbar";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProgramsPage: React.FC = () => {
+const Programs: React.FC = () => {
 
   // Data for each section
   const popular = [
@@ -224,4 +224,4 @@ const ProgramsPage: React.FC = () => {
   );
 };
 
-export default ProgramsPage;
+export default Programs;
