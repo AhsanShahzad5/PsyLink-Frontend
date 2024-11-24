@@ -105,7 +105,7 @@ export default function Prescription(): JSX.Element {
 
   return (
    <>
-    <Navbar/>    
+    {/* <Navbar/>     */}
 
     
 

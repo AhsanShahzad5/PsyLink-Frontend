@@ -52,7 +52,7 @@ const ProgramDetails: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="w-full max-w-[1200px] bg-[#fff] rounded-[20px] shadow-lg mx-auto mt-24">
         {/* Main Layout */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between p-6 space-y-6 lg:space-y-0">
