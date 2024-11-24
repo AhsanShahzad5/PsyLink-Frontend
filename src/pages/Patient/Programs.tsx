@@ -42,7 +42,7 @@ const Programs: React.FC = () => {
   const [yourCoursesIndex, setYourCoursesIndex] = useState(0);
   const [calmingIndex, setCalmingIndex] = useState(0);
 
-  const maxVisibleCards = 4;
+  const maxVisibleCards = 5;
 
 
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Programs: React.FC = () => {
     <>
       
       {/* <div className="flex justify-between items-center w-full p-4 bg-white shadow-md mt-24 rounded-2xl"> */}
-        <div className="min-h-screen bg-[#FFFFFF] p-8 mt-20">
+        <div className="min-h-screen bg-[#FFFFFF] p-8 my-24 mx-4 rounded-xl ">
          {/* Header Section */}
             <header className="flex flex-col sm:flex-row items-center justify-between mb-8">
             <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-0">Programs</h1>
@@ -79,7 +79,7 @@ const Programs: React.FC = () => {
             <h2 className="text-xl sm:text-2xl font-outfit mb-4 text-[#02968A] bg-white border border-gray-200 rounded-2xl px-4 py-2">
                 Popular
             </h2>
-            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4">
+            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4 scrollbar-hide">
                 {/* Left Button */}
                 {popularIndex > 0 && (
                 <button
@@ -126,7 +126,7 @@ const Programs: React.FC = () => {
             <h2 className="text-xl sm:text-2xl font-outfit mb-4 text-[#02968A] bg-white border border-gray-200 rounded-2xl px-4 py-2">
                 Your Courses
             </h2>
-            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4">
+            <div className="flex items-center overflow-x-auto space-x-2 sm:space-x-4 scrollbar-hide">
                 {/* Left Button */}
                 {yourCoursesIndex > 0 && (
                 <button

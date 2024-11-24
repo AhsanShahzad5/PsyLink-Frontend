@@ -66,7 +66,7 @@ export default function Component() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#D3EDEB]">
+    <div className="min-h-screen bg-[#D3EDEB] mx-10">
 
 
       {/* Main Content */}
