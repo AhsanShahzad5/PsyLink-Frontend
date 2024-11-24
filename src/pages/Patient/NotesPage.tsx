@@ -4,7 +4,7 @@ import { ScrollArea } from '@/Components/ui/scroll-area'
 import { Button } from '@/Components/ui/button'
 import { Textarea } from '@/Components/ui/textarea'
 import { Input } from '@/Components/ui/input'
-import Navbar from '@/Components/Navbar'
+
 
 interface Note {
   id: number
@@ -67,10 +67,9 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-[#D3EDEB]">
 
-    {/* <Navbar/>     */}
 
       {/* Main Content */}
-<div className="min-h-screen bg-[#fff] rounded-2xl mt-20">
+<div className="min-h-screen bg-[#fff] rounded-2xl mt-24">
   <div className="flex flex-col h-full">
     <header className="flex items-center justify-between px-4 py-3 border-b">
       <div className="flex items-center gap-2 ">
@@ -133,7 +132,7 @@ export default function Component() {
               onChange={(e) =>
                 setSelectedNote({ ...selectedNote, content: e.target.value })
               }
-              className="min-h-[300px] text-[#000] md:min-h-[500px] bg-[#F5F5F5] w-full resize-none border-0 focus-visible:ring-0"
+              className="min-h-[400px] text-xl  bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
             />
           </div>
         ) : (
@@ -148,7 +147,7 @@ export default function Component() {
               placeholder="Write your text here..."
               value={notesText}
               onChange={(e) => setNotesText(e.target.value)}
-              className="min-h-[300px] text-[#000] md:min-h-[500px] bg-[#F5F5F5] w-full resize-none border-0 focus-visible:ring-0"
+              className="min-h-[400px] text-xl  bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
             />
           </div>
         )}
