@@ -14,8 +14,7 @@ import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
 import DoctorHome from './pages/Doctor/DoctorHome';
 import AdminLogin from './pages/Admin/AdminLogin';
-<<<<<<< HEAD
-=======
+
 import ExploreDoctor from './pages/Patient/Bookings';
 import VideoConsulation from './pages/Patient/VideoConsulation';
 import DoctorReviewPage from './pages/Patient/DoctorReview';
@@ -25,8 +24,6 @@ import AIChatbotPage from './pages/Patient/AIChatbot';
 import ProgramsPage from './pages/Patient/Programs';
 import ExerciseDetails from './pages/Patient/ExerciseDetails';
 
-import DoctorNavbar from './Components/DoctorNavbar';
->>>>>>> 9fef078bfd98f38d14173c58f70ea33ce5620bea
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorPsync from './pages/Doctor/DoctorPsync';
@@ -37,7 +34,7 @@ import Login from './pages/Patient/Login';
 import SignUp from './pages/Patient/SignUp';
 
 import Dashboard from './pages/Admin/Dashboard';
-import Layout from './pages/Admin/Layout';
+// import Layout from './pages/Admin/Layout';
 import Patients from './pages/Admin/Patients';
 import Doctors from './pages/Admin/Doctors';
 import Sessions from './pages/Admin/Sessions';
@@ -48,12 +45,7 @@ import Psync from './pages/Admin/Psync';
 import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import PsyncPatient from './pages/Patient/psync'
-import VideoConsulation from './pages/Patient/VideoConsulation';
-import DoctorReviewPage from './pages/Patient/DoctorReview';
-import DoctorDetails from './pages/Patient/DoctorDetails';
-import AIChatbotPage from './pages/Patient/AIChatbot';
-import LandingPage from './pages/Patient/landingPage';
-import ExerciseDetails from './pages/Patient/ExerciseDetails';
+import AdminLayout from './layouts/AdminLayout';
 
 const AppRoutes = () => {
 
@@ -101,20 +93,20 @@ const AppRoutes = () => {
             {/* admin routes  */}
             <Route path='/admin/login' element={<AdminLogin />} />
             <Route path='/admin/login' element={<AdminLogin/>} />
-            <Route path="/" element={<Layout />}>
-                    <Route path="/admin/dashboard" element={<Dashboard />} />
-                    <Route path="/admin/patients" element={<Patients />} />
-                    <Route path="/admin/patients/patient-details" element={<PatientDetails />} />
-                    <Route path="/admin/doctors" element={<Doctors />} />
-                    <Route path="/admin/sessions" element={<Sessions />} />
-                    <Route path="/admin/complaints" element={<Complaints />} />
-                    <Route path="/admin/reports" element={<Reports />} />
-                    <Route path="/admin/payments" element={<Payments />} />
-                    <Route path="/admin/psync" element={<Psync />} />
+            {/* <Route path="/" element={<Layout />}> */}
+                    <Route path="/admin/dashboard" element={<AdminLayout> <Dashboard /> </AdminLayout>} />
+                    <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
+                    <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
+                    <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
+                    <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
+                    <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
+                    <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
+                    <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
+                    <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
                     
 
                     {/* <Route path="/admin/settings" element={<Settings />} /> */}
-                </Route>
+                {/* </Route> */}
             {/* testing routes */}
             <Route path='/test' element={<NavbarSideUserProfileMenu/>} />
 
