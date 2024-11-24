@@ -14,7 +14,6 @@ import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
 import DoctorHome from './pages/Doctor/DoctorHome';
 import AdminLogin from './pages/Admin/AdminLogin';
-import DoctorNavbar from './components/DoctorNavbar';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorPsync from './pages/Doctor/DoctorPsync';
