@@ -34,10 +34,10 @@ const PatientDetails: React.FC = () => {
           />
           <h1 className="text-3xl font-semibold">{patient.name}</h1>
           <div className="ml-auto flex gap-4">
-            <button className="px-4 py-2 bg-primary text-white rounded shadow hover:bg-primaryHover">
+            <button className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover">
               Ban
             </button>
-            <button className="px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600">
+            <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
               Remove
             </button>
           </div>

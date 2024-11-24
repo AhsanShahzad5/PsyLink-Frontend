@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaRegStickyNote } from 'react-icons/fa'; // Font Awesome
+import { FaTrash } from 'react-icons/fa'; // Font Awesome
 
 export interface Appointment {
   sessionId: string;
@@ -153,12 +155,12 @@ const Patients: React.FC = () => {
     {/* Right Section: Buttons */}
     <div className="flex-shrink-0 flex gap-2">
       <button
-        className="px-4 py-2 bg-teal-500 text-white rounded shadow"
+        className="px-4 py-2 bg-[#F0F0F0] flex font-light border border-gray-300 text-primary rounded-lg shadow hover:bg-primary hover:text-white"
         onClick={() => handleDetails(patient)}
-      >
+      >  <FaRegStickyNote className="w-4 h-7 mr-2" />
         Details
       </button>
-      <button className="px-4 py-2 bg-red-500 text-white rounded shadow">
+      <button className="px-4 py-2 flex bg-[#F0F0F0] font-light border border-gray-300 text-primary rounded-lg shadow hover:bg-primary hover:text-white"> <FaTrash className="w-4 h-7 mr-2" />
         Remove
       </button>
     </div>
