@@ -24,3 +24,36 @@ body {
         --radius: 0.5rem
     }
 }
+
+
+  /* styles.css or index.css */
+.custom-scrollbar {
+    scrollbar-width: thin;  /* Makes the scrollbar thinner */
+    scrollbar-color: #02968A transparent; /* Primary color and transparent track */
+    
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Set width of the scrollbar */
+    height: 8px; /* Set height for horizontal scrollbar */
+    border-radius: 50%;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* Make the track transparent */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #02968A;; /* Primary color for the thumb */
+    border-radius: 18px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #025a53;; /* Darker shade for thumb on hover */
+  }
+  
+  /* Remove the arrows */
+  .custom-scrollbar::-webkit-scrollbar-button {
+    display: none;
+  }
+  

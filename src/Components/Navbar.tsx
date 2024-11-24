@@ -1,24 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import NavbarSideUserProfileMenu from './NavbarSideUserProfileMenu';
 
 export default function Navbar() {
 
-    const [activeNav, setActiveNav] = useState("Home");
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const navigate = useNavigate();
 
-    const handleNavClick = (link:any) => {
-        navigate(`/patient/${link}`);
-        setActiveNav(link);
-        
-    }
+  const [activeNav, setActiveNav] = useState("Home");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavClick = (link: any) => {
+    setActiveNav(link);
+    const lowercaseLink = link.charAt(0).toLowerCase() + link.slice(1);
+    navigate(`/patient/${lowercaseLink}`);
+  }
+
 
   return (
     <div>
          {/* Navbar */}
        <nav className="flex justify-between items-center w-full p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
         {/* Logo Section */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>navigate('/patient/home')}>
           <img src="/src/assets/patient/homepage/Logo.png" alt="Logo" className="h-12" />
           <span className="text-2xl font-semibold">PsyLink</span>
         </div>
@@ -31,7 +34,7 @@ export default function Navbar() {
         </div>
 
         {/* Navigation Links for Large Screens */}
-        <div className="hidden md:flex space-x-2 text-lg text-center items-center justify-items-center font-semibold border-4 rounded-full px-4 gap-x-12">
+        <div className="hidden md:flex space-x-2 text-lg text-center items-center justify-items-center font-semibold border rounded-full px-4 gap-x-12">
             {["Home", "Bookings", "Allen", "Psync", "Programs"].map((link, index) => (
                 <button
                 key={link}
@@ -47,9 +50,7 @@ export default function Navbar() {
         </div>
 
         {/* User Profile Icon */}
-        <div className="hidden md:block">
-          <img src="/src/assets/patient/homepage/Vector.png" alt="User" className="h-10 w-10 rounded-full object-contain" />
-        </div>
+        <NavbarSideUserProfileMenu />
       </nav>
 
       {/* Sidebar for Small Screens */}

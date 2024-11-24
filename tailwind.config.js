@@ -9,6 +9,7 @@ export default {
 		extend: {
 			colors: {
 				primary: '#02968A',
+				primaryHover: '#026b62',
 				secondary: '#D3EDEB',
 				base: '#FFFFFF'
 			},
@@ -18,11 +19,17 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				outfit: ['Outfit', 'sans-serif'], // Add Outfit font
+				outfit: ['Outfit', 'sans-serif'], 
 				syne: ['Syne', 'sans-serif'],   
 			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwind-scrollbar-hide")],
 }
+
+// module.exports = {
+// 	content: ["./src/**/*.{js,jsx,ts,tsx}"],
+// 	plugins: [require("tailwind-scrollbar-hide")],
+//   };
 

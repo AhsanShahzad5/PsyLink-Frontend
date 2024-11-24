@@ -1,6 +1,6 @@
-import { InputField } from '@/components/InputField';
-import { SelectField } from '@/components/SelectField';
-import { UploadImage } from '@/components/UploadImage';
+import { InputField } from '@/Components/InputField';
+import { SelectField } from '@/Components/SelectField';
+import { UploadImage } from '@/Components/UploadImage';
 import { TimeOptions } from '@/lib/types';
 import React, { useState } from 'react';
 

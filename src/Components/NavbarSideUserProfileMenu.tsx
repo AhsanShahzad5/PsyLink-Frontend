@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { CreditCard, LogOut, Settings, User, FileText } from 'lucide-react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/Components/ui/sheet";
+import { Separator } from "@/Components/ui/separator";
+import { Button } from "@/Components/ui/button";
 
 interface ProfileMenuProps {
   userName?: string;

@@ -1,6 +1,6 @@
 
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   text-align: center;
   
@@ -43,6 +43,18 @@
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #02968A transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
 
 @keyframes logo-spin {
