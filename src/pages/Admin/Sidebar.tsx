@@ -9,41 +9,29 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
     const location = useLocation();
 
-    const isActive = (path: string) => location.pathname === path;
+    const isActive = (path: string) => location.pathname.startsWith(path);
+
 
     useEffect(() => {
-        switch (location.pathname) {
-            case '/admin/dashboard':
-                setActivePage('Dashboard');
-                break;
-            case '/admin/settings':
-                setActivePage('Settings');
-                break;
-            case '/admin/patients':
-                setActivePage('Patients');
-                break;
-            case '/admin/doctors':
-                setActivePage('Doctors');
-                break;
-            case '/admin/sessions':
-                setActivePage('Sessions');
-                break;
-            case '/admin/complaints':
-                setActivePage('Complaints');
-                break;
-            case '/admin/reports':
-                setActivePage('Reports');
-                break;
-            case '/admin/payments':
-                setActivePage('Payments');
-                break;
-            case '/admin/psync':
-                setActivePage('Psync');
-                break;
-            default:
-                setActivePage('Dashboard');
-        }
+        const pathMap: { [key: string]: string } = {
+            '/admin/dashboard': 'Dashboard',
+            '/admin/settings': 'Settings',
+            '/admin/patients': 'Patients',
+            '/admin/doctors': 'Doctors',
+            '/admin/sessions': 'Sessions',
+            '/admin/complaints': 'Complaints',
+            '/admin/reports': 'Reports',
+            '/admin/payments': 'Payments',
+            '/admin/psync': 'Psync',
+        };
+    
+        // Find the first path that matches the start of the current location
+        const activePageName = Object.entries(pathMap).find(([path]) => location.pathname.startsWith(path))?.[1];
+    
+        // If a match is found, set the active page; otherwise, default to "Dashboard"
+        setActivePage(activePageName || 'Dashboard');
     }, [location.pathname, setActivePage]);
+    
 
     return (
         <div className="w-64 h-screen bg-white p-4 shadow-md flex flex-col justify-between">
