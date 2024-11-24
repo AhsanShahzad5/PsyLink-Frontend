@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
   } 
 
   return (
-    <div className="min-h-screen bg-[#D3EDEB] mt-4">
+    <div className="min-h-screen bg-[#D3EDEB] mt-4 mx-10">
       {/* <Navbar/> */}
 
       {/* Main Content */}
@@ -84,61 +84,68 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Course Tasks Section */}
-      <div className="w-full mt-10">
-        <div className="bg-white p-6 rounded-xl shadow-md w-full">
-          <h2 className="text-2xl font-semibold mb-4">Course Tasks</h2>
-          <div className="flex flex-col md:flex-row items-center md:space-x-6">
-            <div className="mb-4 md:mb-0">
-              <p className="text-lg font-semibold">Plan - B</p>
-              <p className="text-sm text-gray-600">5/14 Days</p>
-            </div>
-            <div className="relative mb-4 md:mb-0">
-              <svg viewBox="0 0 36 36" className="w-24 h-24">
-                <path
-                  className="text-gray-300"
-                  fill="none"
-                  strokeWidth="3"
-                  d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
-                />
-                <path
-                  className="text-[#02968A]"
-                  fill="none"
-                  strokeDasharray="70, 100"
-                  strokeWidth="3"
-                  d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold">
-                7 / 10
-              </div>
-            </div>
-            <p className="text-lg font-semibold text-gray-600">Completed</p>
-          </div>
-
-          {/* Scrollable Task List with Completion Indicator */}
-          <div className="mt-6 h-96 overflow-y-auto space-y-4">
-            {courseTasks.map((task) => {
-              const isCompleted = task.progress === "20 / 20";
-              return (
-                <div
-                  key={task.id}
-                  className="flex items-center justify-between p-3 border-b last:border-b-0 space-x-4"
-                >
-                  <span className="w-1/3 text-lg">{task.task}</span>
-                  <span className="w-1/3 text-lg text-center">{task.progress}</span>
-                  <span className="w-1/3 text-lg text-right">
-                    {isCompleted ? (
-                      <span className="text-green-600">✔</span>
-                    ) : (
-                      <span className="text-red-600">❌</span>
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+<div className="w-full mt-10 px-4 md:px-0">
+  <div className="bg-white p-6 rounded-xl shadow-md">
+    <h2 className="text-2xl font-semibold mb-4">Course Tasks</h2>
+    <div className="flex flex-col md:flex-row items-center md:space-x-6 text-center md:text-left">
+      <div className="mb-4 md:mb-0">
+        <p className="text-lg font-semibold">Plan - B</p>
+        <p className="text-sm text-gray-600">5/14 Days</p>
+      </div>
+      <div className="relative mb-4 md:mb-0">
+        <svg viewBox="0 0 36 36" className="w-24 h-24 mx-auto md:mx-0">
+          <path
+            className="text-gray-300"
+            fill="none"
+            strokeWidth="3"
+            d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
+          />
+          <path
+            className="text-[#02968A]"
+            fill="none"
+            strokeDasharray="70, 100"
+            strokeWidth="3"
+            d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold">
+          7 / 10
         </div>
       </div>
+      <p className="text-lg font-semibold text-gray-600">Completed</p>
+    </div>
+
+    {/* Scrollable Task List with Completion Indicator */}
+    <div className="mt-6 h-96 overflow-y-auto space-y-4">
+      {courseTasks.map((task) => {
+        const isCompleted = task.progress === "20 / 20";
+        return (
+          <div
+            key={task.id}
+            className="flex flex-col sm:flex-row items-center justify-between p-3 border-b last:border-b-0 space-y-2 sm:space-y-0 sm:space-x-4"
+          >
+            <span className="w-full sm:w-1/3 text-lg text-center sm:text-left">
+              {task.task}
+            </span>
+            <span className="w-full sm:w-1/3 text-lg text-center">
+              {task.progress}
+            </span>
+            <span className="w-full sm:w-1/3 text-lg text-center sm:text-right">
+              {isCompleted ? (
+                <span className="text-green-600">✔</span>
+              ) : (
+                <span className="text-red-600">❌</span>
+              )}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+
+      
     </div>
   );
 };

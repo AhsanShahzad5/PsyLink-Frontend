@@ -61,7 +61,7 @@ export default function Files() {
   };
 
   return (
-    <div className="px-4 sm:px-8 md:px-16 py-4 md:py-8 mt-24 min-h-[600px] bg-[#fff]">
+    <div className="px-4 sm:px-8 md:px-16 py-4 md:py-8 mt-24 min-h-[600px] bg-[#fff] mx-10 rounded-xl">
       {/* Back button */}
      <div className="flex items-center mb-6">
      <button
@@ -125,7 +125,7 @@ export default function Files() {
         {/* Modal for Prescription */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto">
-          <div className="relative bg-white rounded-lg p-6 w-full max-w-[1000px] max-h-[500px] sm:w-[95%] sm:max-h-screen sm:overflow-y-scroll sm:[&::-webkit-scrollbar]:hidden sm:scrollbar-hide">
+          <div className="relative bg-transparent rounded-lg p-6 w-full max-w-[1000px] max-h-[500px] sm:w-[95%] sm:max-h-screen sm:overflow-y-scroll sm:[&::-webkit-scrollbar]:hidden sm:scrollbar-hide">
             {/* Close Button */}
             <button
               onClick={handleCloseModal}
