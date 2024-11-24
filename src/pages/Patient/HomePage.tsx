@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
   } 
 
   return (
-    <div className="min-h-screen bg-[#D3EDEB]">
+    <div className="min-h-screen bg-[#D3EDEB] mt-4">
       {/* <Navbar/> */}
 
       {/* Main Content */}

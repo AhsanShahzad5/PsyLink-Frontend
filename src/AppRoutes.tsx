@@ -30,6 +30,8 @@ import DoctorPsync from './pages/Doctor/DoctorPsync';
 import DoctorLayout from './layouts/DoctorLayout';
 import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
 import PatientLayout from './layouts/PatientLayout';
+import Login from './pages/Patient/Login';
+import SignUp from './pages/Patient/SignUp';
 
 import Dashboard from './pages/Admin/Dashboard';
 import Layout from './pages/Admin/Layout';
@@ -50,7 +52,10 @@ const AppRoutes = () => {
             <Route path='/' element={<App />} />
             <Route path='*' element={<Navigate to='/' />} />
 
-            <Route path='/login' element={<LoginPage/> } />
+            {/* <Route path='/login' element={<LoginPage/> } /> */}
+            <Route path='/login' element={<Login/> } />
+            <Route path='/sign-up' element={<SignUp/> } />
+
             {/* patient routes  */}     
             <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm/> </PatientLayout>} />
             <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist/>} />

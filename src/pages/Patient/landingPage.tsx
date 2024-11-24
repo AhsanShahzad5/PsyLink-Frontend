@@ -155,7 +155,7 @@ const LandingPage: React.FC = () => {
             </p>
             <div className="flex justify-center lg:justify-start mb-10">
               <button className="mt-6 py-2 px-4 sm:px-6 bg-[#000] text-[#fff] text-sm sm:text-md font-bold rounded-xl hover:bg-[#345956] flex items-center"
-                onClick={ () => navigate('/patient/Home')}
+                onClick={ () => navigate('/login')}
               >
                 GET STARTED!
                 <img
