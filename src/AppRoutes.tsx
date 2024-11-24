@@ -48,6 +48,12 @@ import Psync from './pages/Admin/Psync';
 import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import PsyncPatient from './pages/Patient/psync'
+import VideoConsulation from './pages/Patient/VideoConsulation';
+import DoctorReviewPage from './pages/Patient/DoctorReview';
+import DoctorDetails from './pages/Patient/DoctorDetails';
+import AIChatbotPage from './pages/Patient/AIChatbot';
+import LandingPage from './pages/Patient/landingPage';
+import ExerciseDetails from './pages/Patient/ExerciseDetails';
 
 const AppRoutes = () => {
 
