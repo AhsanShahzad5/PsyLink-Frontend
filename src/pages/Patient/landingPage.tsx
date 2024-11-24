@@ -97,8 +97,11 @@ const LandingPage: React.FC = () => {
                   onClick={() => navigate('/patient/Home')}>
             Login
           </button>
-          <span className="mx-2 text-black text-[24px]">•</span>
-          <button className="font-outfit font-normal text-[22.05px] leading-[27.78px] text-white bg-[#131114] py-[7.75px] px-[20.25px] rounded-[94px] hover:bg-[#0c0c0c]">
+          <span className="mx-3 text-black text-[24px]">•</span>
+          <button className="font-outfit font-normal text-[22.05px] leading-[27.78px] text-white bg-[#131114] py-[7.75px] px-[20.25px] rounded-[94px] hover:bg-[#0c0c0c]"
+          
+          onClick={() => navigate('/sign-up')}
+          >
             Sign Up
           </button>
         </div>

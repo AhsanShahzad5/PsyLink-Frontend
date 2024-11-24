@@ -105,7 +105,9 @@ function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
 export default function Component() {
 
     const [showReviewModal, setShowReviewModal] = useState(false);
-
+    const doctorImage = "/src/assets/shared/fahad.png";
+    const patientImage = "/src/assets/shared/abbad.png";
+    const prescriptionImage = "/src/assets/shared/perscription.png";
     const navigate = useNavigate();
 
 
@@ -182,7 +184,7 @@ export default function Component() {
           {/* Main Video Feed */}
           <div className="bg-gray-200 rounded-lg overflow-hidden">
     <img 
-      src="/placeholder.svg?height=480&width=640" 
+      src={doctorImage}
       alt="Video feed"
       className="w-full h-[250px] object-cover" /* Explicit height */
     />
@@ -190,7 +192,7 @@ export default function Component() {
 
   <div className="bg-gray-200 rounded-lg overflow-hidden">
     <img 
-      src="/placeholder.svg?height=480&width=640" 
+      src={patientImage} 
       alt="Video feed"
       className="w-full h-[250px] object-cover" /* Explicit height */
     />
@@ -223,7 +225,7 @@ export default function Component() {
             <div className="flex justify-end">
               <div className="bg-emerald-100 rounded-lg p-3 max-w-[80%]">
                 <img 
-                  src="/placeholder.svg?height=100&width=200" 
+                  src={prescriptionImage} 
                   alt="Prescription"
                   className="rounded-lg mb-2"
                 />

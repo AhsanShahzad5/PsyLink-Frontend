@@ -12,8 +12,7 @@ function DoctorLayout({ children }: Props) {
     return (
         <>
         <DoctorNavbar/>
-            {children}
-            
+            {children} 
         </>
     )
 }

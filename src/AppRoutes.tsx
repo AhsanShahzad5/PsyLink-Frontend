@@ -26,7 +26,6 @@ import ExerciseDetails from './pages/Patient/ExerciseDetails';
 
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
-import DoctorPsync from './pages/Doctor/DoctorPsync';
 import DoctorLayout from './layouts/DoctorLayout';
 import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
 import PatientLayout from './layouts/PatientLayout';
@@ -44,8 +43,8 @@ import Payments from './pages/Admin/Payments';
 import Psync from './pages/Admin/Psync';
 import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
-import PsyncPatient from './pages/Patient/psync'
 import AdminLayout from './layouts/AdminLayout';
+import PsyncHomePage from './pages/Psync/PsyncHomePage';
 
 const AppRoutes = () => {
 
@@ -56,59 +55,64 @@ const AppRoutes = () => {
             <Route path='*' element={<Navigate to='/' />} />
 
             {/* <Route path='/login' element={<LoginPage/> } /> */}
-            <Route path='/login' element={<Login/> } />
-            <Route path='/sign-up' element={<SignUp/> } />
-
-            {/* patient routes  */}     
-            <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm/> </PatientLayout>} />
-            <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist/>} />
-            <Route path='/patient/home' element={<PatientLayout><HomePage/> </PatientLayout>} />
-            <Route path='/patient/notes' element={<PatientLayout> <NotesPage/> </PatientLayout>} />
-            <Route path='/patient/history' element={<PatientLayout> <Prescription/> </PatientLayout>} />
-            <Route path='/patient/program-details' element={<PatientLayout> <ProgramDetails/> </PatientLayout>} />
-            <Route path='/patient/prescription' element={<PrescriptionPopUp/>} />
-            <Route path='/patient/bookings' element={<PatientLayout> <ExploreDoctor/> </PatientLayout>} />
-            <Route path='/patient/video-consultation' element={<VideoConsulation/>} />
-            <Route path='/patient/doctor-review' element={<PatientLayout> <DoctorReviewPage/> </PatientLayout>} />
-            <Route path='/patient/doctor-details' element={<PatientLayout> <DoctorDetails/> </PatientLayout>} />
-            <Route path='/patient/landing-page' element={<LandingPage/>} />
-            <Route path='/patient/Allen' element={<PatientLayout> <AIChatbotPage/> </PatientLayout>} />
-            <Route path='/patient/Programs' element={<PatientLayout> <ProgramsPage/> </PatientLayout>} />
-            <Route path='/patient/exercise-details' element={<PatientLayout> <ExerciseDetails/> </PatientLayout>} />
-            <Route path='/patient/files' element={<PatientLayout> <Files/> </PatientLayout>} />
-            <Route path='/patient/psync' element={<PatientLayout> <PsyncPatient/> </PatientLayout>} />
-
-            
-
-            {/* doctor routes  */}
+            <Route path='/login' element={<Login />} />
+            <Route path='/sign-up' element={<SignUp />} />
+            <Route path='/landing-page' element={<LandingPage />} />
+  
+  
+  {/* -----------------------------------------------------PATIENT ROUTES-------------------------------------------------------------------  */}
+          
+            <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm /> </PatientLayout>} />
+            <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist />} />
+            <Route path='/patient/home' element={<PatientLayout><HomePage /> </PatientLayout>} />
+            <Route path='/patient/notes' element={<PatientLayout> <NotesPage /> </PatientLayout>} />
+            <Route path='/patient/history' element={<PatientLayout> <Prescription /> </PatientLayout>} />
+            <Route path='/patient/program-details' element={<PatientLayout> <ProgramDetails /> </PatientLayout>} />
+            <Route path='/patient/prescription' element={<PrescriptionPopUp />} />
+            <Route path='/patient/bookings' element={<PatientLayout> <ExploreDoctor /> </PatientLayout>} />
+            <Route path='/patient/video-consultation' element={<VideoConsulation />} />
+            <Route path='/patient/doctor-review' element={<PatientLayout> <DoctorReviewPage /> </PatientLayout>} />
+            <Route path='/patient/doctor-details' element={<PatientLayout> <DoctorDetails /> </PatientLayout>} />
+            <Route path='/patient/Allen' element={<PatientLayout> <AIChatbotPage /> </PatientLayout>} />
+            <Route path='/patient/Programs' element={<PatientLayout> <ProgramsPage /> </PatientLayout>} />
+            <Route path='/patient/exercise-details' element={<PatientLayout> <ExerciseDetails /> </PatientLayout>} />
+            <Route path='/patient/files' element={<PatientLayout> <Files /> </PatientLayout>} />
+            <Route path='/patient/psync' element={<PatientLayout> <PsyncHomePage/> </PatientLayout>} />
+          
+  {/* -----------------------------------------------------DOCTOR ROUTES-------------------------------------------------------------------  */}
+          
             <Route path='/doctor/login' element={<LoginPage />} />
-            <Route path='/doctor/home' element={<DoctorLayout> <DoctorHome/> </DoctorLayout> }/>
-            <Route path='/doctor/appointments' element={ <DoctorLayout><DoctorAppointments /></DoctorLayout>}/>
-            <Route path='/doctor/clinic' element={ <DoctorLayout>  <DoctorClinic/>  </DoctorLayout> } />
-            <Route path='/doctor/psync' element={<DoctorLayout><DoctorPsync /></DoctorLayout>}/>
+            <Route path='/doctor/home' element={<DoctorLayout> <DoctorHome /> </DoctorLayout>} />
+            <Route path='/doctor/appointments' element={<DoctorLayout><DoctorAppointments /></DoctorLayout>} />
+            <Route path='/doctor/clinic' element={<DoctorLayout>  <DoctorClinic />  </DoctorLayout>} />
+            {/* <Route path='/doctor/psync' element={<DoctorLayout><DoctorPsync /></DoctorLayout>} /> */}
 
             <Route path='/doctor/detailForm' element={<DoctorDetailForm />} />
             <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm />} />
             <Route path='/doctor/thankyoupage' element={<ThankYouPage />} />
-            {/* admin routes  */}
-            <Route path='/admin/login' element={<AdminLogin />} />
-            <Route path='/admin/login' element={<AdminLogin/>} />
-            {/* <Route path="/" element={<Layout />}> */}
-                    <Route path="/admin/dashboard" element={<AdminLayout> <Dashboard /> </AdminLayout>} />
-                    <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
-                    <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
-                    <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
-                    <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
-                    <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
-                    <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
-                    <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
-                    <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
-                    
+          
+            {/* psync */}
+            <Route path='/doctor/psync' element={<DoctorLayout> <PsyncHomePage/> </DoctorLayout>} />
 
-                    {/* <Route path="/admin/settings" element={<Settings />} /> */}
-                {/* </Route> */}
+            {/* -----------------------------------------------------ADMIN ROUTES-------------------------------------------------------------------  */}
+          
+            <Route path='/admin/login' element={<AdminLogin />} />
+            <Route path='/admin/login' element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminLayout> <Dashboard /> </AdminLayout>} />
+            <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
+            <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
+            <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
+            <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
+            <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
+            <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
+            <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
+            <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
+
+
+            {/* <Route path="/admin/settings" element={<Settings />} /> */}
+            {/* </Route> */}
             {/* testing routes */}
-            <Route path='/test' element={<NavbarSideUserProfileMenu/>} />
+            <Route path='/test' element={<NavbarSideUserProfileMenu />} />
 
         </Routes>
     )

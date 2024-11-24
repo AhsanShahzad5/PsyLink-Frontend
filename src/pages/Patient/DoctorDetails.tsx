@@ -161,7 +161,7 @@ const DoctorProfile: React.FC = () => {
   {/* Image Section */}
   <div className="sm:col-span-3 flex justify-center">
     <img
-      src="/src/assets/patient/doctor/doctor.png"
+      src="/src/assets/patient/doctor/doctor.jpg"
       className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
     />
   </div>
@@ -274,7 +274,7 @@ const DoctorProfile: React.FC = () => {
     <div className="w-full max-w-[379px] h-auto bg-gray-200 rounded-lg sm:w-[379px] sm:h-[750px]">
       {/* Placeholder for image */}
       <img
-        src="/src/assets/patient/doctor/doctor.png"
+        src="/src/assets/patient/doctor/doctor.jpg"
         alt="Dr Fahad Tariq Aziz"
         className="w-full h-full object-cover rounded-lg"
       />
