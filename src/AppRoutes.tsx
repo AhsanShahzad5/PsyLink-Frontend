@@ -43,6 +43,8 @@ import Reports from './pages/Admin/Reports';
 import Payments from './pages/Admin/Payments';
 import Psync from './pages/Admin/Psync';
 import PatientDetails from './pages/Admin/PatientDetails';
+import Files from './pages/Patient/Files';
+import PsyncPatient from './pages/Patient/psync'
 
 const AppRoutes = () => {
 
@@ -66,12 +68,15 @@ const AppRoutes = () => {
             <Route path='/patient/prescription' element={<PrescriptionPopUp/>} />
             <Route path='/patient/bookings' element={<PatientLayout> <ExploreDoctor/> </PatientLayout>} />
             <Route path='/patient/video-consultation' element={<VideoConsulation/>} />
-            <Route path='/patient/doctor-review' element={<DoctorReviewPage/>} />
-            <Route path='/patient/doctor-details' element={<DoctorDetails/>} />
+            <Route path='/patient/doctor-review' element={<PatientLayout> <DoctorReviewPage/> </PatientLayout>} />
+            <Route path='/patient/doctor-details' element={<PatientLayout> <DoctorDetails/> </PatientLayout>} />
             <Route path='/patient/landing-page' element={<LandingPage/>} />
             <Route path='/patient/Allen' element={<PatientLayout> <AIChatbotPage/> </PatientLayout>} />
             <Route path='/patient/Programs' element={<PatientLayout> <ProgramsPage/> </PatientLayout>} />
             <Route path='/patient/exercise-details' element={<PatientLayout> <ExerciseDetails/> </PatientLayout>} />
+            <Route path='/patient/files' element={<PatientLayout> <Files/> </PatientLayout>} />
+            <Route path='/patient/psync' element={<PatientLayout> <PsyncPatient/> </PatientLayout>} />
+
             
 
             {/* doctor routes  */}

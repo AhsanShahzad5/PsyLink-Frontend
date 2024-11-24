@@ -71,12 +71,27 @@ const BreathingExercisePage: React.FC = () => {
         <div className="w-full bg-white shadow-lg rounded-xl p-8">
          {/* Header Section */}
 <div className="flex flex-wrap lg:flex-row justify-between items-center mb-6">
-  <button
-    className="text-[#02968A] text-lg font-bold sm:mb-4 lg:mb-0"
-    onClick={() => navigate(-1)}
+<button
+  className="text-[#02968A] text-lg font-bold sm:mb-4 lg:mb-0 flex items-center space-x-2 "
+  onClick={() => navigate(-1)}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
   >
-    &larr; Breathing Exercise
-  </button>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 19.5L8.25 12l7.5-7.5"
+    />
+  </svg>
+  <span>Breathing Exercise</span>
+</button>
+
   
   <button
     className="px-10 py-2 text-white font-outfit font-normal text-lg sm:text-base rounded-full flex items-center justify-center"
