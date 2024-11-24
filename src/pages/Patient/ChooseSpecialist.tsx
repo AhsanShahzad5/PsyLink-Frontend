@@ -14,9 +14,9 @@ const ChooseSpecialist: React.FC = () => {
           Else We would suggest to ‘Get Checked’.
         </p>
         <div className="flex flex-wrap justify-around items-center">
-          <SpecialistCard title="Psychologist" imageSrc="/src/assets/patient/chooseSpecialists/Psychologist Card.png" onClick={() => setSelectedSpecialist('Psychologist')} selected={selectedSpecialist === 'Psychologist'} />
-          <SpecialistCard title="Get Checked?" imageSrc="/src/assets/patient/chooseSpecialists/Get Checked Card.png" onClick={() => setSelectedSpecialist('Get Checked?')} selected={selectedSpecialist === 'Get Checked?'} />
-          <SpecialistCard title="Psychiatrist" imageSrc="/src/assets/patient/chooseSpecialists/Psychiatrist card.png" onClick={() => setSelectedSpecialist('Psychiatrist')} selected={selectedSpecialist === 'Psychiatrist'} />
+          <SpecialistCard title="Psychologist" imageSrc="/src/assets/patient/chooseSpecialists/Psychologist Card.png"  hoverImageSrc="/src/assets/patient/chooseSpecialists/Psychologist2.png" onClick={() => setSelectedSpecialist('Psychologist')} selected={selectedSpecialist === 'Psychologist'} />
+          <SpecialistCard title="Get Checked?" imageSrc="/src/assets/patient/chooseSpecialists/Get Checked Card.png"   hoverImageSrc="/src/assets/patient/chooseSpecialists/getChecked2.png" onClick={() => setSelectedSpecialist('Get Checked?')} selected={selectedSpecialist === 'Get Checked?'} />
+          <SpecialistCard title="Psychiatrist" imageSrc="/src/assets/patient/chooseSpecialists/Psychiatrist card.png"  hoverImageSrc="/src/assets/patient/chooseSpecialists/Psychiatrist2.png" onClick={() => setSelectedSpecialist('Psychiatrist')} selected={selectedSpecialist === 'Psychiatrist'} />
         </div>
         <div className="flex justify-center mt-20 md:mt-20">
           <button className="bg-[#02968A] text-white text-xl md:text-3xl font-bold py-2 md:py-3 px-6 md:px-12 rounded-full shadow-lg hover:bg-[#027368] hover:scale-105 transition-all duration-300" onClick={() => console.log(`Selected Specialist: ${selectedSpecialist}`)}>
@@ -31,14 +31,22 @@ const ChooseSpecialist: React.FC = () => {
 interface SpecialistCardProps {
   title: string;
   imageSrc: string;
+  hoverImageSrc: string;
   onClick: () => void;
   selected: boolean;
 }
 
-const SpecialistCard: React.FC<SpecialistCardProps> = ({ title, imageSrc, onClick, selected }) => {
+const SpecialistCard: React.FC<SpecialistCardProps> = ({ title, imageSrc, hoverImageSrc, onClick, selected }) => {
+  const [hover, setHover] = useState(false);
+
   return (
-    <div className={`bg-white rounded-3xl shadow-lg p-4 transition-all duration-300 hover:scale-105 gap-2 cursor-pointer ${selected ? 'ring-4 ring-[#02968A]' : ''}`} onClick={onClick}>
-      <img src={imageSrc} alt={title} className="w-full h-2/3 rounded-t-md object-contain" />
+    <div
+      className={`bg-white rounded-3xl shadow-lg p-4 transition-all duration-300 ease-in-out will-change-transform hover:scale-105 gap-2 cursor-pointer ${selected ? 'ring-4 ring-[#02968A]' : ''} mb-4 md:mb-0`}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <img src={hover ? hoverImageSrc : imageSrc} alt={title} className="w-full h-2/3 rounded-t-md object-contain" />
       <div className="mt-2 text-sm md:text-lg font-semibold">{title}</div>
     </div>
   );

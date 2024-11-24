@@ -1,4 +1,3 @@
-import Navbar from "@/Components/Navbar";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -66,24 +65,29 @@ const BreathingExercisePage: React.FC = () => {
 
 
   return (
-    <>
-      <Navbar />
+    
+      
       <div className="flex justify-center items-center min-h-screen bg-transparent p-6 mt-16">
         <div className="w-full bg-white shadow-lg rounded-xl p-8">
-          {/* Header Section */}
-          <div className="flex justify-between items-center mb-6">
-            <button className="text-[#02968A] text-lg font-bold"
-              onClick={()=> navigate(-1)}
-            >
-              &larr; Breathing Exercise
-            </button>
-            
-            <button className="px-14 py-2 text-white font-outfit font-normal text-2xl leading-[41.58px] rounded-full flex items-center justify-center" style={{
-          background: "linear-gradient(360deg, #064034 20%, #047D72 100%)",
-        }}>
-         Apply
-        </button>
-          </div>
+         {/* Header Section */}
+<div className="flex flex-wrap lg:flex-row justify-between items-center mb-6">
+  <button
+    className="text-[#02968A] text-lg font-bold sm:mb-4 lg:mb-0"
+    onClick={() => navigate(-1)}
+  >
+    &larr; Breathing Exercise
+  </button>
+  
+  <button
+    className="px-10 py-2 text-white font-outfit font-normal text-lg sm:text-base rounded-full flex items-center justify-center"
+    style={{
+      background: "linear-gradient(360deg, #064034 20%, #047D72 100%)",
+    }}
+  >
+    Apply
+  </button>
+</div>
+
 
           {/* Description Section */}
           <div className="mb-6">
@@ -152,7 +156,7 @@ const BreathingExercisePage: React.FC = () => {
 
         </div>
       </div>
-    </>
+    
   );
 };
 

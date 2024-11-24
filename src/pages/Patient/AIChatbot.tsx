@@ -5,6 +5,7 @@ const AIChatbotPage: React.FC = () => {
   // State to track the active saved search or "New Chat"
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isNewChatActive, setIsNewChatActive] = useState<boolean>(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleNewChatClick = () => {
     setIsNewChatActive(true);
@@ -16,9 +17,11 @@ const AIChatbotPage: React.FC = () => {
     setIsNewChatActive(false); // Deactivate "New Chat"
   };
 
+
+  
   return (
     <>
-      <Navbar />
+     
       <div className="flex flex-col justify-between items-center w-full p-4 mt-4 mb-4 bg-white shadow-md fixed top-16 left-0 right-0 z-10">
         <div className="grid grid-cols-1 lg:grid-cols-4 h-[calc(100vh-80px)] pb-4">
           {/* Left Section (1/3): Saved Searches */}

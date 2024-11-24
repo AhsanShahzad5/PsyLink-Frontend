@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { ArrowLeft, Plus, Save, Trash2} from 'lucide-react'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/Components/ui/scroll-area'
+import { Button } from '@/Components/ui/button'
+import { Textarea } from '@/Components/ui/textarea'
+import { Input } from '@/Components/ui/input'
 import Navbar from '@/Components/Navbar'
 
 interface Note {
@@ -67,7 +67,7 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-[#D3EDEB]">
 
-    <Navbar/>    
+    {/* <Navbar/>     */}
 
       {/* Main Content */}
 <div className="min-h-screen bg-[#fff] rounded-2xl mt-20">

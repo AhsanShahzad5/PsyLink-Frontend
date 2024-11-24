@@ -7,7 +7,7 @@ const DoctorReviewPage: React.FC = () => {
 
   return (
     <div className=''>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex justify-center items-center h-screen bg-transparent mt-20">
         <div className="bg-white rounded-lg shadow-lg p-12 mt-24 max-w-6xl w-full">
           {/* Back button */}

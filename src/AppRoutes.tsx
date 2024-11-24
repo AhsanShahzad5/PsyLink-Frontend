@@ -14,7 +14,6 @@ import ThankYouPage from './pages/Doctor/ThankYouPage';
 import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
 import DoctorHome from './pages/Doctor/DoctorHome';
 import AdminLogin from './pages/Admin/AdminLogin';
-
 import ExploreDoctor from './pages/Patient/Bookings';
 import VideoConsulation from './pages/Patient/VideoConsulation';
 import DoctorReviewPage from './pages/Patient/DoctorReview';
@@ -24,12 +23,13 @@ import AIChatbotPage from './pages/Patient/AIChatbot';
 import ProgramsPage from './pages/Patient/Programs';
 import ExerciseDetails from './pages/Patient/ExerciseDetails';
 
-import DoctorNavbar from './components/DoctorNavbar';
+import DoctorNavbar from './Components/DoctorNavbar';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorPsync from './pages/Doctor/DoctorPsync';
 import DoctorLayout from './layouts/DoctorLayout';
-import NavbarSideUserProfileMenu from './components/NavbarSideUserProfileMenu';
+import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
+import PatientLayout from './layouts/PatientLayout';
 
 
 const AppRoutes = () => {
@@ -42,21 +42,21 @@ const AppRoutes = () => {
 
             <Route path='/login' element={<LoginPage/> } />
             {/* patient routes  */}     
-            <Route path='/patient/detailForm' element={<DetailForm/>} />
+            <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm/> </PatientLayout>} />
             <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist/>} />
-            <Route path='/patient/Home' element={<HomePage/>} />
-            <Route path='/patient/Notes' element={<NotesPage/>} />
-            <Route path='/patient/history' element={<Prescription/>} />
-            <Route path='/patient/program-details' element={<ProgramDetails/>} />
+            <Route path='/patient/home' element={<PatientLayout><HomePage/> </PatientLayout>} />
+            <Route path='/patient/notes' element={<PatientLayout> <NotesPage/> </PatientLayout>} />
+            <Route path='/patient/history' element={<PatientLayout> <Prescription/> </PatientLayout>} />
+            <Route path='/patient/program-details' element={<PatientLayout> <ProgramDetails/> </PatientLayout>} />
             <Route path='/patient/prescription' element={<PrescriptionPopUp/>} />
-            <Route path='/patient/Bookings' element={<ExploreDoctor/>} />
+            <Route path='/patient/bookings' element={<PatientLayout> <ExploreDoctor/> </PatientLayout>} />
             <Route path='/patient/video-consultation' element={<VideoConsulation/>} />
             <Route path='/patient/doctor-review' element={<DoctorReviewPage/>} />
             <Route path='/patient/doctor-details' element={<DoctorDetails/>} />
             <Route path='/patient/landing-page' element={<LandingPage/>} />
-            <Route path='/patient/Allen' element={<AIChatbotPage/>} />
-            <Route path='/patient/Programs' element={<ProgramsPage/>} />
-            <Route path='/patient/exercise-details' element={<ExerciseDetails/>} />
+            <Route path='/patient/Allen' element={<PatientLayout> <AIChatbotPage/> </PatientLayout>} />
+            <Route path='/patient/Programs' element={<PatientLayout> <ProgramsPage/> </PatientLayout>} />
+            <Route path='/patient/exercise-details' element={<PatientLayout> <ExerciseDetails/> </PatientLayout>} />
             
 
             {/* doctor routes  */}

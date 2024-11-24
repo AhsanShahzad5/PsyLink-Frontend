@@ -18,7 +18,7 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				outfit: ['Outfit', 'sans-serif'], // Add Outfit font
+				outfit: ['Outfit', 'sans-serif'], 
 				syne: ['Syne', 'sans-serif'],   
 			},
 		}
