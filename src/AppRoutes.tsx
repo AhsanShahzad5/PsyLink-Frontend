@@ -45,6 +45,8 @@ import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import AdminLayout from './layouts/AdminLayout';
 import PsyncHomePage from './pages/Psync/PsyncHomePage';
+// import Temp from './pages/Doctor/temp';
+// import Temp2 from './pages/Doctor/temp2';
 
 const AppRoutes = () => {
 
@@ -113,7 +115,7 @@ const AppRoutes = () => {
             {/* <Route path="/admin/settings" element={<Settings />} /> */}
             {/* </Route> */}
             {/* testing routes */}
-            <Route path='/test' element={<NavbarSideUserProfileMenu />} />
+            {/* <Route path='/test' element={<Temp2/>} /> */}
 
         </Routes>
     )
