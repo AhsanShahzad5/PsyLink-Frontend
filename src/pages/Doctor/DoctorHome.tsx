@@ -1,13 +1,25 @@
 
-function Home() {
+import DoctorNavbar from "@/Components/doctor/DoctorNavbar";
+import { PaymentsandReviewsChart } from "@/Components/doctor/PaymentsReviewsCharts";
+import { PaymentsReceivedAnaytics } from "@/Components/doctor/PaymentsReceivedAnalytics";
+import { HomeUpcomingAppointments } from "@/Components/doctor/HomePageUpcomingAppointments";
+
+
+const Home = () => {
   return (
+      <>
+          <DoctorNavbar />
+          <div className="pt-20 max-w-[90rem] mx-auto">
+              <div className="grid grid-cols-3 gap-4 p-1">
+                  {/* Render Components */}
+                 <HomeUpcomingAppointments/>
+                  <PaymentsReceivedAnaytics/>
+                  <PaymentsandReviewsChart />
+              </div>
+          </div>
+      </>
+  );
+};
 
-    <>
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold">Doctor Home</h1>
-      </div>
-    </>
-  )
-}
+export default Home;
 
-export default Home
