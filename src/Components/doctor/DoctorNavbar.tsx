@@ -1,13 +1,20 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import NavbarSideUserProfileMenu from './NavbarSideUserProfileMenu';
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
+import NavbarSideUserProfileMenu from '../NavbarSideUserProfileMenu';
 
 export default function Navbar() {
 
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeNav, setActiveNav] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
+    const path = location.pathname.split("/")[2]; // Extract the last part of the URL
+    const active = path ? path.charAt(0).toUpperCase() + path.slice(1) : "Home";
+    setActiveNav(active);
+  }, [location]);
+  
   const handleNavClick = (link: any) => {
     setActiveNav(link);
     const lowercaseLink = link.charAt(0).toLowerCase() + link.slice(1);

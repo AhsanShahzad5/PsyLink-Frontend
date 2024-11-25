@@ -1,5 +1,5 @@
 
-import DoctorNavbar from '@/Components/DoctorNavbar';
+import DoctorNavbar from '@/Components/doctor/DoctorNavbar';
 import React from 'react'
 
 type Props = {

@@ -51,7 +51,8 @@ const AppRoutes = () => {
     return (
         <Routes>
             {/* general routes  */}
-            <Route path='/' element={<App />} />
+            {/* <Route path='/' element={<App />} /> */}
+            <Route path='/' element={<LandingPage/>} />
             <Route path='*' element={<Navigate to='/' />} />
 
             {/* <Route path='/login' element={<LoginPage/> } /> */}

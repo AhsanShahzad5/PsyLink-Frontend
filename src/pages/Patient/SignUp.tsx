@@ -71,7 +71,7 @@ const SignUp: React.FC = () => {
                 <div className="w-96">
                     <button
                         className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] focus:outline-none focus:ring-2 focus:ring-[#02968A]"
-                        onClick={()=> navigate('/login')}
+                        onClick={()=> navigate('/doctor/home')}
                     >
                     Sign Up
                     </button>
