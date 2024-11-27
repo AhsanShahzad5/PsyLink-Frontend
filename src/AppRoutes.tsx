@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import App from './App';
+// import App from './App';
 import LoginPage from './pages/Doctor/LoginPage';
 import DetailForm from './pages/Patient/DetailForm';
 import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
@@ -27,7 +27,7 @@ import ExerciseDetails from './pages/Patient/ExerciseDetails';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorLayout from './layouts/DoctorLayout';
-import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
+// import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
 import PatientLayout from './layouts/PatientLayout';
 import Login from './pages/Patient/Login';
 import SignUp from './pages/Patient/SignUp';
