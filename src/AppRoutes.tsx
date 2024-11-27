@@ -45,6 +45,10 @@ import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import AdminLayout from './layouts/AdminLayout';
 import PsyncHomePage from './pages/Psync/PsyncHomePage';
+import DoctorsDetails from './pages/Admin/DoctorsDetails';
+import SessionDetail from './pages/Admin/SessionDetail';
+import PaymentsDetails from './pages/Admin/PaymentsDetails';
+import ComplaintsDetails from './pages/Admin/ComplaintsDetails';
 // import Temp from './pages/Doctor/temp';
 // import Temp2 from './pages/Doctor/temp2';
 
@@ -105,10 +109,14 @@ const AppRoutes = () => {
             <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
             <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
             <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
+            <Route path="/admin/doctors/doctor-details" element={<AdminLayout> <DoctorsDetails/> </AdminLayout>} />
             <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
+            <Route path="/admin/sessions/session-details" element={<AdminLayout> <SessionDetail /> </AdminLayout>} />
             <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
+            <Route path="/admin/complaints/complaint-details" element={<AdminLayout> <ComplaintsDetails /> </AdminLayout>} />
             <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
             <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
+            <Route path="/admin/payments/payment-details" element={<AdminLayout> <PaymentsDetails /> </AdminLayout>} />
             <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
 
 

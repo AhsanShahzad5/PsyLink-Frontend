@@ -126,7 +126,7 @@ const Patients: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] custom-scrollbar">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Find Patients</h1>
           <input
