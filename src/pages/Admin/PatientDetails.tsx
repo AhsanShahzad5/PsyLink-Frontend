@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { Patient } from "./Patients"; // Adjust the import path as necessary
+import { Patient } from "./data/interfaces";
 
 const PatientDetails: React.FC = () => {
   const navigate = useNavigate();

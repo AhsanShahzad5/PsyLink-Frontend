@@ -1,26 +1,8 @@
 // Queries.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Query } from "./data/interfaces";
 
-export interface ComplainByPatient {
-  patientId: string;
-  patientName: string;
-}
-
-export interface ComplainByDoctor {
-  doctorId: string;
-  doctorName: string;
-}
-
-export interface Query {
-  complaintId: string;
-  complainBy: ComplainByPatient | ComplainByDoctor;
-  type: string;
-  description: string;
-  images: string[];
-  status: "Pending" | "Ongoing";
-  dateTime: string;
-}
 
 const Complaints: React.FC = () => {
   const navigate = useNavigate();
