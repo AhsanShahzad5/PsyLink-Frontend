@@ -3,6 +3,7 @@ import { CreditCard, LogOut, Settings, User, FileText } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/Components/ui/sheet";
 import { Separator } from "@/Components/ui/separator";
 import { Button } from "@/Components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileMenuProps {
   userName?: string;
@@ -18,12 +19,34 @@ export default function Component({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState<string | null>(null);
 
+  const navigate = useNavigate();
   const menuItems = [
-    { label: 'Account Setting', icon: User, onClick: () => console.log('Account clicked') },
-    { label: 'Card Management', icon: CreditCard, onClick: () => console.log('Card clicked') },
-    { label: 'My Posts', icon: FileText, onClick: () => console.log('Posts clicked') },
+    { label: 'Account Setting', 
+      icon: User, 
+      onClick: () => {
+      console.log('Account clicked') ; 
+      navigate('/doctor/detailForm')
+    }
+  },
+    { label: 'Card Management', icon: CreditCard, 
+      onClick: () => {
+        console.log('Account clicked') ; 
+        navigate('/doctor/psync')
+      }
+    },
+    { label: 'My Posts', icon: FileText, 
+      onClick: () => {
+        console.log('Account clicked') ; 
+        navigate('/doctor/psync')
+      }
+     },
     { label: 'Settings', icon: Settings, onClick: () => console.log('Settings clicked') },
-    { label: 'Logout', icon: LogOut, onClick: () => console.log('Logout clicked') },
+    { label: 'Logout', icon: LogOut, 
+      onClick: () => {
+        console.log('Account clicked') ; 
+        navigate('/')
+      }
+     },
   ];
 
   const handleMenuClick = (itemLabel: string, onClick: () => void) => {
