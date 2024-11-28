@@ -45,6 +45,11 @@ import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import AdminLayout from './layouts/AdminLayout';
 import PsyncHomePage from './pages/Psync/PsyncHomePage';
+import DoctorsDetails from './pages/Admin/DoctorsDetails';
+import SessionDetail from './pages/Admin/SessionDetail';
+import ComplaintsDetails from './pages/Admin/ComplaintsDetails';
+import PaymentsDetails from './pages/Admin/PaymentsDetails';
+import PaymentAnalyticsDetails from './pages/Doctor/PaymentAnalyticsDetails';
 // import Temp from './pages/Doctor/temp';
 // import Temp2 from './pages/Doctor/temp2';
 
