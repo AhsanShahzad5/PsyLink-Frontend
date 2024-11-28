@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import App from './App';
+// import App from './App';
 import LoginPage from './pages/Doctor/LoginPage';
 import DetailForm from './pages/Patient/DetailForm';
 import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
@@ -27,7 +27,7 @@ import ExerciseDetails from './pages/Patient/ExerciseDetails';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorClinic from './pages/Doctor/DoctorClinic';
 import DoctorLayout from './layouts/DoctorLayout';
-import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
+// import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
 import PatientLayout from './layouts/PatientLayout';
 import Login from './pages/Patient/Login';
 import SignUp from './pages/Patient/SignUp';
@@ -45,7 +45,6 @@ import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import AdminLayout from './layouts/AdminLayout';
 import PsyncHomePage from './pages/Psync/PsyncHomePage';
-import PaymentAnalyticsDetails from './pages/Doctor/PaymentAnalyticsDetails';
 // import Temp from './pages/Doctor/temp';
 // import Temp2 from './pages/Doctor/temp2';
 
@@ -107,10 +106,14 @@ const AppRoutes = () => {
             <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
             <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
             <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
+            <Route path="/admin/doctors/doctor-details" element={<AdminLayout> <DoctorsDetails/> </AdminLayout>} />
             <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
+            <Route path="/admin/sessions/session-details" element={<AdminLayout> <SessionDetail /> </AdminLayout>} />
             <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
+            <Route path="/admin/complaints/complaint-details" element={<AdminLayout> <ComplaintsDetails /> </AdminLayout>} />
             <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
             <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
+            <Route path="/admin/payments/payment-details" element={<AdminLayout> <PaymentsDetails /> </AdminLayout>} />
             <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
 
 

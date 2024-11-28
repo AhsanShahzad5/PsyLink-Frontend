@@ -24,7 +24,7 @@ const PatientDetails: React.FC = () => {
 
   return (
     <div className="p-6 bg-secondary">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] custom-scrollbar p-6">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar p-6">
         {/* Header */}
         <div className="flex items-center mb-6">
           <FaArrowLeft
