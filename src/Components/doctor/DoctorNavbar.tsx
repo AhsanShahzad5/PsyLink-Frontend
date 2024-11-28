@@ -11,8 +11,13 @@ export default function Navbar() {
 
   useEffect(() => {
     const path = location.pathname.split("/")[2]; // Extract the last part of the URL
-    const active = path ? path.charAt(0).toUpperCase() + path.slice(1) : "Home";
-    setActiveNav(active);
+  
+    if (path === "payment-analytics") {
+      setActiveNav("Home");
+    } else {
+      const active = path ? path.charAt(0).toUpperCase() + path.slice(1) : "Home";
+      setActiveNav(active);
+    }
   }, [location]);
   
   const handleNavClick = (link: any) => {

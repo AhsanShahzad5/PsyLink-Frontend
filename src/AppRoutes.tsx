@@ -45,6 +45,7 @@ import PatientDetails from './pages/Admin/PatientDetails';
 import Files from './pages/Patient/Files';
 import AdminLayout from './layouts/AdminLayout';
 import PsyncHomePage from './pages/Psync/PsyncHomePage';
+import PaymentAnalyticsDetails from './pages/Doctor/PaymentAnalyticsDetails';
 // import Temp from './pages/Doctor/temp';
 // import Temp2 from './pages/Doctor/temp2';
 
@@ -86,6 +87,7 @@ const AppRoutes = () => {
           
             <Route path='/doctor/login' element={<LoginPage />} />
             <Route path='/doctor/home' element={<DoctorLayout> <DoctorHome /> </DoctorLayout>} />
+            <Route path='/doctor/payment-analytics' element={<DoctorLayout> <PaymentAnalyticsDetails/> </DoctorLayout>} />
             <Route path='/doctor/appointments' element={<DoctorLayout><DoctorAppointments /></DoctorLayout>} />
             <Route path='/doctor/clinic' element={<DoctorLayout>  <DoctorClinic />  </DoctorLayout>} />
             {/* <Route path='/doctor/psync' element={<DoctorLayout><DoctorPsync /></DoctorLayout>} /> */}
