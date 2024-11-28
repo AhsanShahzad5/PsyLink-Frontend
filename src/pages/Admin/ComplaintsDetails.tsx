@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { Query } from "./Complaints"; // Assuming Query is exported from a shared interfaces file
+import { Query } from "./data/interfaces";
 
 const ComplaintsDetails: React.FC = () => {
   const location = useLocation();

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaUser, FaSignOutAlt,  FaFileAlt, FaCalendarAlt, FaCommentAlt, FaMoneyBill, FaBrain } from 'react-icons/fa';
-
+import PsyLink_Logo from '/Psylink_Logo.png'; 
 interface SidebarProps {
     setActivePage: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -37,8 +37,8 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
         <div className="w-64 h-screen bg-white p-4 shadow-md flex flex-col justify-between">
             {/* Logo and Title */}
             <div className="flex items-center mb-6">
-                <img src="/FooBeesLogo.png" className="w-8 h-8" alt="Logo" />
-                <h2 className="text-xl cute-font text-primary ml-2">FooBees</h2>
+                <img src={PsyLink_Logo} className="w-8 h-8" alt="Logo" />
+                <h2 className="text-xl cute-font text-primary ml-2">PsyLink</h2>
             </div>
 
             {/* Admin Info */}

@@ -1,5 +1,3 @@
-
-import DoctorNavbar from "@/Components/doctor/DoctorNavbar";
 import { PaymentsandReviewsChart } from "@/Components/doctor/PaymentsReviewsCharts";
 import { PaymentsReceivedAnaytics } from "@/Components/doctor/PaymentsReceivedAnalytics";
 import { HomeUpcomingAppointments } from "@/Components/doctor/HomePageUpcomingAppointments";
@@ -8,7 +6,6 @@ import { HomeUpcomingAppointments } from "@/Components/doctor/HomePageUpcomingAp
 const Home = () => {
   return (
       <>
-          <DoctorNavbar />
           <div className="pt-20 max-w-[90rem] mx-auto">
               <div className="grid grid-cols-3 gap-4 p-1">
                   {/* Render Components */}

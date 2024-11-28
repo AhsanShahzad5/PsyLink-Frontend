@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import React from "react"
+=======
+>>>>>>> ahsan/psync-community
 
 const DoctorAboutSection = () => {
   return (
