@@ -94,12 +94,11 @@ const AppRoutes = () => {
             <Route path='/doctor/payment-analytics' element={<DoctorLayout> <PaymentAnalyticsDetails/> </DoctorLayout>} />
             <Route path='/doctor/appointments' element={<DoctorLayout><DoctorAppointments /></DoctorLayout>} />
             <Route path='/doctor/clinic' element={<DoctorLayout>  <DoctorClinic />  </DoctorLayout>} />
-            {/* <Route path='/doctor/psync' element={<DoctorLayout><DoctorPsync /></DoctorLayout>} /> */}
-
             <Route path='/doctor/detailForm' element={<DoctorDetailForm />} />
             <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm />} />
             <Route path='/doctor/thankyoupage' element={<ThankYouPage />} />
-          
+            <Route path='/doctor/video-consultation' element={<VideoConsulation />} />
+         
             {/* psync */}
             <Route path='/doctor/psync' element={<DoctorLayout> <PsyncHomePage/> </DoctorLayout>} />
 

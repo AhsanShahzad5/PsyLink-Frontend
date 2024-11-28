@@ -37,13 +37,33 @@ const appointments: AppointmentType[] = [
       time: "02:30pm - 03:30pm",
       patient: "Faiza Shareef",
   },
+  {
+      date: "25th October,2024",
+      time: "02:30pm - 03:30pm",
+      patient: "Faiza Shareef",
+  },
+  {
+      date: "25th October,2024",
+      time: "02:30pm - 03:30pm",
+      patient: "Faiza Shareef",
+  },
+  {
+      date: "25th October,2024",
+      time: "02:30pm - 03:30pm",
+      patient: "Faiza Shareef",
+  },
+  {
+      date: "25th October,2024",
+      time: "02:30pm - 03:30pm",
+      patient: "Faiza Shareef",
+  },
 ];
 
 
 export const HomeUpcomingAppointments = () => {
   return (
-      <div className=" col-span-2 bg-white rounded-lg shadow-md p-6 h-fit">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-4">
+      <div className=" col-span-2 bg-white rounded-lg shadow-md p-5 h-[22.5rem] overflow-auto custom-scrollbar">
+          <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
               Upcoming Appointments
           </h3>
           <table className="w-full">

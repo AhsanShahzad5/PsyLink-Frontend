@@ -129,7 +129,8 @@ const DoctorProfile: React.FC = () => {
   return (
     <>
   
-    <div className="max-w-[2000px] mt-[100px] bg-white p-4  rounded-2xl shadow-lg">
+    <div className="  
+    mt-[100px] bg-white p-4  rounded-2xl shadow-lg  max-w-[90rem] mx-auto">
 
        {/* Back button */}
        <div className="flex items-center mb-6">
@@ -163,6 +164,7 @@ const DoctorProfile: React.FC = () => {
     <img
       src="/src/assets/patient/doctor/doctor.jpg"
       className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
+      alt="img"
     />
   </div>
 

@@ -72,7 +72,7 @@ import { useNavigate } from "react-router-dom";
                 </div>
             </div>
             <div className="mt-2 border-t pt-2">
-                <div className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg">
+                <div className="flex items-center justify-between p-4 ">
                     {/* Left Text */}
                     <h2 className="text-lg font-bold text-black">Payments Received</h2>
   

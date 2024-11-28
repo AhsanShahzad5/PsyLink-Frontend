@@ -10,7 +10,7 @@ const DoctorsDetails: React.FC = () => {
 
   if (!doctor) {
     return (
-      <div className="p-6 text-center">
+      <div className="p-6 text-center ">
         <h1 className="text-2xl font-semibold text-gray-600">No Doctor Data Found</h1>
         <button
           className="mt-4 px-4 py-2 bg-primary text-white rounded shadow hover:bg-primaryHover"

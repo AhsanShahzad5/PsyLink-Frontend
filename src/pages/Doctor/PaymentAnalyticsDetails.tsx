@@ -63,7 +63,6 @@ const payments = [
 
 const PaymentsReceivedAnaytics = () => {
 
-  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit ">
       <div className="flex justify-between items-center mb-6">
@@ -108,13 +107,7 @@ const PaymentsReceivedAnaytics = () => {
           {/* Left Text */}
           <h2 className="text-lg font-bold text-black">Payments Received</h2>
 
-          {/* Right Button */}
-          <button className="px-4 py-1 h-[3.5rem] w-[10.5rem] text-white bg-primary rounded-full hover:bg-teal-700 rounded-2"
-            onClick={() => navigate('/doctor/payment-analytics')}
-
-          >
-            View Details
-          </button>
+         
         </div>
         <ul className="space-y-3">
           {payments.map((payment, index) => (

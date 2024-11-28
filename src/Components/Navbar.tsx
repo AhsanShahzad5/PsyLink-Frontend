@@ -22,7 +22,7 @@ export default function Navbar() {
        <nav className="flex justify-between items-center w-full p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
         {/* Logo Section */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>navigate('/patient/home')}>
-          <img src="/PsyLink_Logo.png" alt="Logo" className="h-12" />
+          <img src="/src/assets/patient/homepage/Logo.png" alt="Logo" className="h-12" />
           <span className="text-2xl font-semibold">PsyLink</span>
         </div>
 
