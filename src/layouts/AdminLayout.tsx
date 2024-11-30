@@ -11,7 +11,7 @@ export default function AdminLayout({children}: Props) {
     const [activePage, setActivePage] = useState('Dashboard');
   return (
     <>
-        <div className="flex h-screen">
+        <div className="flex h-auto">
             <Sidebar setActivePage={setActivePage} />
             <div className="flex-1 flex flex-col">
                 <Navbar activePage={activePage} />

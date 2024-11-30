@@ -34,7 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
     
 
     return (
-        <div className="w-64 h-screen bg-white p-4 shadow-md flex flex-col justify-between">
+        <div className='h-auto w-64 bg-white shadow-md'>
+        <div className="w-64 h-screen bg-white p-4  flex flex-col justify-between">
             {/* Logo and Title */}
             <div className="flex items-center mb-6">
                 <img src={PsyLink_Logo} className="w-8 h-8" alt="Logo" />
@@ -132,6 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
                 <FaSignOutAlt className="w-4 h-4 mr-2 text-[#B1B1B1] group-hover:text-white" />
                 Logout
             </button>
+        </div>
         </div>
     );
 };
