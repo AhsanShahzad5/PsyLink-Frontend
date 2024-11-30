@@ -50,11 +50,13 @@ import SessionDetail from './pages/Admin/SessionDetail';
 import ComplaintsDetails from './pages/Admin/ComplaintsDetails';
 import PaymentsDetails from './pages/Admin/PaymentsDetails';
 import PaymentAnalyticsDetails from './pages/Doctor/PaymentAnalyticsDetails';
+import userAtom from './atoms/userAtom';
+import { useRecoilValue } from 'recoil';
 // import Temp from './pages/Doctor/temp';
 // import Temp2 from './pages/Doctor/temp2';
 
 const AppRoutes = () => {
-
+    const user = useRecoilValue(userAtom);
     return (
         <Routes>
             {/* general routes  */}
@@ -72,7 +74,12 @@ const AppRoutes = () => {
           
             <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm /> </PatientLayout>} />
             <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist />} />
-            <Route path='/patient/home' element={<PatientLayout><HomePage /> </PatientLayout>} />
+            <Route path='/patient/home' 
+            element={ user && user.role === 'patient' ? <>
+            <PatientLayout><HomePage /> </PatientLayout>
+            </> : <Navigate to='/login' />
+            } 
+            />
             <Route path='/patient/notes' element={<PatientLayout> <NotesPage /> </PatientLayout>} />
             <Route path='/patient/history' element={<PatientLayout> <Prescription /> </PatientLayout>} />
             <Route path='/patient/program-details' element={<PatientLayout> <ProgramDetails /> </PatientLayout>} />
