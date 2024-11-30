@@ -1,4 +1,3 @@
-import authenticationAtom from "@/atoms/authAtom";
 import userAtom from "@/atoms/userAtom";
 import { UserCredentials } from "@/types/User";
 import React, { useState } from "react";
@@ -11,9 +10,9 @@ const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState<UserCredentials>({
     email: '',
     password: '',
-    role: ''
+    role: '',
+    name: ""
   })
-  const setAuthScreen = useSetRecoilState(authenticationAtom);
   const setUser = useSetRecoilState(userAtom);
   const onChangeFunction = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

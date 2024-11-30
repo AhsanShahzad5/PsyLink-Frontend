@@ -1,6 +1,8 @@
+import userAtom from "@/atoms/userAtom";
 import { AdminCredentials } from "@/types/User";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 
 const AdminLogin: React.FC = () => {
@@ -11,23 +13,61 @@ const AdminLogin: React.FC = () => {
     role: 'admin'
   })
 
+  const setUser = useSetRecoilState(userAtom);
+
 
   const onChangeFunction = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    console.log(formData);
-    setFormData({
-      username: '',
-      password: '',
-      role: 'admin'
-    })
+  
 
-    navigate('/admin/dashboard')
-    
-  }
+const handleLogin = async (e:any) => {
+    // setLoading(true);
+    e.preventDefault();
+    try {
+
+        const res = await fetch('/api/admin/login', {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        console.log("frontend" , data);
+        
+        if (data.error) {
+          // showToast("Error" ,data.error,'error' )
+          console.error(data.error)
+          
+          return;
+        }
+        else {
+            // showToast("success", "Logged in successfully"
+            //     , 'success');
+
+            // setFormData({
+            //     username: "",
+            //     password: ""
+            // })
+
+            navigate('/admin/dashboard')
+        }
+        // storing user data in local stoorage
+        localStorage.setItem('psylink', JSON.stringify(data));
+        setUser(data);
+        
+    } catch (error) {
+        // showToast("Error", error, 'error')
+        console.log("error signing up", error);
+
+
+    }finally{
+        //setLoading(false)
+    }
+}
 
 
   const { username, password } = formData;
