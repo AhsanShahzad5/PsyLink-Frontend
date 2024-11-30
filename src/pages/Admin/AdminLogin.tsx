@@ -1,8 +1,37 @@
-import React from "react";
+import { AdminCredentials } from "@/types/User";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<AdminCredentials>({
+    username: '',
+    password: '',
+    role: 'admin'
+  })
+
+
+  const onChangeFunction = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    console.log(formData);
+    setFormData({
+      username: '',
+      password: '',
+      role: 'admin'
+    })
+
+    navigate('/admin/dashboard')
+    
+  }
+
+
+  const { username, password } = formData;
+
   return (
     <div className="flex justify-center items-center h-screen bg-secondary">
       <div className="bg-white w-3/4 max-w-3/4 h-auto p-6 rounded-lg border-2 shadow-lg">
@@ -20,29 +49,36 @@ const AdminLogin: React.FC = () => {
         <form className="flex flex-col h-full">
           <div className="mb-4 items-center">
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block  max-w-xl  text-xs font-medium text-gray-700 "
             >
-              EMAIL
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
+
+              id="username"
+              placeholder="Enter username"
+              name='username'
+              onChange={onChangeFunction}
+              value={username}
               className="w-full max-w-sm mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:ring-[#088178] focus:border-[#088178] mx-auto"
             />
           </div>
           <div className="mb-6">
             <label
               htmlFor="password"
+
               className="block text-xs ml-3 max-w-xl  font-medium text-gray-700 "
             >
               PASSWORD
             </label>
             <input
               type="password"
-              id="password"
               placeholder="Enter your password"
+              name='password'
+              onChange={onChangeFunction}
+              value={password}
+              id="password"
               className="w-full max-w-sm mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:ring-[#088178] focus:border-[#088178] mx-auto"
             />
           </div>
@@ -50,8 +86,8 @@ const AdminLogin: React.FC = () => {
             <button
               type="submit"
               className="w-full max-w-sm bg-primary text-white py-2 px-4 rounded-lg hover:bg-[#0b706b] transition-colors text-sm mx-auto"
-              onClick={() => navigate("/admin/dashboard")}
-            >
+              onClick ={handleLogin}
+              >
               Submit
             </button>
           </div>

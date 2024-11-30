@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
       }}
     >
       {/* Navbar */}
-      <nav className="flex justify-between items-center bg-[#3d7a6e] w-full h-[60px] rounded-lg border-b border-gray-200 px-4 sm:px-8">
+      <nav className="flex justify-between items-center bg-[#549d95] w-full h-[60px] rounded-lg border-b border-gray-200 px-4 sm:px-8">
         <div className="flex items-center space-x-3">
           <img
             src="/src/assets/patient/homePage/Logo.png"
@@ -94,11 +94,11 @@ const LandingPage: React.FC = () => {
         <div className="hidden sm:flex items-center gap-0">
           {/* Login and Sign Up Buttons for large screens */}
           <button className="font-outfit font-bold text-[25.2px] leading-[30.24px] text-black hover:underline"
-                  onClick={() => navigate('/patient/Home')}>
+                  onClick={() => navigate('/login')}>
             Login
           </button>
-          <span className="mx-3 text-black text-[24px]">•</span>
-          <button className="font-outfit font-normal text-[22.05px] leading-[27.78px] text-white bg-[#131114] py-[7.75px] px-[20.25px] rounded-[94px] hover:bg-[#0c0c0c]"
+          <span className="mx-5 text-black text-[24px]">•</span>
+          <button className="font-outfit font-normal text-[22.05px] leading-[27.78px] text-white bg-[#131114] py-[7.75px] px-[20.25px] rounded-[94px] hover:bg-[#0c0c0c] mr-2"
           
           onClick={() => navigate('/sign-up')}
           >

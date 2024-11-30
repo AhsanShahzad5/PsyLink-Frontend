@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHome, FaUser, FaSignOutAlt,  FaFileAlt, FaCalendarAlt, FaCommentAlt, FaMoneyBill, FaBrain } from 'react-icons/fa';
 import PsyLink_Logo from '/Psylink_Logo.png'; 
 interface SidebarProps {
@@ -8,7 +8,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
     const location = useLocation();
-
+    const navigate = useNavigate();
     const isActive = (path: string) => location.pathname.startsWith(path);
 
 
@@ -127,6 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
             {/* Logout Button */}
             <button
                 className="text-gray-600 flex items-center py-2 px-3 mt-4 rounded-md text-sm hover:bg-primary hover:text-white group"
+                onClick={() => navigate('/admin/login')}
             >
                 <FaSignOutAlt className="w-4 h-4 mr-2 text-[#B1B1B1] group-hover:text-white" />
                 Logout

@@ -1,7 +1,43 @@
-import React from "react";
+import { UserCredentials } from "@/types/User";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
+  const [formData, setFormData] = useState<UserCredentials>({
+    email: '',
+    password: '',
+    role: ''
+  })
+
+
+  const onChangeFunction = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    console.log(formData);
+    setFormData({
+      email: '',
+      password: '',
+      role: ''
+    })
+
+    if(formData.role==='patient'){
+      navigate('/patient/home')
+    }
+
+    if(formData.role==='doctor'){
+      navigate('/doctor/home')
+    }
+
+    if(formData.role===''){
+     console.error('set a role or stay here nigga')
+    }
+
+  }
+
+  const { email, password} = formData;
 
     const navigate = useNavigate();
   return (
@@ -24,12 +60,16 @@ const LoginPage: React.FC = () => {
             <div className="flex items-center bg-gray-200 rounded-xl">
             <div className="flex items-center gap-1">
               <button
-                className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+                className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-l-md focus:outline-none focus:bg-primary focus:text-white"
+                onClick={() => setFormData({ ...formData, role: 'doctor' })}
+                
               >
                 Doctor
               </button>
               <button
-                className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-r-md focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+                className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-r-md focus:bg-primary focus:text-white"
+                onClick={() => setFormData({ ...formData, role: 'patient' })}
+
               >
                 Patient
               </button>
@@ -44,6 +84,9 @@ const LoginPage: React.FC = () => {
             <input
               type="email"
               placeholder="Email"
+              name='email'
+              onChange={onChangeFunction}
+              value={email}
               className="px-5 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02968A]"
             />
             </div>
@@ -52,6 +95,10 @@ const LoginPage: React.FC = () => {
             <input
               type="password"
               placeholder="Password"
+              name='password'
+              onChange={onChangeFunction}
+              value={password}
+             
               className="px-5 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02968A]"
             />
             </div>
@@ -61,7 +108,7 @@ const LoginPage: React.FC = () => {
                 <div className="w-96">
                     <button
                         className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] focus:outline-none focus:ring-2 focus:ring-[#02968A]"
-                        onClick={()=> navigate('/patient/Home')}
+                        onClick ={handleLogin}
                     >
                     Login
                     </button>
