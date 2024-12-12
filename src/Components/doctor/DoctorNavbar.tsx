@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarSideUserProfileMenu from '../NavbarSideUserProfileMenu';
+import userAtom from '@/atoms/userAtom';
+import { RecoilState, useRecoilValue } from 'recoil';
 
 export default function Navbar() {
 
@@ -25,6 +27,8 @@ export default function Navbar() {
     const lowercaseLink = link.charAt(0).toLowerCase() + link.slice(1);
     navigate(`/doctor/${lowercaseLink}`);
   }
+
+  const user = useRecoilValue(userAtom);
 
   return (
     <div>
@@ -58,7 +62,7 @@ export default function Navbar() {
         </div>
 
         {/* User Profile Icon */}
-        <NavbarSideUserProfileMenu />
+        <NavbarSideUserProfileMenu userName={user?.name} />
       </nav>
 
       {/* Sidebar for Small Screens */}
@@ -94,3 +98,7 @@ export default function Navbar() {
     </div>
   )
 }
+function useGetREecoilValue(userAtom: RecoilState<any>) {
+  throw new Error('Function not implemented.');
+}
+

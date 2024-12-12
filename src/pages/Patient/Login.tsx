@@ -1,45 +1,74 @@
+import userAtom from "@/atoms/userAtom";
 import { UserCredentials } from "@/types/User";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<UserCredentials>({
     email: '',
     password: '',
-    role: ''
+    role: '',
+    name: ""
   })
-
-
+  const setUser = useSetRecoilState(userAtom);
   const onChangeFunction = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e: any) => {
+  
+
+  const handleLogin = async (e:any) => {
+    // setLoading(true);
     e.preventDefault();
-    console.log(formData);
-    setFormData({
-      email: '',
-      password: '',
-      role: ''
-    })
+    try {
 
-    if(formData.role==='patient'){
-      navigate('/patient/home')
+        const res = await fetch('/api/user/login', {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        if (data.error) {
+          // showToast("Error" ,data.error,'error' )
+          console.error(data.error)
+          
+          return;
+        }
+        else {
+            // showToast("success", "Logged in successfully"
+            //     , 'success');
+
+            // setFormData({
+            //     username: "",
+            //     password: ""
+            // })
+
+            navigate(`/${formData.role}/home`)
+        }
+        // storing user data in local stoorage
+        localStorage.setItem('psylink', JSON.stringify(data));
+        setUser(data);
+        
+    } catch (error) {
+        // showToast("Error", error, 'error')
+        console.log("error signing up", error);
+
+
+    }finally{
+        //setLoading(false)
     }
+}
 
-    if(formData.role==='doctor'){
-      navigate('/doctor/home')
-    }
 
-    if(formData.role===''){
-     console.error('set a role or stay here nigga')
-    }
-
-  }
-
+  
   const { email, password} = formData;
 
-    const navigate = useNavigate();
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent">
       {/* Main container */}

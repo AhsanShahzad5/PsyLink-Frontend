@@ -1,46 +1,76 @@
+
+import userAtom from "@/atoms/userAtom";
 import { UserCredentials } from "@/types/User";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UserCredentials>({
+    name:'',
     email: '',
     password: '',
     role: ''
   })
 
+  const setUser = useSetRecoilState(userAtom);
+ 
 
   const onChangeFunction = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSignup = async (e: any) => {
-    e.preventDefault();
-    console.log(formData);
-    setFormData({
-      email: '',
-      password: '',
-      role: ''
-    })
-
-    if(formData.role==='patient'){
-      navigate('/patient/home')
-    }
-
-    if(formData.role==='doctor'){
-      navigate('/doctor/home')
-    }
-
-    if(formData.role===''){
-      console.error('set a role or stay here nigga')
-     }
-
   
-  }
+  const handleSignup = async (e:any) => {
+    e.preventDefault();
+    try {
 
-  const { email, password, role } = formData;
+        
+        const res = await fetch('/api/user/signup', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        
+        if (data.error) {
+          // showToast("Error" ,data.error,'error' )
+          console.error(data.error)
+          
+          return;
+        }
+        else {
+          // showToast("success","user created successfully. login now",'success' );
+            // console.log(data);
+     
+            // setFormData({
+            //   email: '',
+            //   password: ''
+            // })
+
+            // navigate(`/${formData.role}/home`)
+            navigate(`/login`)
+          
+        
+        }
+        
+        // storing user data in local stoorage
+        localStorage.setItem('psylink', JSON.stringify(data))
+        setUser(data);
+       
+    } catch (error) {
+        // showToast("Error", error, "error");
+        console.log("error signing up", error);
+
+    }
+}
+
+  const {name, email, password, role } = formData;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent my-10">
@@ -81,6 +111,17 @@ const SignUp: React.FC = () => {
           {/* Input Fields */}
           <div className="flex flex-col space-y-6 mx-20">
 
+            <div className="flex flex-col">
+              <label className="text-left font-semibold">Full Name</label>
+              <input
+                
+                placeholder="Enter your full name"
+                name='name'
+                onChange={onChangeFunction}
+                value={name}
+                className="px-5 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+              />
+            </div>
             <div className="flex flex-col">
               <label className="text-left font-semibold">Email</label>
               <input

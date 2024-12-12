@@ -1,132 +1,442 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-// import App from './App';
-import LoginPage from './pages/Doctor/LoginPage';
-import DetailForm from './pages/Patient/DetailForm';
-import ChooseSpecialist from './pages/Patient/ChooseSpecialist';
-import HomePage from './pages/Patient/HomePage';
-import NotesPage from './pages/Patient/NotesPage';
-import Prescription from './pages/Patient/Prescriptions';
 
-import ProgramDetails from './pages/Patient/ProgramDetails';
-import PrescriptionPopUp from './Components/patient/PrescriptionPopUp';
-import DoctorDetailForm from './pages/Doctor/DoctorDetailForm';
-import ThankYouPage from './pages/Doctor/ThankYouPage';
-import DoctorProfessionalDetailsForm from './pages/Doctor/DoctorProfessionalDetailsForm';
-import DoctorHome from './pages/Doctor/DoctorHome';
-import AdminLogin from './pages/Admin/AdminLogin';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import ExploreDoctor from './pages/Patient/Bookings';
-import VideoConsulation from './pages/Patient/VideoConsulation';
-import DoctorReviewPage from './pages/Patient/DoctorReview';
-import DoctorDetails from './pages/Patient/DoctorDetails';
-import LandingPage from './pages/Patient/landingPage';
-import AIChatbotPage from './pages/Patient/AIChatbot';
-import ProgramsPage from './pages/Patient/Programs';
-import ExerciseDetails from './pages/Patient/ExerciseDetails';
-
-import DoctorAppointments from './pages/Doctor/DoctorAppointments';
-import DoctorClinic from './pages/Doctor/DoctorClinic';
-import DoctorLayout from './layouts/DoctorLayout';
-// import NavbarSideUserProfileMenu from './Components/NavbarSideUserProfileMenu';
-import PatientLayout from './layouts/PatientLayout';
-import Login from './pages/Patient/Login';
 import SignUp from './pages/Patient/SignUp';
-
-import Dashboard from './pages/Admin/Dashboard';
-// import Layout from './pages/Admin/Layout';
-import Patients from './pages/Admin/Patients';
-import Doctors from './pages/Admin/Doctors';
-import Sessions from './pages/Admin/Sessions';
-import Complaints from './pages/Admin/Complaints';
-import Reports from './pages/Admin/Reports';
-import Payments from './pages/Admin/Payments';
-import Psync from './pages/Admin/Psync';
-import PatientDetails from './pages/Admin/PatientDetails';
-import Files from './pages/Patient/Files';
-import AdminLayout from './layouts/AdminLayout';
-import PsyncHomePage from './pages/Psync/PsyncHomePage';
-import DoctorsDetails from './pages/Admin/DoctorsDetails';
-import SessionDetail from './pages/Admin/SessionDetail';
-import ComplaintsDetails from './pages/Admin/ComplaintsDetails';
-import PaymentsDetails from './pages/Admin/PaymentsDetails';
-import PaymentAnalyticsDetails from './pages/Doctor/PaymentAnalyticsDetails';
-// import Temp from './pages/Doctor/temp';
-// import Temp2 from './pages/Doctor/temp2';
-
-const AppRoutes = () => {
-
-    return (
-        <Routes>
-            {/* general routes  */}
-            {/* <Route path='/' element={<App />} /> */}
-            <Route path='/' element={<LandingPage/>} />
-            <Route path='*' element={<Navigate to='/' />} />
-
-            {/* <Route path='/login' element={<LoginPage/> } /> */}
-            <Route path='/login' element={<Login />} />
-            <Route path='/sign-up' element={<SignUp />} />
-            <Route path='/landing-page' element={<LandingPage />} />
-  
-  
-  {/* -----------------------------------------------------PATIENT ROUTES-------------------------------------------------------------------  */}
-          
-            <Route path='/patient/detailForm' element={<PatientLayout> <DetailForm /> </PatientLayout>} />
-            <Route path='/patient/chooseSpecialist' element={<ChooseSpecialist />} />
-            <Route path='/patient/home' element={<PatientLayout><HomePage /> </PatientLayout>} />
-            <Route path='/patient/notes' element={<PatientLayout> <NotesPage /> </PatientLayout>} />
-            <Route path='/patient/history' element={<PatientLayout> <Prescription /> </PatientLayout>} />
-            <Route path='/patient/program-details' element={<PatientLayout> <ProgramDetails /> </PatientLayout>} />
-            <Route path='/patient/prescription' element={<PrescriptionPopUp />} />
-            <Route path='/patient/bookings' element={<PatientLayout> <ExploreDoctor /> </PatientLayout>} />
-            <Route path='/patient/video-consultation' element={<VideoConsulation />} />
-            <Route path='/patient/doctor-review' element={<PatientLayout> <DoctorReviewPage /> </PatientLayout>} />
-            <Route path='/patient/doctor-details' element={<PatientLayout> <DoctorDetails /> </PatientLayout>} />
-            <Route path='/patient/Allen' element={<PatientLayout> <AIChatbotPage /> </PatientLayout>} />
-            <Route path='/patient/Programs' element={<PatientLayout> <ProgramsPage /> </PatientLayout>} />
-            <Route path='/patient/exercise-details' element={<PatientLayout> <ExerciseDetails /> </PatientLayout>} />
-            <Route path='/patient/files' element={<PatientLayout> <Files /> </PatientLayout>} />
-            <Route path='/patient/psync' element={<PatientLayout> <PsyncHomePage/> </PatientLayout>} />
-          
-  {/* -----------------------------------------------------DOCTOR ROUTES-------------------------------------------------------------------  */}
-          
-            <Route path='/doctor/login' element={<LoginPage />} />
-            <Route path='/doctor/home' element={<DoctorLayout> <DoctorHome /> </DoctorLayout>} />
-            <Route path='/doctor/payment-analytics' element={<DoctorLayout> <PaymentAnalyticsDetails/> </DoctorLayout>} />
-            <Route path='/doctor/appointments' element={<DoctorLayout><DoctorAppointments /></DoctorLayout>} />
-            <Route path='/doctor/clinic' element={<DoctorLayout>  <DoctorClinic />  </DoctorLayout>} />
-            <Route path='/doctor/detailForm' element={<DoctorDetailForm />} />
-            <Route path='/doctor/professionaldetailForm' element={<DoctorProfessionalDetailsForm />} />
-            <Route path='/doctor/thankyoupage' element={<ThankYouPage />} />
-            <Route path='/doctor/video-consultation' element={<VideoConsulation />} />
-         
-            {/* psync */}
-            <Route path='/doctor/psync' element={<DoctorLayout> <PsyncHomePage/> </DoctorLayout>} />
-
-            {/* -----------------------------------------------------ADMIN ROUTES-------------------------------------------------------------------  */}
-          
-            <Route path='/admin/login' element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminLayout> <Dashboard /> </AdminLayout>} />
-            <Route path="/admin/patients" element={<AdminLayout> <Patients /> </AdminLayout>} />
-            <Route path="/admin/patients/patient-details" element={<AdminLayout> <PatientDetails /> </AdminLayout>} />
-            <Route path="/admin/doctors" element={<AdminLayout> <Doctors /> </AdminLayout>} />
-            <Route path="/admin/doctors/doctor-details" element={<AdminLayout> <DoctorsDetails/> </AdminLayout>} />
-            <Route path="/admin/sessions" element={<AdminLayout> <Sessions /> </AdminLayout>} />
-            <Route path="/admin/sessions/session-details" element={<AdminLayout> <SessionDetail /> </AdminLayout>} />
-            <Route path="/admin/complaints" element={<AdminLayout> <Complaints /> </AdminLayout>} />
-            <Route path="/admin/complaints/complaint-details" element={<AdminLayout> <ComplaintsDetails /> </AdminLayout>} />
-            <Route path="/admin/reports" element={<AdminLayout> <Reports /> </AdminLayout>} />
-            <Route path="/admin/payments" element={<AdminLayout> <Payments /> </AdminLayout>} />
-            <Route path="/admin/payments/payment-details" element={<AdminLayout> <PaymentsDetails /> </AdminLayout>} />
-            <Route path="/admin/psync" element={<AdminLayout> <Psync /> </AdminLayout>} />
+import Login from './pages/Patient/Login';
+import LandingPage from './pages/Patient/landingPage';
+import PrescriptionPopUp from '@/Components/patient/PrescriptionPopUp';
+import PatientLayout from '@/layouts/PatientLayout';
+import AIChatbotPage from '@/pages/Patient/AIChatbot';
+import ChooseSpecialist from '@/pages/Patient/ChooseSpecialist';
+import DetailForm from '@/pages/Patient/DetailForm';
+import DoctorDetails from '@/pages/Patient/DoctorDetails';
+import DoctorReviewPage from '@/pages/Patient/DoctorReview';
+import ExerciseDetails from '@/pages/Patient/ExerciseDetails';
+import HomePage from '@/pages/Patient/HomePage';
+import NotesPage from '@/pages/Patient/NotesPage';
+import Prescription from '@/pages/Patient/Prescriptions';
+import ProgramDetails from '@/pages/Patient/ProgramDetails';
+import VideoConsulation from '@/pages/Patient/VideoConsulation';
+import PsyncHomePage from '@/pages/Psync/PsyncHomePage';
+import ProtectedRoute from '@/ProtectedRoute';
+import ProgramsPage from '@/pages/Patient/Programs';
+import ExploreDoctor from '@/pages/Patient/Bookings';
+import Files from '@/pages/Patient/Files';
+import DoctorLayout from '@/layouts/DoctorLayout';
+import DoctorAppointments from '@/pages/Doctor/DoctorAppointments';
+import DoctorClinic from '@/pages/Doctor/DoctorClinic';
+import DoctorDetailForm from '@/pages/Doctor/DoctorDetailForm';
+import DoctorHome from '@/pages/Doctor/DoctorHome';
+import DoctorProfessionalDetailsForm from '@/pages/Doctor/DoctorProfessionalDetailsForm';
+import LoginPage from '@/pages/Doctor/LoginPage';
+import PaymentAnalyticsDetails from '@/pages/Doctor/PaymentAnalyticsDetails';
+import ThankYouPage from '@/pages/Doctor/ThankYouPage';
+import AdminLayout from '@/layouts/AdminLayout';
+import AdminLogin from '@/pages/Admin/AdminLogin';
+import Complaints from '@/pages/Admin/Complaints';
+import ComplaintsDetails from '@/pages/Admin/ComplaintsDetails';
+import Dashboard from '@/pages/Admin/Dashboard';
+import Doctors from '@/pages/Admin/Doctors';
+import DoctorsDetails from '@/pages/Admin/DoctorsDetails';
+import PatientDetails from '@/pages/Admin/PatientDetails';
+import Patients from '@/pages/Admin/Patients';
+import Payments from '@/pages/Admin/Payments';
+import PaymentsDetails from '@/pages/Admin/PaymentsDetails';
+import Psync from '@/pages/Admin/Psync';
+import Reports from '@/pages/Admin/Reports';
+import SessionDetail from '@/pages/Admin/SessionDetail';
+import Sessions from '@/pages/Admin/Sessions';
 
 
-            {/* <Route path="/admin/settings" element={<Settings />} /> */}
-            {/* </Route> */}
-            {/* testing routes */}
-            {/* <Route path='/test' element={<Temp2/>} /> */}
 
-        </Routes>
-    )
-}
+const AppRoutes = () => (
+    <Routes>
+        {/* General Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} />
+
+
+        {/* Patient Routes */}
+
+        <Route
+            path="/patient/detailForm"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <DetailForm />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/chooseSpecialist"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <ChooseSpecialist />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/home"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <HomePage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/notes"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <NotesPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/history"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <Prescription />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/program-details"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <ProgramDetails />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/prescription"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PrescriptionPopUp />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/bookings"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <ExploreDoctor />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/video-consultation"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <VideoConsulation />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/doctor-review"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <DoctorReviewPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/doctor-details"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <DoctorDetails />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/allen"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <AIChatbotPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/programs"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <ProgramsPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/exercise-details"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <ExerciseDetails />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/files"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <Files />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/psync"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PsyncHomePage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+
+<Route
+            path="/doctor/login"
+            element={<LoginPage />}
+        />
+        <Route
+            path="/doctor/home"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <DoctorHome />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/payment-analytics"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PaymentAnalyticsDetails />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/appointments"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <DoctorAppointments />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/clinic"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <DoctorClinic />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/detailForm"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorDetailForm />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/professionaldetailForm"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorProfessionalDetailsForm />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/thankyoupage"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <ThankYouPage />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/video-consultation"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <VideoConsulation />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/psync"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PsyncHomePage />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+
+
+<Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+            path="/admin/dashboard"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Dashboard />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/patients"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Patients />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/patients/patient-details"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PatientDetails />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/doctors"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Doctors />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/doctors/doctor-details"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <DoctorsDetails />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/sessions"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Sessions />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/sessions/session-details"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <SessionDetail />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/complaints"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Complaints />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/complaints/complaint-details"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <ComplaintsDetails />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/reports"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Reports />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/payments"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Payments />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/payments/payment-details"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PaymentsDetails />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <Psync />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+
+    </Routes>
+);
 
 export default AppRoutes;

@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/Co
 import { Separator } from "@/Components/ui/separator";
 import { Button } from "@/Components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import useLogout from '@/hooks/useLogoutUser';
 
 interface ProfileMenuProps {
   userName?: string;
@@ -20,7 +21,14 @@ export default function Component({
   const [selectedMenuItem, setSelectedMenuItem] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  const menuItems = [
+  const logout = useLogout() ;
+
+  const handleLogout = async () => {
+    console.log("logout clicke");
+    
+    await logout();
+  }
+   const  menuItems = [
     { label: 'Account Setting', 
       icon: User, 
       onClick: () => {
@@ -42,10 +50,7 @@ export default function Component({
      },
     { label: 'Settings', icon: Settings, onClick: () => console.log('Settings clicked') },
     { label: 'Logout', icon: LogOut, 
-      onClick: () => {
-        console.log('Account clicked') ; 
-        navigate('/')
-      }
+       onClick: handleLogout
      },
   ];
 
@@ -89,7 +94,7 @@ export default function Component({
                     ? "bg-primary text-white" // Active state: darker green
                     : "hover:bg-secondary" // Hover state: lighter green
                 }`}
-                onClick={() => handleMenuClick(item.label, item.onClick)}
+                onClick={() => handleMenuClick(item.label, item.onClick as any)}
               >
                 <item.icon className="h-5 w-5" />
                 {item.label}
