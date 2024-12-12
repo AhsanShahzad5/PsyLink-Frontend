@@ -19,6 +19,87 @@ const Complaints: React.FC = () => {
       dateTime: "2024-11-20 09:15 AM",
     },
     {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
+      complaintId: "C001",
+      complainBy: { patientId: "P001", patientName: "Jane Smith" },
+      type: "Billing Issue",
+      description: "Incorrect billing amount for the last appointment.",
+      images: ["https://via.placeholder.com/100"],
+      status: "Pending",
+      dateTime: "2024-11-20 09:15 AM",
+    },
+    {
       complaintId: "C002",
       complainBy: { doctorId: "D001", doctorName: "Dr. John Doe" },
       type: "Technical Issue",
@@ -30,6 +111,105 @@ const Complaints: React.FC = () => {
   ];
 
   const ongoingQueries: Query[] = [
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
+    {
+      complaintId: "C003",
+      complainBy: { patientId: "P002", patientName: "Robert Brown" },
+      type: "Appointment Scheduling",
+      description: "Difficulty in rescheduling the appointment.",
+      images: [],
+      status: "Ongoing",
+      dateTime: "2024-11-22 11:00 AM",
+    },
     {
       complaintId: "C003",
       complainBy: { patientId: "P002", patientName: "Robert Brown" },
@@ -58,8 +238,9 @@ const Complaints: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white overflow-auto max-h-[470px] h-screen custom-scrollbar rounded-lg  shadow-lg">
+      <div className="w-[95%] p-6 bg-white h-screen rounded-lg mb-8 shadow-lg">
         {/* Tabs */}
+        <h1 className="text-3xl font-semibold  mb-6">{activeTab} Queries</h1>
         <div className="mb-4">
           <nav className="flex justify-around">
             <button
@@ -86,10 +267,10 @@ const Complaints: React.FC = () => {
         </div>
 
         {/* Header */}
-        <h1 className="text-3xl font-semibold  mb-6">{activeTab} Queries</h1>
+       
 
         {/* Queries Table */}
-        <div className="overflow-auto max-h-[470px] custom-scrollbar">
+        <div className="overflow-auto h-[80%] custom-scrollbar">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>

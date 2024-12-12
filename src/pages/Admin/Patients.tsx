@@ -19,7 +19,7 @@ const Patients: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto custom-scrollbar h-[39rem]">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg mb-8 h-screen">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Find Patients</h1>
           <input
@@ -31,7 +31,7 @@ const Patients: React.FC = () => {
         <p className="text-gray-500 mb-2">
           <span className="font-semibold">{patientData.length} Results Found</span>
         </p>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 overflow-auto h-[80%] custom-scrollbar">
   {patientData.map((patient) => (
     <div
     key={patient.id}

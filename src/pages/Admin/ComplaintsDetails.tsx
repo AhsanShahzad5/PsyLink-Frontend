@@ -14,7 +14,7 @@ const ComplaintsDetails: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
         {/* Back button and Heading */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center">

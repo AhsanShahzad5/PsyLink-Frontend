@@ -24,7 +24,7 @@ const DoctorsDetails: React.FC = () => {
 
   return (
     <div className="p-6 bg-secondary">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar p-6">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg  h-screen  p-6">
         {/* Header */}
         <div className="flex items-center mb-6">
           <FaArrowLeft
@@ -42,7 +42,9 @@ const DoctorsDetails: React.FC = () => {
             </button>
           </div>
         </div>
+        <div className="overflow-auto h-[88%] custom-scrollbar">
 
+        
         {/* Doctor Details Section */}
         <h2 className="text-xl font-semibold mb-4 text-primary text-left">Doctor Details</h2>
         <div className="mb-6 border-t border-gray-200 pt-4">
@@ -189,6 +191,7 @@ const DoctorsDetails: React.FC = () => {
   </table>
 </div>
 
+      </div>
       </div>
     </div>
   );

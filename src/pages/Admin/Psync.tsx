@@ -4,7 +4,7 @@ import PsyncSearchbar from "@/Components/psync/PsyncSearchbar";
 const Psync = () => {
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
         <div className="pt-3 max-w-4xl w-full mx-auto">
           <PsyncSearchbar />
           <Post

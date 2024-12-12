@@ -53,6 +53,127 @@ const Payments: React.FC = () => {
       status: "Successful",
       dateTime: "2024-11-03 2:30 PM",
     },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
+    {
+      transactionId: "T003",
+      doctorId: "3",
+      doctorName: "Dr. Sarah Lee",
+      doctorBankAccount: "345-678-901",
+      patientId: "P003",
+      patientName: "Lucy White",
+      patientBankAccount: "765-432-109",
+      status: "Successful",
+      dateTime: "2024-11-03 2:30 PM",
+    },
     // Add more payments here...
   ];
 
@@ -63,7 +184,7 @@ const Payments: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg mb-8 h-screen ">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Payments</h1>
           <input
@@ -75,7 +196,7 @@ const Payments: React.FC = () => {
         <p className="text-gray-500 mb-6">
           <span className="font-semibold">{paymentsData.length} Payments Found</span>
         </p>
-
+        <div className="overflow-auto h-[80%] custom-scrollbar">
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
             <tr>
@@ -112,6 +233,7 @@ const Payments: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

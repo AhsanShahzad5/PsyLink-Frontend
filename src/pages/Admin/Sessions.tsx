@@ -95,6 +95,50 @@ const Sessions: React.FC = () => {
       patientId: "P003",
       patientTimeInRoom: "2:00 PM - 2:15 PM",
     },
+    {
+      sessionId: "S007",
+      doctorName: "Dr. Emily Davis",
+      doctorId: "3",
+      doctorTimeInRoom: "2:00 PM - 2:30 PM",
+      sessionDate: "2024-11-03",
+      sessionTime: "2:00 PM",
+      patientName: "Charlie Black",
+      patientId: "P003",
+      patientTimeInRoom: "2:00 PM - 2:15 PM",
+    },
+    {
+      sessionId: "S007",
+      doctorName: "Dr. Emily Davis",
+      doctorId: "3",
+      doctorTimeInRoom: "2:00 PM - 2:30 PM",
+      sessionDate: "2024-11-03",
+      sessionTime: "2:00 PM",
+      patientName: "Charlie Black",
+      patientId: "P003",
+      patientTimeInRoom: "2:00 PM - 2:15 PM",
+    },
+    {
+      sessionId: "S007",
+      doctorName: "Dr. Emily Davis",
+      doctorId: "3",
+      doctorTimeInRoom: "2:00 PM - 2:30 PM",
+      sessionDate: "2024-11-03",
+      sessionTime: "2:00 PM",
+      patientName: "Charlie Black",
+      patientId: "P003",
+      patientTimeInRoom: "2:00 PM - 2:15 PM",
+    },
+    {
+      sessionId: "S007",
+      doctorName: "Dr. Emily Davis",
+      doctorId: "3",
+      doctorTimeInRoom: "2:00 PM - 2:30 PM",
+      sessionDate: "2024-11-03",
+      sessionTime: "2:00 PM",
+      patientName: "Charlie Black",
+      patientId: "P003",
+      patientTimeInRoom: "2:00 PM - 2:15 PM",
+    },
     // More sessions...
   ];
 
@@ -105,7 +149,7 @@ const Sessions: React.FC = () => {
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto max-h-[470px] h-screen custom-scrollbar">
+      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg h-screen mb-8 ">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Sessions</h1>
           <input
@@ -118,7 +162,9 @@ const Sessions: React.FC = () => {
           <span className="font-semibold">{sessionsData.length} Sessions Found</span>
         </p>
 
-        <table className="min-w-full divide-y divide-gray-200">
+      
+      <div className="overflow-auto h-[80%] custom-scrollbar">
+        <table className="min-w-full divide-y divide-gray-200 ">
           <thead className="">
             <tr className="">
               <th className="px-6 py-3 text-left text-sm font-normal text-primary">Session ID</th>
@@ -151,6 +197,7 @@ const Sessions: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );
