@@ -46,6 +46,8 @@ import Psync from '@/pages/Admin/Psync';
 import Reports from '@/pages/Admin/Reports';
 import SessionDetail from '@/pages/Admin/SessionDetail';
 import Sessions from '@/pages/Admin/Sessions';
+import ForgotPasswordPage from './pages/Patient/ForgotPasswordPage';
+import ResetPassword from './pages/Patient/ResetPasswordPage';
 
 
 
@@ -55,6 +57,8 @@ const AppRoutes = () => (
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
 
         {/* Patient Routes */}

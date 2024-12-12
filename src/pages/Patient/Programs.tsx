@@ -90,7 +90,7 @@ const Programs: React.FC = () => {
                 </button>
                 )}
                 {/* Cards Container */}
-                <div className="flex space-x-2 sm:space-x-4">
+                <div className="flex space-x-2 sm:space-x-4 cursor-pointer">
                 {popular.slice(popularIndex, popularIndex + maxVisibleCards).map((item, index) => (
                     <div
                     key={index}
@@ -137,7 +137,7 @@ const Programs: React.FC = () => {
                 </button>
                 )}
                 {/* Courses Container */}
-                <div className="flex space-x-2 sm:space-x-4">
+                <div className="flex space-x-2 sm:space-x-4 cursor-pointer">
                 {yourCourses.slice(yourCoursesIndex, yourCoursesIndex + maxVisibleCards).map((item, index) => (
                     <div
                     key={index}
@@ -184,7 +184,7 @@ const Programs: React.FC = () => {
                     </button>
                     )}
                     {/* Cards Container */}
-                    <div className="flex space-x-2 sm:space-x-4">
+                    <div className="flex space-x-2 sm:space-x-4 cursor-pointer">
                     {calming.slice(calmingIndex, calmingIndex + maxVisibleCards).map((item, index) => (
                         <div
                         key={index}

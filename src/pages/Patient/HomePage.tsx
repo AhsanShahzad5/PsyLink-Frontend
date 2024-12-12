@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import Navbar from '../../Components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import userAtom from '@/atoms/userAtom';
+import { useRecoilValue } from 'recoil';
 
 const HomePage: React.FC = () => {
 
+  const user = useRecoilValue(userAtom);
+  
   // Modified courseTasks array to include varying completion levels
   const courseTasks = [
     { id: 1, task: "Deep Breaths", progress: "20 / 20" },
@@ -36,7 +40,7 @@ const HomePage: React.FC = () => {
         {/* Welcome Section */}
         <div className="bg-white p-6 rounded-xl shadow-md w-full h-[575px] lg:w-1/3 flex flex-col items-center space-y-10">
           <h2 className="text-3xl font-bold text-center">Welcome Home</h2>
-          <h3 className="text-2xl font-semibold text-gray-700">JHON DOE</h3>
+          <h3 className="text-2xl font-semibold text-gray-700">{user.name}</h3>
           <img src="/src/assets/patient/homepage/Sphere.png" alt="Welcome Image" className="w-full max-w-xs rounded-lg" />
         </div>
 
