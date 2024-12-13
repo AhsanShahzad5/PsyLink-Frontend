@@ -14,7 +14,7 @@ const OngoingAppointment: React.FC<OngoingAppointmentProps> = ({
     joinCallHandler,
 }) => {
     return (
-        <div>
+        <div className='flex flex-col sm:block '>
             <div className="text-gray-600 pb-5 text-center">There are no live sessions right now</div>
             <div className="flex justify-between items-center">
                 <div className="">{time}</div>

@@ -30,7 +30,6 @@ const payments = [
   {
     name: "Muhammad Shafaat Farooq",
     amountPaid: "Rs 1400",
-    amountDue: "Rs 1400",
     paymentMethod: stripeIcon,
     phoneNumber: "+926476477474",
     date: "25th October, 2024",
@@ -38,7 +37,6 @@ const payments = [
   {
     name: "Muhammad Shafaat Farooq",
     amountPaid: "Rs 1400",
-    amountDue: "Rs 1400",
     paymentMethod: stripeIcon,
     phoneNumber: "+926476477474",
     date: "25th October, 2024",
@@ -46,7 +44,6 @@ const payments = [
   {
     name: "Muhammad Shafaat Farooq",
     amountPaid: "Rs 1400",
-    amountDue: "Rs 1400",
     paymentMethod: stripeIcon,
     phoneNumber: "+926476477474",
     date: "25th October, 2024",
@@ -54,7 +51,6 @@ const payments = [
   {
     name: "Muhammad Shafaat Farooq",
     amountPaid: "Rs 1400",
-    amountDue: "Rs 1400",
     paymentMethod: stripeIcon,
     phoneNumber: "+926476477474",
     date: "25th October, 2024",
@@ -64,7 +60,7 @@ const payments = [
 const PaymentsReceivedAnaytics = () => {
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-fit ">
+    <div className="bg-white rounded-lg shadow-md p-6 h-fit w-full">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-800">March 2023</h3>
         <div className="flex gap-2">
@@ -77,7 +73,7 @@ const PaymentsReceivedAnaytics = () => {
         </div>
       </div>
 
-      <div className="h-48 mb-6 ">
+      <div className="h-48 mb-6">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} barSize={12}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -106,22 +102,18 @@ const PaymentsReceivedAnaytics = () => {
         <div className="flex items-center justify-between p-4">
           {/* Left Text */}
           <h2 className="text-lg font-bold text-black">Payments Received</h2>
-
-         
         </div>
         <ul className="space-y-3">
           {payments.map((payment, index) => (
             <li
               key={index}
-              className="flex justify-between items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
             >
               <span>{payment.name}</span>
-              <span className="font-medium">{payment.amountPaid}</span>
-              <span className="font-medium">{payment.amountDue}</span>
               <img
                 src={payment.paymentMethod}
                 alt="Payment Method"
-                className="h-12 w-12"
+                className="h-12 w-12 hidden sm:block"
               />
               <span className="font-medium">{payment.phoneNumber}</span>
               <span className="font-medium">{payment.date}</span>
@@ -136,19 +128,16 @@ const PaymentsReceivedAnaytics = () => {
 const PaymentAnalyticsDetails = () => {
   const navigate = useNavigate() // The useNavigate hook gives us access to the navigate function
 
-
-
   return (
-    <div className='pt-20 max-w-[92rem] mx-auto '>
+    <div className='pt-20 max-w-[92rem] mx-auto px-4 sm:px-6 lg:px-8'>
 
       <div className='bg-white rounded-lg p-6'>
 
-
         {/* Back button */}
-        <div className="flex items-center mb-6 ">
+        <div className="flex items-center mb-6">
           <button
             onClick={() => navigate(-1)} // Navigate back to the previous page
-            className="flex items-center text-xl font-medium text-[#02968A]  transition-transform transform hover:scale-110 "
+            className="flex items-center text-xl font-medium text-[#02968A] transition-transform transform hover:scale-110"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -174,9 +163,3 @@ const PaymentAnalyticsDetails = () => {
 }
 
 export default PaymentAnalyticsDetails
-
-
-
-
-
-

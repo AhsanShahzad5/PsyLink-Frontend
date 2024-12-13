@@ -5,35 +5,29 @@ import {
     YAxis,
     CartesianGrid,
     ResponsiveContainer,
-  } from "recharts";
-  
-  import { ChevronLeft, ChevronRight } from "lucide-react";
+} from "recharts";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-  
-  
-  type ChartDataType = {
+
+type ChartDataType = {
     name: string;
     value: number;
-  };
-  
-  // Mock data
-  const chartData: ChartDataType[] = [
+};
+
+// Mock data
+const chartData: ChartDataType[] = [
     { name: "10", value: 45 },
     { name: "11", value: 90 },
     { name: "12", value: 65 },
     { name: "13", value: 85 },
     { name: "14", value: 30 },
-  ];
-  
-  
-  
-  
-  
- export const PaymentsReceivedAnaytics = () => {
+];
 
-     const navigate = useNavigate();
+export const PaymentsReceivedAnaytics = () => {
+    const navigate = useNavigate();
     return (
-        <div className="bg-white rounded-lg shadow-md p-6 h-fit ">
+        <div className="bg-white rounded-lg shadow-md p-6 h-fit w-full max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">March 2023</h3>
                 <div className="flex gap-2">
@@ -45,8 +39,8 @@ import { useNavigate } from "react-router-dom";
                     </button>
                 </div>
             </div>
-  
-            <div className="h-48 mb-6 ">
+
+            <div className="h-48 mb-6">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} barSize={12}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -56,7 +50,7 @@ import { useNavigate } from "react-router-dom";
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-  
+
             <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Today</span>
@@ -72,14 +66,14 @@ import { useNavigate } from "react-router-dom";
                 </div>
             </div>
             <div className="mt-2 border-t pt-2">
-                <div className="flex items-center justify-between p-4 ">
+                <div className="flex flex-col md:flex-row items-center justify-between p-4">
                     {/* Left Text */}
-                    <h2 className="text-lg font-bold text-black">Payments Received</h2>
-  
+                    <h2 className="text-lg font-bold text-black mb-4 md:mb-0">Payments Received</h2>
+
                     {/* Right Button */}
-                    <button className="px-4 py-1 h-[3.5rem] w-[10.5rem] text-white bg-primary rounded-full hover:bg-teal-700 rounded-2"
-                    onClick={() => navigate('/doctor/payment-analytics')}
-                    
+                    <button
+                        className="px-4 py-1 h-[3.5rem] w-full md:w-[10.5rem] text-white bg-primary rounded-full hover:bg-teal-700"
+                        onClick={() => navigate('/doctor/payment-analytics')}
                     >
                         View Details
                     </button>
@@ -100,9 +94,4 @@ import { useNavigate } from "react-router-dom";
             </div>
         </div>
     );
-  };
-  
-  
-  
-  
-  
+};
