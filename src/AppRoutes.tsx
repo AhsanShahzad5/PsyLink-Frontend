@@ -55,6 +55,7 @@ const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/test" element={<DoctorClinic />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

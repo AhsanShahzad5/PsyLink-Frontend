@@ -46,10 +46,7 @@ const DoctorProfile: React.FC = () => {
   ];
 
   const aboutText = [
-    "Welcome! I am a dedicated psychologist based in Pakistan, specializing in mental health and well-being. With a Master's degree in Clinical Psychology from Lahore University of Management Sciences (LUMS), I am committed to helping individuals navigate their mental health challenges and achieve a balanced and fulfilling life.",
-    "With over 7 years of experience, I have worked with diverse populations, including children, adolescents, and adults, addressing issues such as anxiety, depression, stress, relationship difficulties, and trauma. My approach is rooted in evidence-based practices, combining Cognitive Behavioral Therapy (CBT), mindfulness techniques, and holistic methods to tailor treatment to each individual's unique needs.",
-    "I believe in creating a safe and supportive environment where clients can openly express their thoughts and feelings. My goal is to empower individuals to understand their emotions, develop coping strategies, and foster resilience in the face of life's challenges.",
-    "If you're seeking guidance and support, I invite you to reach out. Together, we can embark on a journey towards healing and personal growth.",
+    "Welcome! I am a dedicated psychologist based in Pakistan, specializing in mental health and well-being. With a Master's degree in Clinical Psychology from Lahore University of Management Sciences (LUMS), I am committed to helping individuals navigate their mental health challenges and achieve a balanced and fulfilling life. With over 7 years of experience, I have worked with diverse populations, including children, adolescents, and adults, addressing issues such as anxiety, depression, stress, relationship difficulties, and trauma. My approach is rooted in evidence-based practices, combining Cognitive Behavioral Therapy (CBT), mindfulness techniques, and holistic methods to tailor treatment to each individual's unique needs. I believe in creating a safe and supportive environment where clients can openly express their thoughts and feelings. My goal is to empower individuals to understand their emotions, develop coping strategies, and foster resilience in the face of life's challenges. If you're seeking guidance and support, I invite you to reach out. Together, we can embark on a journey towards healing and personal growth.",
   ];
 
   const reviews = [
@@ -130,7 +127,7 @@ const DoctorProfile: React.FC = () => {
     <>
   
     <div className="  
-    mt-[100px] bg-white p-4  rounded-2xl shadow-lg  max-w-[90rem] mx-auto">
+    mt-[100px] bg-white p-14  rounded-2xl shadow-lg  max-w-[90rem] mx-auto">
 
        {/* Back button */}
        <div className="flex items-center mb-6">
@@ -246,14 +243,14 @@ const DoctorProfile: React.FC = () => {
 
 
 
-      <hr className="border-gray-400 my-8 p-4" />
+      <hr className="border-gray-400 my-4 p-4" />
 
 
 
 
       
       {/* Header */}
-<h2 className="font-outfit font-semibold text-[24px] leading-[34.88px] text-left mb-8 p-4 sm:text-[20px] sm:leading-[30px]">
+<h2 className="font-outfit font-semibold text-[30px]  text-left p-4 sm:text-[30px] ">
   About Me
 </h2>
 
@@ -264,7 +261,7 @@ const DoctorProfile: React.FC = () => {
     {aboutText.map((paragraph, index) => (
       <p
         key={index}
-        className="font-outfit text-[16px] font-light leading-[28px] sm:leading-[45px] text-left text-gray-700 mb-6"
+        className="font-outfit text-[22px] font-light text-left text-[#000] mb-6"
       >
         {paragraph}
       </p>
@@ -273,12 +270,12 @@ const DoctorProfile: React.FC = () => {
 
   {/* Image Section */}
   <div className="sm:col-span-5 flex justify-center items-start">
-    <div className="w-full max-w-[379px] h-auto bg-gray-200 rounded-lg sm:w-[379px] sm:h-[750px]">
+    <div className="w-full max-w-[579px] h-auto bg-gray-200 rounded-lg sm:w-[439px] sm:h-[500px]">
       {/* Placeholder for image */}
       <img
         src="/src/assets/patient/doctor/doctor.jpg"
         alt="Dr Fahad Tariq Aziz"
-        className="w-full h-full object-cover rounded-lg"
+        className="w-full h-full object-fit rounded-lg"
       />
     </div>
   </div>
