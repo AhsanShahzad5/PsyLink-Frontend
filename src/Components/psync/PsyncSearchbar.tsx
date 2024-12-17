@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/Components/ui/dialog";
-import { User } from "lucide-react";
+import { useRecoilValue } from "recoil";
+import userAtom from "@/atoms/userAtom";
+
+
 
 interface PostModalProps {
   isOpen: boolean;
@@ -14,20 +17,47 @@ interface PostModalProps {
 }
 
 const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
+  const user = useRecoilValue(userAtom);
+  const userId = user?._id;
   const [postData, setPostData] = useState({
     title: "",
     description: "",
   });
 
-  const handlePostSubmit = () => {
-    console.log(postData); // Logs the title and description to the console
+  const handlePostSubmit = async () => {
+    if (!postData.title || !postData.description) {
+      alert("Title and description are required.");
+      return;
+    }
 
-    // Reset the form
-    setPostData({
-      title: "",
-      description: "",
-    });
-    onClose(); // Close the modal
+    try {
+      const response = await fetch("http://localhost:8000/api/psync/createPost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId, // Replace this with the actual `userId` from context or Recoil
+          title: postData.title,
+          description: postData.description,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Post created successfully!");
+        // Reset the form and close modal
+        setPostData({ title: "", description: "" });
+        onClose();
+      } else {
+        console.error("Failed to create post:", result.error);
+        alert("Failed to create post. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

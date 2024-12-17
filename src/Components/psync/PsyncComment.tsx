@@ -1,4 +1,3 @@
-import useUserDetails from "@/hooks/useUserDetails";
 import React, { useState, useEffect } from "react";
 
 interface Comment {
@@ -36,7 +35,7 @@ const CommentsSection: React.FC<{ postId: string }> = ({ postId }) => {
     };
 
     fetchComments();
-  }, [postId]);
+  }, [postId,comments,commentsWithUserDetails]);
 
   // Fetch user details for each comment
   useEffect(() => {
@@ -66,7 +65,7 @@ const CommentsSection: React.FC<{ postId: string }> = ({ postId }) => {
     if (comments.length > 0) {
       fetchUserDetailsForComments();
     }
-  }, [comments]);
+  }, [postId,comments,commentsWithUserDetails]);
 
   return (
     <div className="mt-4">

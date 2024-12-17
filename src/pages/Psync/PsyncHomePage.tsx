@@ -21,7 +21,7 @@ const Psync = () => {
     };
 
     fetchPosts();
-  }, []); // Empty dependency array ensures this runs only once
+  }, [posts]); // Empty dependency array ensures this runs only once
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
