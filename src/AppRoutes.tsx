@@ -283,7 +283,7 @@ const AppRoutes = () => (
             path="/doctor/thankyoupage"
             element={
                 <ProtectedRoute allowedRoles={['doctor']}>
-                    <ThankYouPage />
+                <ThankYouPage />
                 </ProtectedRoute>
             }
         />

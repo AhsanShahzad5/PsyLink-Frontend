@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import userAtom from "../atoms/userAtom";
-import { useSetRecoilState } from "recoil";
+//import userAtom from "../atoms/userAtom";
+//import { useSetRecoilState } from "recoil";
+import { useDispatch } from "react-redux";
+import { clearUser } from '../slices/authSlice';
 // import useShowToast from "./useShowToast";
 
 const useLogout = () => {
-    const setUser = useSetRecoilState(userAtom);
+    //const setUser = useSetRecoilState(userAtom);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     // const showToast = useShowToast();
 
@@ -25,7 +28,8 @@ const useLogout = () => {
             }
 
             localStorage.removeItem("psylink");
-            setUser(null);
+            dispatch(clearUser());
+            //setUser(null);
             navigate('/login');
         } catch (error) {
             // showToast("Error", error, "error");

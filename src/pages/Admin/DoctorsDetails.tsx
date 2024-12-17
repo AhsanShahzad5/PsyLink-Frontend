@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { Doctor } from "./Doctors"; // Adjust the import path as necessary
@@ -7,6 +7,10 @@ const DoctorsDetails: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const doctor = location.state?.doctor as Doctor;
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   if (!doctor) {
     return (
@@ -22,6 +26,36 @@ const DoctorsDetails: React.FC = () => {
     );
   }
 
+
+  const handleApprove = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/admin/doctors/verify/${doctor.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to approve doctor.");
+      }
+
+      setSuccess("Doctor approved successfully!");
+      setTimeout(() => navigate("/admin/doctors"), 2000); // Navigate back after 2 seconds
+    } catch (err: any) {
+      setError(err.message || "An error occurred while approving the doctor.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 bg-secondary">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg  h-screen  p-6">
@@ -34,8 +68,12 @@ const DoctorsDetails: React.FC = () => {
           />
           <h1 className="text-3xl font-semibold">{doctor.name}</h1>
           <div className="ml-auto flex gap-4">
-            <button className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover">
-              Ban
+          <button
+              className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover disabled:opacity-50"
+              onClick={handleApprove}
+              disabled={loading}
+            >
+              {loading ? "Approving..." : "Approve"}
             </button>
             <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
               Remove

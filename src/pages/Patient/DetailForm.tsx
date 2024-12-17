@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 enum Gender {
   Male = 'Male',
   Female = 'Female'
@@ -25,6 +26,7 @@ const DetailForm: React.FC = () => {
   }
 
   return (
+    <>
     <div className="flex items-center justify-center min-h-screen bg-[#D3EDEB]">
       <div className="p-8 bg-white shadow-lg w-full max-w-4xl md:max-w-6xl rounded-2xl" style={{ boxShadow: '1px 6px 16px 3px rgba(0,0,0,0.25)' }}>
         <h1 className="text-xl md:text-3xl font-semibold text-center mb-6">Please Enter Further Details.</h1>
@@ -48,6 +50,7 @@ const DetailForm: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

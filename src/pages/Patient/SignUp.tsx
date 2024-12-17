@@ -3,8 +3,11 @@ import { UserCredentials } from "@/types/User";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import { setUser } from './../../slices/authSlice';
+import { useDispatch } from "react-redux";
 
 const SignUp: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UserCredentials>({
     name: "",
@@ -13,7 +16,7 @@ const SignUp: React.FC = () => {
     role: "patient",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const setUser = useSetRecoilState(userAtom);
+  const setUser1 = useSetRecoilState(userAtom);
 
   const onChangeFunction = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,6 +59,7 @@ const SignUp: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       const data = await res.json();
@@ -69,7 +73,8 @@ const SignUp: React.FC = () => {
       }
 
       localStorage.setItem("psylink", JSON.stringify(data));
-      setUser(data);
+       setUser1(data);
+      dispatch(setUser(data));
     } catch (error) {
       console.log("Error signing up", error);
     }
