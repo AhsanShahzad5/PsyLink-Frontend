@@ -25,7 +25,7 @@ export default function ThankYouPage() {
           </div>
 
           <a
-            href="/"
+            href="/doctor/home"
             className="inline-block w-full max-w-xs mx-auto py-3 px-4 text-lg bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors text-center"
           >
             Go Home

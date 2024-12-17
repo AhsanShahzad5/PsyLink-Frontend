@@ -1,6 +1,65 @@
+import { useState, useEffect } from "react";
 import { FaClock, FaMapMarkerAlt, FaPenAlt, FaStar } from "react-icons/fa";
 
 const DoctorIntro = () => {
+    const [clinicDetails, setClinicDetails] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch clinic details
+    useEffect(() => {
+        const fetchClinicDetails = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/doctor/get/clinic-details', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Include cookies
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setClinicDetails(data.clinic); // Assuming the API returns { clinic: {...} }
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.message || "Failed to fetch clinic details");
+                }
+            } catch (err) {
+                return "Error while getting clinic data"
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClinicDetails();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500">Error: {error}</div>;
+    }
+
+    if (!clinicDetails) {
+        return <div>No clinic details available</div>;
+    }
+
+    const {
+        fullName,
+        specialisation,
+        educationBackground,
+        image,
+        city,
+        country,
+        startTime,
+        endTime,
+        consultationFee,
+    } = clinicDetails;
+
+    
     return (
         <div className="bg-[#F5FAFE] border border-[#D6E4EF] shadow-md rounded-lg p-6">
             <div className="flex justify-between mb-5">
@@ -27,27 +86,27 @@ const DoctorIntro = () => {
                     {/* Pencil Icon */}
                     
                     <h1 className="text-[22px] sm:text-[24px] font-semibold text-[#222] leading-[28px]">
-                        Dr Fahad Tariq Aziz
+                        {fullName}
                     </h1>
                     <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
-                        Psychologist
+                        {specialisation}
                     </p>
                     <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
-                        MBBS, Mphil, FCPS
+                        {educationBackground}
                     </p>
                     <p className="text-[14px] sm:text-[16px] font-medium text-[#707070] flex items-center mt-6">
                         <FaMapMarkerAlt className="text-primary mr-2" />
-                        H-Block, Street #18, Sector-D, Johar Town, Lahore
+                        {city} - {country}
                     </p>
                 </div>
 
                 {/* Timings and Fee Section */}
                 <div className="sm:col-span-3 text-center flex flex-col justify-center items-center gap-2">
                     <p className="text-[16px] sm:text-[18px] font-light text-[#222] flex items-center gap-2">
-                        <FaClock className="text-primary" /> 12:30pm - 8:00pm
+                        <FaClock className="text-primary" /> {startTime} - {endTime}
                     </p>
                     <p className="text-[16px] sm:text-[18px] font-light text-[#222] mt-4">
-                        Rs.1400
+                        {consultationFee}
                     </p>
                     <p className="text-[14px] sm:text-[16px] font-light text-[#2C43D6] underline flex items-center gap-1">
                         <FaStar className="text-[#FFD700]" /> 4.8 (224 reviews)

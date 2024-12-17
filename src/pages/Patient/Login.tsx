@@ -1,10 +1,13 @@
 import userAtom from "@/atoms/userAtom";
 import { UserCredentials } from "@/types/User";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import { setUser } from './../../slices/authSlice';
 
 const LoginPage: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<UserCredentials>({
@@ -13,7 +16,7 @@ const LoginPage: React.FC = () => {
     role: 'patient',
     name: ""
   })
-  const setUser = useSetRecoilState(userAtom);
+  const setUser1 = useSetRecoilState(userAtom);
   const onChangeFunction = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -30,7 +33,8 @@ const LoginPage: React.FC = () => {
         headers: {
           'Content-Type': "application/json"
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       const data = await res.json();
@@ -53,7 +57,8 @@ const LoginPage: React.FC = () => {
       }
       // storing user data in local stoorage
       localStorage.setItem('psylink', JSON.stringify(data));
-      setUser(data);
+       dispatch(setUser(data));
+      setUser1(data);
 
     } catch (error) {
       // showToast("Error", error, 'error')

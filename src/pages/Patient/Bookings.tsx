@@ -126,8 +126,10 @@ export default function Bookings(): JSX.Element {
 
 
   const [activeTab, setActiveTab] = useState<'Explore Doctors' | 'Booked Appointments' | 'History'>('Explore Doctors')
-
   const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
@@ -142,6 +144,36 @@ export default function Bookings(): JSX.Element {
 
   const tabs = ['Explore Doctors', 'Booked Appointments','History'];
 
+  useEffect(() => {
+      // Fetch doctor verification status
+      const fetchVerifiedDoctors = async () => {
+        try {
+          const response = await fetch("http://localhost:8000/api/patient/doctors", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            setDoctors(data); 
+            console.log(data[0].clinic.fullName);
+            
+        } else {
+            const errorData = await response.json();
+            setError(errorData.message || "Failed to fetch clinic details");
+        }
+    } catch (err) {
+        return "Error while getting clinic data"
+    } finally {
+        setLoading(false);
+    }
+};
+
+fetchVerifiedDoctors();
+}, []);
 
   //Booked Appointments
 
@@ -225,11 +257,25 @@ export default function Bookings(): JSX.Element {
         
           {/* Doctor Cards */}
           <div className="space-y-4">
-            {exploreDoctors.map((doctor) => (
-               <DoctorCard key={doctor.id} doctorCard={doctor} />
-            
-            ))}
-          </div>
+  {doctors.map((doctor: any) => (
+    <DoctorCard
+      key={doctor._id} // Use unique ID
+      doctorCard={{
+        id : doctor._id || "N/A",
+        fullName: doctor.clinic.fullName,
+        image: doctor.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available
+        consultationFee: doctor.clinic.consultationFee || 0, // Default fee if missing
+        city: doctor.clinic.city || "N/A", // Handle missing city
+        country: doctor.clinic.country || "N/A", // Handle missing country
+        specialisation: doctor.clinic.specialisation || "N/A",
+        educationBackground: doctor.clinic.educationBackground || "N/A",
+        startTime: doctor.clinic.startTime || "N/A",
+        endTime: doctor.clinic.endTime || "N/A",
+        appointments : doctor.availability || "N/A"
+      }}
+    />
+  ))}
+</div>
 
 
         </div>

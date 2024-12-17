@@ -1,6 +1,6 @@
   // Predefined dates array
   export const dates = [
-    "30 Sept",
+    
     "1 Oct",
     "2 Oct",
     "3 Oct",
@@ -24,18 +24,29 @@
     "21 Oct",
     "22 Oct",
     "23 Oct",
+    "24 Sept",
+    "25 Sept",
+    "26 Sept",
+    "27 Sept",
+    "28 Sept",
+    "29 Sept",
+    "30 Sept",
+    "31 Sept",
     
   ];
 
   // Time slots
   export const timeSlots = [
+    "9:00 - 10:00",
+    "10:00 - 11:00",
+    "12:00 - 01:00",
     "12:30 - 01:30",
     "01:00 - 02:00",
     "02:00 - 03:00",
     "03:00 - 04:00",
     "04:30 - 05:30",
-    "06:00 - 07:00",
-    "07:30 - 08:30",
+    "05:00 - 06:00",
+    
   ];
 
   export const aboutText = [
