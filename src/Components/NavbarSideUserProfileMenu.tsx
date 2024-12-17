@@ -24,34 +24,45 @@ export default function Component({
   const logout = useLogout() ;
 
   const handleLogout = async () => {
-    console.log("logout clicke");
+    console.log("logout clicked");
     
     await logout();
   }
-   const  menuItems = [
-    { label: 'Account Setting', 
-      icon: User, 
+  const menuItems = [
+    {
+      label: 'Account Setting',
+      icon: User,
       onClick: () => {
-      console.log('Account clicked') ; 
-      navigate('/doctor/detailForm')
-    }
-  },
-    { label: 'Card Management', icon: CreditCard, 
-      onClick: () => {
-        console.log('Account clicked') ; 
-        navigate('/doctor/psync')
+        console.log('Account clicked');
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/detailForm`);
       }
     },
-    { label: 'My Posts', icon: FileText, 
+    {
+      label: 'Card Management',
+      icon: CreditCard,
       onClick: () => {
-        console.log('Account clicked') ; 
-        navigate('/doctor/psync')
+        console.log('Card Management clicked');
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync`);
       }
-     },
-    { label: 'Settings', icon: Settings, onClick: () => console.log('Settings clicked') },
-    { label: 'Logout', icon: LogOut, 
-       onClick: handleLogout
-     },
+    },
+    {
+      label: 'My Posts',
+      icon: FileText,
+      onClick: () => {
+        console.log('My Posts clicked');
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync`);
+      }
+    },
+    {
+      label: 'Settings',
+      icon: Settings,
+      onClick: () => console.log('Settings clicked')
+    },
+    {
+      label: 'Logout',
+      icon: LogOut,
+      onClick: handleLogout
+    },
   ];
 
   const handleMenuClick = (itemLabel: string, onClick: () => void) => {
