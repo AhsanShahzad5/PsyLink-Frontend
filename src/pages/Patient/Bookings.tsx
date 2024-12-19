@@ -262,7 +262,7 @@ fetchVerifiedDoctors();
       key={doctor._id} // Use unique ID
       doctorCard={{
         id : doctor._id || "N/A",
-        fullName: doctor.clinic.fullName,
+        fullName: doctor.clinic.fullName || "N/A",
         image: doctor.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available
         consultationFee: doctor.clinic.consultationFee || 0, // Default fee if missing
         city: doctor.clinic.city || "N/A", // Handle missing city
