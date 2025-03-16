@@ -185,6 +185,7 @@ const Post = ({
         </CardFooter>
       </Card>
       {/* Comments Section */}
+
       <CommentsSection postId={postId} />
     </>
 

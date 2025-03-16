@@ -5,6 +5,9 @@ import { Separator } from "@/Components/ui/separator";
 import { Button } from "@/Components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import useLogout from '@/hooks/useLogoutUser';
+import userAtom from '@/atoms/userAtom';
+import { useRecoilValue } from 'recoil';
+
 
 interface ProfileMenuProps {
   userName?: string;
@@ -12,11 +15,15 @@ interface ProfileMenuProps {
   profileImage?: string;
 }
 
+
+
 export default function Component({
   userName = "Ahsan Shahzad",
   isOnline = true,
   profileImage = "/src/assets/patient/homepage/Vector.png"
 }: ProfileMenuProps) {
+
+  const user = useRecoilValue(userAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState<string | null>(null);
 
@@ -92,7 +99,7 @@ export default function Component({
             <div className="rounded-full bg-teal-500 p-2 w-12 h-12 flex items-center justify-center">
               <User className="h-6 w-6 text-white" />
             </div>
-            <SheetTitle className="text-2xl font-normal">{userName}</SheetTitle>
+            <SheetTitle className="text-2xl font-normal">{user.name || userName}</SheetTitle>
           </div>
         </SheetHeader>
         <div className="flex flex-col gap-0.5 mt-2">

@@ -17,11 +17,13 @@ const CommentsSection: React.FC<{ postId: string }> = ({ postId }) => {
   const [commentsWithUserDetails, setCommentsWithUserDetails] = useState<
     (Comment & { userDetails: UserDetails | null })[]
   >([]);
+  const [loading, setLoading] = useState(true); // ✅ Track loading state
 
-  // Fetch comments for the post
+  // ✅ Fetch comments when `postId` changes
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        setLoading(true);
         const response = await fetch(
           `http://localhost:8000/api/psync/getPostComments/${postId}`
         );
@@ -31,64 +33,66 @@ const CommentsSection: React.FC<{ postId: string }> = ({ postId }) => {
         }
       } catch (err) {
         console.error("Error fetching comments:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchComments();
-  }, [postId,comments,commentsWithUserDetails]);
+  }, [postId]); // ✅ Only run when `postId` changes
 
-  // Fetch user details for each comment
+  // ✅ Fetch user details when `comments` change
   useEffect(() => {
+    if (comments.length === 0) return;
+
     const fetchUserDetailsForComments = async () => {
-      const updatedComments = await Promise.all(
-        comments.map(async (comment) => {
-          try {
-            const response = await fetch(
-              `http://localhost:8000/api/user/userDetails/${comment.userId}`
-            );
-            const userDetails = response.ok ? await response.json() : null;
+      try {
+        const updatedComments = await Promise.all(
+          comments.map(async (comment) => {
+            try {
+              const response = await fetch(
+                `http://localhost:8000/api/user/userDetails/${comment.userId}`
+              );
+              const userDetails = response.ok ? await response.json() : null;
+              return { ...comment, userDetails };
+            } catch (err) {
+              console.error("Error fetching user details:", err);
+              return { ...comment, userDetails: null };
+            }
+          })
+        );
 
-            return {
-              ...comment,
-              userDetails,
-            };
-          } catch (err) {
-            console.error("Error fetching user details:", err);
-            return { ...comment, userDetails: null };
-          }
-        })
-      );
-
-      setCommentsWithUserDetails(updatedComments);
+        setCommentsWithUserDetails(updatedComments);
+      } catch (err) {
+        console.error("Error processing comments:", err);
+      }
     };
 
-    if (comments.length > 0) {
-      fetchUserDetailsForComments();
-    }
-  }, [postId,comments,commentsWithUserDetails]);
+    fetchUserDetailsForComments();
+  }, [comments]); // ✅ Only run when `comments` change
 
   return (
     <div className="mt-4">
-      {commentsWithUserDetails.map((comment) => (
-        <div
-          key={comment._id}
-          className="flex items-start space-x-3 border-b border-gray-200 py-3"
-        >
-          <div>
-            {/* Render user name if available */}
-            <h4 className="font-bold text-gray-800">
-              {comment.userDetails?.name || "Unknown User"}
-            </h4>
-            {/* Render user email */}
-            <p className="text-sm text-gray-500">
-              {comment.userDetails?.email || "No email"}
-            </p>
-            {/* Comment content */}
-            <p className="text-gray-700 mt-1">{comment.comment}</p>
+      {loading ? (
+        <p className="text-gray-500 italic">Loading comments...</p>
+      ) : commentsWithUserDetails.length > 0 ? (
+        commentsWithUserDetails.map((comment) => (
+          <div
+            key={comment._id}
+            className="flex items-start space-x-3 border-b border-gray-200 py-3"
+          >
+            <div>
+              <h4 className="font-bold text-gray-800">
+                {comment.userDetails?.name || "Unknown User"}
+              </h4>
+              <p className="text-sm text-gray-500">
+                {comment.userDetails?.email || "No email"}
+              </p>
+              <p className="text-gray-700 mt-1">{comment.comment}</p>
+            </div>
           </div>
-        </div>
-      ))}
-      {comments.length === 0 && (
+        ))
+      ) : (
         <p className="text-gray-500 italic">No comments yet.</p>
       )}
     </div>

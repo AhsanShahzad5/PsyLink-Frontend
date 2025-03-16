@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
-import PsyncSearchbar from "@/Components/psync/PsyncSearchbar";
+import PsyncSearchbar from "@/Components/psync/PsyncTopBar";
 
 const PsyncSeries = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts data

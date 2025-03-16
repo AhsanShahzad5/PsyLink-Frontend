@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
-import PsyncSearchbar from "@/Components/psync/PsyncSearchbar";
+import PsyncTopBar from "@/Components/psync/PsyncTopBar";
 
 const Psync = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts data
   const [loading, setLoading] = useState(true); // Track loading state
-
+  const [refresh, setRefresh] = useState(false);
+  
   useEffect(() => {
     // Fetch posts from the backend
     const fetchPosts = async () => {
@@ -21,13 +22,13 @@ const Psync = () => {
     };
 
     fetchPosts();
-  }, [posts]); // Empty dependency array ensures this runs only once
+  }, [refresh]); // Empty dependency array ensures this runs only once
 
   return (
     <div className="flex justify-center mt-6 bg-secondary">
       <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
         <div className="pt-3 max-w-4xl w-full mx-auto">
-          <PsyncSearchbar />
+          <PsyncTopBar setRefresh={setRefresh} />
           {loading ? (
             <p className="text-center text-gray-600">Loading posts...</p>
           ) : posts.length === 0 ? (
