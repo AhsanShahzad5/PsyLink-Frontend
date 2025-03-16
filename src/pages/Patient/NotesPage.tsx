@@ -26,7 +26,7 @@ export default function Component() {
   // Fetch notes from the server
   const fetchNotes = async () => {
     try {
-      const response = await fetch(`/api/patient/notes/getallnotes/${patientId}`);
+      const response = await fetch(`http://localhost:8000/api/patient/notes/getallnotes/${patientId}`);
       if (response.ok) {
         const data = await response.json();
         setNotes(data.notes);
@@ -51,7 +51,7 @@ export default function Component() {
           content: selectedNote.content,
         };
         
-        const response = await fetch('/api/patient/notes/editNotes', {
+        const response = await fetch('http://localhost:8000/api/patient/notes/editNotes', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedNote),
@@ -68,7 +68,7 @@ export default function Component() {
       // Create new note
       try {
         const newNote = { patientId, title, content: notesText };
-        const response = await fetch('/api/patient/notes/addNotes', {
+        const response = await fetch('http://localhost:8000/api/patient/notes/addNotes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newNote),
@@ -86,7 +86,7 @@ export default function Component() {
 
   const deleteNote = async (id: string) => {
     try {
-      const response = await fetch('/api/patient/notes/deleteNotes', {
+      const response = await fetch('http://localhost:8000/api/patient/notes/deleteNotes', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patientId, noteId: id }),
