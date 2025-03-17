@@ -49,6 +49,8 @@ import Sessions from '@/pages/Admin/Sessions';
 import ForgotPasswordPage from './pages/Patient/ForgotPasswordPage';
 import ResetPassword from './pages/Patient/ResetPasswordPage';
 import PostFullPage from './Components/psync/PostFullPage';
+import PsyncFavouritesPage from './pages/Psync/PsyncFavouritesPage';
+import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 
 
 
@@ -229,8 +231,28 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+        <Route
+            path="/patient/psync/favouriteposts"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PsyncFavouritesPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/psync/myposts"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PsyncMyPostsPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
 
-<Route
+        <Route
             path="/doctor/login"
             element={<LoginPage />}
         />
@@ -294,7 +316,7 @@ const AppRoutes = () => (
             path="/doctor/thankyoupage"
             element={
                 <ProtectedRoute allowedRoles={['doctor']}>
-                <ThankYouPage />
+                    <ThankYouPage />
                 </ProtectedRoute>
             }
         />
@@ -316,9 +338,30 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+        <Route
+            path="/doctor/psync/post/:postId"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PostFullPage />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+
+        <Route
+            path="/doctor/psync/favouriteposts"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PsyncFavouritesPage />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
 
 
-<Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route
             path="/admin/dashboard"
             element={

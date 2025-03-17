@@ -67,7 +67,7 @@ const Post = ({
 
   const handleFavorite = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/psync/${postId}/favorite`, {
+      const response = await fetch(`http://localhost:8000/api/psync/addToFavourites/${postId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,6 +78,7 @@ const Post = ({
       const result = await response.json();
       if (response.ok) {
         setIsFavorited(true);
+        alert("Post added to favorites successfully");
       } else {
         console.error(result.error);
       }
@@ -108,17 +109,16 @@ const Post = ({
   };
   const navigate = useNavigate();
 
-  const handleViewFullPost = (post:any) => {
-    navigate(`/post/${post.postId}`, { state: { post } });
-  };
-
+ 
   return (
     <>
-      <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden"
-      onClick={() => navigate(`/patient/psync/post/${postId}`)}
-      
+      <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden"      
       >
-        <CardContent className="p-6">
+        <CardContent className="p-6 cursor-pointer"
+        
+        onClick={() => navigate(`/patient/psync/post/${postId}`)}
+
+        >
           <div className="flex items-start gap-3 mb-4">
             <Avatar className="h-12 w-12">
 
