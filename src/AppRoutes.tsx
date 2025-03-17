@@ -48,6 +48,7 @@ import SessionDetail from '@/pages/Admin/SessionDetail';
 import Sessions from '@/pages/Admin/Sessions';
 import ForgotPasswordPage from './pages/Patient/ForgotPasswordPage';
 import ResetPassword from './pages/Patient/ResetPasswordPage';
+import PostFullPage from './Components/psync/PostFullPage';
 
 
 
@@ -214,6 +215,16 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['patient']}>
                     <PatientLayout>
                         <PsyncHomePage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/psync/post/:postId"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PostFullPage />
                     </PatientLayout>
                 </ProtectedRoute>
             }

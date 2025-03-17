@@ -2,12 +2,12 @@ import { Card, CardContent, CardFooter } from "@/Components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
-import CommentsSection from "./PsyncComment";
 
-interface PostProps {
+export interface PostProps {
+  postId: string;
   authorName: string;
   authorImage?: string;
   content: string;
@@ -16,9 +16,8 @@ interface PostProps {
   comments: number;
   image?: string;
   title?: string;
-  postId: string;
+  isFavorited?: boolean;
 }
-
 
 
 const Post = ({
@@ -107,10 +106,18 @@ const Post = ({
       console.error("Error commenting on post:", error);
     }
   };
+  const navigate = useNavigate();
+
+  const handleViewFullPost = (post:any) => {
+    navigate(`/post/${post.postId}`, { state: { post } });
+  };
 
   return (
     <>
-      <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden">
+      <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden"
+      onClick={() => navigate(`/patient/psync/post/${postId}`)}
+      
+      >
         <CardContent className="p-6">
           <div className="flex items-start gap-3 mb-4">
             <Avatar className="h-12 w-12">
@@ -184,9 +191,6 @@ const Post = ({
           </div>
         </CardFooter>
       </Card>
-      {/* Comments Section */}
-
-      <CommentsSection postId={postId} />
     </>
 
   );

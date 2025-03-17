@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
 import PsyncTopBar from "@/Components/psync/PsyncTopBar";
 
+
 const Psync = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts data
   const [loading, setLoading] = useState(true); // Track loading state
   const [refresh, setRefresh] = useState(false);
   
+  //const [posts, setPosts] = useRecoilState(postsAtom);
+
+
   useEffect(() => {
     // Fetch posts from the backend
     const fetchPosts = async () => {
