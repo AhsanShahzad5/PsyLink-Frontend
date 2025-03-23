@@ -184,6 +184,11 @@ const DoctorCalender = ({availabilityDetails}:any) => {
     return `${formatAMPM(startH, startM)}-${formatAMPM(endH, endM)}`;
   };
 
+  const selectedDate = dates[selectedDateIndex];
+  const selectedDateData = availabilityDetails.find((entry:any) => entry.date === selectedDate);
+  const availableSlots = selectedDateData?.slots.filter((slot:any) => slot.status === "available") || [];
+  const busySlots = selectedDateData?.slots.filter((slot:any) => slot.status === "busy") || [];
+
   return (
     <div className="bg-white rounded-lg p-6 my-4 border border-[#D9EAF3]">
       <h2 className="text-lg sm:text-xl font-bold mb-6">Your Calendar</h2>
@@ -249,6 +254,31 @@ const DoctorCalender = ({availabilityDetails}:any) => {
             </button>
           );
         })}
+      </div>
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold">Marked Available Slots</h3>
+        {availableSlots.length > 0 ? (
+          <ul className="list-disc pl-6">
+            {availableSlots.map((slot:any) => (
+              <li key={slot._id}>{slot.time}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No slot mark as available</p>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold">Busy Slots</h3>
+        {busySlots.length > 0 ? (
+          <ul className="list-disc pl-6 text-red-500">
+            {busySlots.map((slot:any) => (
+              <li key={slot._id}>{slot.time}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No busy slots</p>
+        )}
       </div>
     </div>
   );
