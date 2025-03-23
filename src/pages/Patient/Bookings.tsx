@@ -57,33 +57,7 @@ interface Doctor {
   joinIn: string | null; // Time remaining for upcoming appointments
   meetingLink?: string; // Optional meeting link
 }
-  
-// const initialBookedAppointments: BookedAppointment[] = [
-//   {
-//     id: 1,
-//     doctorName: "Dr. Fahad Tariq Aziz",
-//     specialization: "Psychologist",
-//     bookedTimeSlot: "8:00 PM",
-//     date: "2025-10-25",
-//     duration: "60 minutes",
-//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
-//     status: "active",
-//     joinIn: "",
-//     meetingLink: "https://video-call-platform.com/meeting/12345",
-//   },
-//   {
-//     id: 2,
-//     doctorName: "Dr. Sarah Ahmed",
-//     specialization: "Psychiatrist",
-//     bookedTimeSlot: "10:00 AM",
-//     date: "2025-10-28",
-//     duration: "60 minutes",
-//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
-//     status: "upcoming",
-//     joinIn: "5 Days",
-//     meetingLink: "https://video-call-platform.com/meeting/67890",
-//   },
-// ];
+
 
 interface HistoryAppointment {
   id: number;
@@ -115,9 +89,6 @@ const HistoryAppointments: HistoryAppointment[] = [
     imageUrl: "/src/assets/patient/doctor/doctor2.png",
   },
 ];
-
-
-
 
 
 export default function Bookings(): JSX.Element {

@@ -18,6 +18,7 @@ interface PostModalProps {
 
 const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
   const user = useRecoilValue(userAtom);
+  console.table(user)
   const userId = user?._id;
   const [postData, setPostData] = useState({
     title: "",
@@ -68,6 +69,12 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
     }));
   };
 
+
+  const handleImageUpload = ()  => {
+    // Image upload logic here
+    alert("Image upload not implemented.");
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl p-0 rounded-3xl">
@@ -80,7 +87,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
                 alt="User avatar"
                 className="w-12 h-12 rounded-full"
               />
-              <span className="text-xl font-semibold">Alex Russo</span>
+              <span className="text-xl font-semibold">{user.name}</span>
             </div>
             <button className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center gap-2">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -111,11 +118,13 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
 
         <div className="p-4 border-t flex justify-between items-center">
           <button className="text-teal-600 hover:text-teal-700">
+            {/* image upload */}
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6"
               fill="none"
               stroke="currentColor"
+              onClick={handleImageUpload}
             >
               <path
                 d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
