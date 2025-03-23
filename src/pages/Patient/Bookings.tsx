@@ -57,33 +57,7 @@ interface Doctor {
   joinIn: string | null; // Time remaining for upcoming appointments
   meetingLink?: string; // Optional meeting link
 }
-  
-const initialBookedAppointments: BookedAppointment[] = [
-  {
-    id: 1,
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychologist",
-    bookedTimeSlot: "8:00 PM",
-    date: "2025-10-25",
-    duration: "60 minutes",
-    imageUrl: "/src/assets/patient/doctor/doctor1.png",
-    status: "active",
-    joinIn: "",
-    meetingLink: "https://video-call-platform.com/meeting/12345",
-  },
-  {
-    id: 2,
-    doctorName: "Dr. Sarah Ahmed",
-    specialization: "Psychiatrist",
-    bookedTimeSlot: "10:00 AM",
-    date: "2025-10-28",
-    duration: "60 minutes",
-    imageUrl: "/src/assets/patient/doctor/doctor2.png",
-    status: "upcoming",
-    joinIn: "5 Days",
-    meetingLink: "https://video-call-platform.com/meeting/67890",
-  },
-];
+
 
 interface HistoryAppointment {
   id: number;
@@ -117,9 +91,6 @@ const HistoryAppointments: HistoryAppointment[] = [
 ];
 
 
-
-
-
 export default function Bookings(): JSX.Element {
 
   // Explore Doctor
@@ -128,6 +99,8 @@ export default function Bookings(): JSX.Element {
   const [activeTab, setActiveTab] = useState<'Explore Doctors' | 'Booked Appointments' | 'History'>('Explore Doctors')
   const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
   const [doctors, setDoctors] = useState([]);
+  const [bookedAppointments, setBookedAppointments] = useState<BookedAppointment[]>([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -144,8 +117,8 @@ export default function Bookings(): JSX.Element {
 
   const tabs = ['Explore Doctors', 'Booked Appointments','History'];
 
+  //CALLING API FOR GET VERIFIED DOCTORS
   useEffect(() => {
-      // Fetch doctor verification status
       const fetchVerifiedDoctors = async () => {
         try {
           const response = await fetch("http://localhost:8000/api/patient/doctors", {
@@ -175,62 +148,34 @@ export default function Bookings(): JSX.Element {
 fetchVerifiedDoctors();
 }, []);
 
-  //Booked Appointments
-
-
-  const [appointments, setAppointments] = useState<BookedAppointment[]>(
-    initialBookedAppointments
-  );
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
-
-  // Update current date and time every second
+//CALLING API FOR BOOKED APPOINTMENTS
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(interval);
+    const fetchBookedAppointments = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/patient/booked/appointment", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setBookedAppointments(data);
+        } else {
+          console.error("Failed to fetch booked appointments");
+        }
+      } catch (err) {
+        console.error("Error while fetching appointments:", err);
+      } finally {
+        setLoadingAppointments(false);
+      }
+    };
+  
+    fetchBookedAppointments();
   }, []);
-
-  const convertTo24HourFormat = (time: string): string => {
-    const [hoursMinutes, period] = time.split(" ");
-    const [hours, minutes] = hoursMinutes.split(":").map(Number);
-
-    let adjustedHours = period === "PM" && hours < 12 ? hours + 12 : hours;
-    adjustedHours = period === "AM" && hours === 12 ? 0 : adjustedHours;
-
-    return `${adjustedHours.toString().padStart(2, "0")}:${minutes}:00`;
-  };
-
-  // Update appointment statuses dynamically
-  useEffect(() => {
-    const updatedAppointments = appointments.map((appointment) => {
-      const appointmentDateTime = new Date(
-        `${appointment.date}T${convertTo24HourFormat(
-          appointment.bookedTimeSlot
-        )}`
-      );
-      const isActive = currentDateTime >= appointmentDateTime;
-      return {
-        ...appointment,
-        status: isActive ? "active" : "upcoming", // Explicitly assign union type value
-        joinIn: isActive ? "" : calculateTimeDifference(appointmentDateTime),
-      } as BookedAppointment; // Ensure the returned object matches BookedAppointment
-    });
-    setAppointments(updatedAppointments);
-  }, [currentDateTime]);
-
-  const calculateTimeDifference = (appointmentDateTime: Date): string => {
-    const diffInMs = appointmentDateTime.getTime() - currentDateTime.getTime();
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    const diffInHours = Math.floor((diffInMs / (1000 * 60 * 60)) % 24);
-    const diffInMinutes = Math.floor((diffInMs / (1000 * 60)) % 60);
-
-    if (diffInDays > 0) return `${diffInDays} Days`;
-    if (diffInHours > 0) return `${diffInHours} Hours`;
-    if (diffInMinutes > 0) return `${diffInMinutes} Minutes`;
-    return "Starting Soon";
-  };
+  
 
 
   return (
@@ -262,7 +207,7 @@ fetchVerifiedDoctors();
       key={doctor._id} // Use unique ID
       doctorCard={{
         id : doctor._id || "N/A",
-        fullName: doctor.clinic.fullName,
+        fullName: doctor.clinic.fullName || "N/A",
         image: doctor.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available
         consultationFee: doctor.clinic.consultationFee || 0, // Default fee if missing
         city: doctor.clinic.city || "N/A", // Handle missing city
@@ -302,12 +247,18 @@ fetchVerifiedDoctors();
 
 
 {activeTab === 'Booked Appointments' && (
-  <div className="space-y-4">
-  {initialBookedAppointments.map((appointment) => (
-    <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
-  ))}
-</div>
-)}
+      <div className="space-y-4">
+        {loadingAppointments ? (
+          <p>Loading...</p>
+        ) : bookedAppointments.length > 0 ? (
+          bookedAppointments.map((appointment) => (
+            <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
+          ))
+        ) : (
+          <p>No Booked Appointments</p>
+        )}
+      </div>
+    )}
 
 
         {activeTab === 'History' && (

@@ -10,11 +10,13 @@ const DoctorClinic = () => {
   const [isVerified, setIsVerified] = useState(false); // To store verification status
   const [isClinicSetup, setIsClinicSetup] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // To handle error messages
+const [clinicDetails, setClinicDetails] = useState(null); // Clinic details state
+  const [availabilityDetails, setAvailabilityDetails] = useState(null);
 
-  
+
 
   useEffect(() => {
-    // Fetch doctor verification status
+
     const fetchVerificationStatus = async () => {
       try {
         const response = await fetch("http://localhost:8000/api/doctor/status", {
@@ -69,6 +71,35 @@ const DoctorClinic = () => {
     fetchVerificationStatus();
   }, []);
 
+
+  useEffect(() => {
+    if (!isVerified) return; // Prevent the function from running if not verified
+
+    const fetchClinicDetails = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/doctor/get/clinic-details", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message || "Failed to fetch clinic details");
+          return;
+        }
+
+        const data = await response.json();
+        setClinicDetails(data.clinic);
+        setAvailabilityDetails(data.availability);
+      } catch (err) {
+        setErrorMessage("Error while getting clinic data");
+      }
+    };
+
+    fetchClinicDetails();
+  }, [isVerified]);
+
   if (isLoading) {
     return (
       <div className="pt-20 max-w-[89rem] mx-auto text-center">
@@ -98,8 +129,8 @@ const DoctorClinic = () => {
   return (
     <div className="pt-20 max-w-[89rem] mx-auto">
       <div className="flex flex-col">
-        <DoctorIntro />
-        <DoctorCalender />
+      <DoctorIntro clinicDetails={clinicDetails} /> {/* Pass clinicDetails as prop */}
+      <DoctorCalender availabilityDetails={availabilityDetails} />
         <DoctorAboutSection />
         <DoctorStatsBar />
       </div>
