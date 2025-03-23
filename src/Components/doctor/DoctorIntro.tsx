@@ -1,63 +1,21 @@
 import { useState, useEffect } from "react";
 import { FaClock, FaMapMarkerAlt, FaPenAlt, FaStar } from "react-icons/fa";
 
-const DoctorIntro = () => {
-    const [clinicDetails, setClinicDetails] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    // Fetch clinic details
-    useEffect(() => {
-        const fetchClinicDetails = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/doctor/get/clinic-details', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Include cookies
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setClinicDetails(data.clinic); // Assuming the API returns { clinic: {...} }
-                } else {
-                    const errorData = await response.json();
-                    setError(errorData.message || "Failed to fetch clinic details");
-                }
-            } catch (err) {
-                return "Error while getting clinic data"
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchClinicDetails();
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="text-red-500">Error: {error}</div>;
-    }
-
+const DoctorIntro = ({ clinicDetails }:any) => {
     if (!clinicDetails) {
         return <div>No clinic details available</div>;
-    }
-
-    const {
+      }
+    
+      const {
         fullName,
         specialisation,
         educationBackground,
-        image,
         city,
         country,
         startTime,
         endTime,
         consultationFee,
-    } = clinicDetails;
+      } = clinicDetails;
 
     
     return (
