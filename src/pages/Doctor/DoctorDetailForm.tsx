@@ -1,6 +1,6 @@
 
 import { InputField } from '@/Components/InputField';
-import BackButton from '@/Components/patient/backButton';
+import BackButton from './../../Components/patient/BackButton';
 import { SelectField } from '@/Components/SelectField';
 import { UploadImage } from '@/Components/UploadImage';
 import React, { useState } from 'react';
