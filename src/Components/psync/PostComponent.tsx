@@ -127,6 +127,7 @@ const Post = ({
                 <div>
                   <h3 className={`font-semibold text-gray-900 ${authoreRole === "patient" ? "mt-2" : ""}`}>{authorName}</h3>
                   {authoreRole === "doctor" && <p className="text-sm text-teal-600">{authoreRole}</p>}
+                  {/* <p className="text-sm text-teal-600">{authoreRole}</p> */}
                 </div>
                 <span className="text-sm text-gray-500">{timeAgo}</span>
               </div>

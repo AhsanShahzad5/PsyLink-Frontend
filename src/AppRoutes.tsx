@@ -224,7 +224,7 @@ const AppRoutes = () => (
         <Route
             path="/patient/psync/post/:postId"
             element={
-                <ProtectedRoute allowedRoles={['patient']}>
+                <ProtectedRoute allowedRoles={['patient', 'doctor']}>
                     <PatientLayout>
                         <PostFullPage />
                     </PatientLayout>
@@ -341,7 +341,7 @@ const AppRoutes = () => (
         <Route
             path="/doctor/psync/post/:postId"
             element={
-                <ProtectedRoute allowedRoles={['doctor']}>
+                <ProtectedRoute allowedRoles={['doctor','patient']}>
                     <DoctorLayout>
                         <PostFullPage />
                     </DoctorLayout>

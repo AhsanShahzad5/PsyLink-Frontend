@@ -11,8 +11,19 @@ import usePreviewImage from "@/hooks/usePreviewImage";
 import { Input } from "@/Components/ui/input";
 import LoadingComponent from "../LoadingComponent";
 import { toast } from "@/hooks/use-toast";
+import { ChevronDown, Plus, X } from "lucide-react";
 
+// Dummy series data
+const INITIAL_SERIES = [
+  { id: 1, name: "Series 1" },
+  { id: 2, name: "Series 2" },
+  { id: 3, name: "Series 3" }
+];
 
+interface Series {
+  id: number;
+  name: string;
+}
 
 interface PostModalProps {
   isOpen: boolean;
@@ -24,7 +35,12 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
   const [postData, setPostData] = useState({ title: "", description: "", img: "" });
-  const [loading, setLoading] = useState(false); // ✅ Loading state
+  const [loading, setLoading] = useState(false);
+  const [series, setSeries] = useState<Series[]>(INITIAL_SERIES);
+  const [selectedSeries, setSelectedSeries] = useState<Series | null>(null);
+  const [isSeriesDropdownOpen, setIsSeriesDropdownOpen] = useState(false);
+  const [isCreatingNewSeries, setIsCreatingNewSeries] = useState(false);
+  const [newSeriesName, setNewSeriesName] = useState("");
 
   // Image Upload
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -36,9 +52,19 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
     }
   }, [imgUrl]);
 
+  // Reset state when modal is closed or reopened
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedSeries(null);
+      setPostData({ title: "", description: "", img: "" });
+      setIsSeriesDropdownOpen(false);
+      setIsCreatingNewSeries(false);
+      setNewSeriesName("");
+    }
+  }, [isOpen]);
+
   const handlePostSubmit = async () => {
     if (!postData.title || !postData.description) {
-      //alert("Title and description are required.");
       toast({
         description: "Title and description are required.",
         variant: "destructive"
@@ -46,7 +72,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
       return;
     }
 
-    setLoading(true); // ✅ Set loading before request
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:8000/api/psync/createPost", {
@@ -57,17 +83,17 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
           title: postData.title,
           description: postData.description,
           img: postData.img,
+          seriesId: selectedSeries?.id, // Now optional
         }),
       });
 
       if (response.ok) {
-        // alert("Post created successfully!");
         toast({
           description: "Post created successfully!",
           variant: "default"
         });
         setPostData({ title: "", description: "", img: "" });
-        setRefresh((prev) => !prev); // ✅ Trigger refresh
+        setRefresh((prev) => !prev);
         onClose();
       } else {
         alert("Failed to create post. Please try again.");
@@ -76,13 +102,42 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
       console.error("Error creating post:", error);
       alert("An error occurred. Please try again.");
     } finally {
-      setLoading(false); // ✅ Reset loading after request
+      setLoading(false);
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setPostData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSeriesSelect = (clickedSeries: Series) => {
+    // If no series is selected or a different series is clicked
+    if (!selectedSeries || selectedSeries.id !== clickedSeries.id) {
+      setSelectedSeries(clickedSeries);
+      console.log("Selected Series:", clickedSeries.name);
+    } 
+    // If the same series is clicked again, unselect it
+    else if (selectedSeries.id === clickedSeries.id) {
+      setSelectedSeries(null);
+      console.log("Unselected Series:", clickedSeries.name);
+    }
+    
+    setIsSeriesDropdownOpen(false);
+  };
+
+  const handleCreateNewSeries = () => {
+    if (newSeriesName.trim()) {
+      const newSeries = {
+        id: series.length + 1,
+        name: newSeriesName.trim()
+      };
+      setSeries([...series, newSeries]);
+      setSelectedSeries(newSeries);
+      setIsCreatingNewSeries(false);
+      setNewSeriesName("");
+      console.log("Created and Selected New Series:", newSeries);
+    }
   };
 
   return (
@@ -95,11 +150,93 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
               <img src="/src/assets/shared/abbad.png" alt="User avatar" className="w-12 h-12 rounded-full" />
               <span className="text-xl font-semibold">{user.name}</span>
             </div>
-            <button className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700">
-              Add In Series
-            </button>
+            <div className="relative">
+              {selectedSeries ? (
+                <button 
+                  onClick={() => setIsSeriesDropdownOpen(!isSeriesDropdownOpen)}
+                  className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center hover:text-black"
+                >
+                  {selectedSeries.name}
+                  <ChevronDown className="ml-2 w-4 h-4" />
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setIsSeriesDropdownOpen(!isSeriesDropdownOpen)}
+                  className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center"
+                >
+                  Select Series
+                  <ChevronDown className="ml-2 w-4 h-4" />
+                </button>
+              )}
+              
+              {isSeriesDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
+                  {series.map((seriesItem) => (
+                    <button
+                      key={seriesItem.id}
+                      onClick={() => handleSeriesSelect(seriesItem)}
+                      className={`w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between
+                        ${selectedSeries?.id === seriesItem.id 
+                          ? 'bg-teal-600 text-white' 
+                          : ''}`}
+                    >
+                      {seriesItem.name}
+                      {selectedSeries?.id === seriesItem.id && (
+                        <span className="text-white">✓</span>
+                      )}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setIsCreatingNewSeries(true);
+                      setIsSeriesDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-teal-600"
+                  >
+                    <Plus className="mr-2 w-4 h-4" /> Create New Series
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </DialogHeader>
+
+      
+        {/* New Series Creation Popup */}
+        {isCreatingNewSeries && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl w-96 p-6 relative">
+              <button 
+                onClick={() => setIsCreatingNewSeries(false)}
+                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <h2 className="text-xl font-semibold mb-4">Create New Series</h2>
+              <input
+                type="text"
+                value={newSeriesName}
+                onChange={(e) => setNewSeriesName(e.target.value)}
+                placeholder="Enter new series name"
+                className="w-full px-3 py-2 border rounded-md mb-4"
+              />
+              <div className="flex justify-end gap-2">
+                <button 
+                  onClick={() => setIsCreatingNewSeries(false)}
+                  className="text-gray-600 hover:text-gray-800 mr-2"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleCreateNewSeries}
+                  className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="p-6">
           <input
@@ -135,9 +272,12 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
         {/* Footer Buttons */}
         <div className="p-4 border-t flex justify-between items-center">
           {loading ? (
-            <LoadingComponent text="Saving..." /> // ✅ Show Loader while Posting
+            <LoadingComponent text="Saving..." />
           ) : (
-            <button onClick={handlePostSubmit} className="bg-teal-600 text-white px-8 py-2 rounded-full hover:bg-teal-700">
+            <button 
+              onClick={handlePostSubmit} 
+              className="bg-teal-600 text-white px-8 py-2 rounded-full hover:bg-teal-700"
+            >
               Post
             </button>
           )}

@@ -44,7 +44,7 @@ const Psync = () => {
                     key={post._id} // Use unique key for each post
                     postId={post._id}
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
-                    authoreRole={post.user?.role || "Unknown"} // Use user role or fallback
+                    authoreRole={post.user?.role || "unknown"} // Use user role or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                     content={post.description} // Post description
                     timeAgo="7d ago" // Placeholder for dynamic time

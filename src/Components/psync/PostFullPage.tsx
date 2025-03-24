@@ -126,7 +126,8 @@ const FullPost = () => {
                                         <h3 className="font-semibold text-gray-900">{post.user?.name}</h3>
                                         {post.user?.title && <p className="text-sm text-teal-600">{post.user.title}</p>}
                                     </div>
-                                    <span className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</span>
+                                    <span className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString("en-GB")
+                                    }</span>
                                 </div>
                             </div>
                         </div>
