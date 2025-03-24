@@ -10,6 +10,7 @@ import userAtom from "@/atoms/userAtom";
 import usePreviewImage from "@/hooks/usePreviewImage";
 import { Input } from "@/Components/ui/input";
 import LoadingComponent from "../LoadingComponent";
+import { toast } from "@/hooks/use-toast";
 
 
 
@@ -37,7 +38,11 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
 
   const handlePostSubmit = async () => {
     if (!postData.title || !postData.description) {
-      alert("Title and description are required.");
+      //alert("Title and description are required.");
+      toast({
+        description: "Title and description are required.",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -56,7 +61,11 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
       });
 
       if (response.ok) {
-        alert("Post created successfully!");
+        // alert("Post created successfully!");
+        toast({
+          description: "Post created successfully!",
+          variant: "default"
+        });
         setPostData({ title: "", description: "", img: "" });
         setRefresh((prev) => !prev); // ✅ Trigger refresh
         onClose();

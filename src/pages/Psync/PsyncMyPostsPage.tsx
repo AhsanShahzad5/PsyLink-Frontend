@@ -1,6 +1,5 @@
 import  { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
-import BackButton from "@/Components/patient/backButton";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
@@ -57,6 +56,7 @@ const userId = user?._id;
               <Post
                     key={post._id} // Use unique key for each post
                     postId={post._id}
+                    authoreRole={user?.role || "Unknown"} // Use user role or fallback
                     authorName={user.name || "Unknown"} // Use user name or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                     content={post.description} // Post description

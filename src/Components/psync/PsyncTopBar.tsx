@@ -1,19 +1,24 @@
 import React, { useState} from "react";
 import { Search, User } from "lucide-react";
 import PostModal from "./PsyncPostCreationModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PsyncTopBar = ({setRefresh}:any) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const navigate = useNavigate();
 
-const handleFavourites = () => {
-   navigate(`/patient/psync/favouriteposts`)
-  }
+  const location = useLocation();
+
+  // Extract the first part of the pathname (i.e., "doctor" or "patient")
+  const role = location.pathname.split("/")[1];
+  // console.log(role);
+  const handleFavourites = () => {
+    navigate(`/${role}/psync/favouriteposts`);
+  };
 
   const handleMyPostsPage = () => {
-    navigate(`/patient/psync/myposts`)
-  }
+    navigate(`/${role}/psync/myposts`);
+  };
 
 
   return (

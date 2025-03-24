@@ -8,6 +8,7 @@ import {  RecoilRoot} from 'recoil';
 
 import { Provider } from 'react-redux';
 import store from './store';
+import { Toaster } from './Components/ui/toaster'
 
 
 
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
       <Provider store={store}>
       <Router>
         <AppRoutes />
+        <Toaster />
       </Router>
       </Provider>
     </RecoilRoot>

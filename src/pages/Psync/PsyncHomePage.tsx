@@ -29,8 +29,8 @@ const Psync = () => {
   }, [refresh]); // Empty dependency array ensures this runs only once
 
   return (
-    <div className="flex justify-center mt-12 bg-secondary">
-      <div className="w-[95%] p-6 rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
+    <div className="flex justify-center mt-12 bg-secondary custom-scrollbar">
+      <div className="w-[95%] p-6 rounded-lg h-screen">
         <div className="pt-3 max-w-4xl w-full mx-auto">
           <PsyncTopBar setRefresh={setRefresh} />
           {
@@ -44,6 +44,7 @@ const Psync = () => {
                     key={post._id} // Use unique key for each post
                     postId={post._id}
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
+                    authoreRole={post.user?.role || "Unknown"} // Use user role or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                     content={post.description} // Post description
                     timeAgo="7d ago" // Placeholder for dynamic time

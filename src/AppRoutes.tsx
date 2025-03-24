@@ -360,6 +360,17 @@ const AppRoutes = () => (
             }
         />
 
+         <Route
+            path="/doctor/psync/myposts"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PsyncMyPostsPage />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+
 
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
