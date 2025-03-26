@@ -1,12 +1,15 @@
 import { Card, CardContent, CardFooter } from "@/Components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import CommentsSection from "./PsyncComment";
 import BackButton from "../patient/BackButton";
 import FavouritesBackButton from "./FavouritesBackButton";
+import { toast } from "@/hooks/use-toast";
+import { DeleteButton } from "./PostComponent";
+import { Badge } from "../ui/badge";
 
 const FullPost = () => {
     const { postId } = useParams();
@@ -19,6 +22,7 @@ const FullPost = () => {
     const [loading, setLoading] = useState(true);
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [commentText, setCommentText] = useState("");
+    const navigate = useNavigate();
 
     // Fetch the full post data
     useEffect(() => {
@@ -41,7 +45,7 @@ const FullPost = () => {
             }
         };
         if (postId) fetchPost();
-    }, [postId,commentText]);
+    }, [postId, commentText]);
 
     // Handle Like Action
     const handleLike = async () => {
@@ -104,6 +108,48 @@ const FullPost = () => {
         }
     };
 
+
+    const handlePostDelete = async () => {
+
+        //console.log("deleted post succesfuly" , authorId);
+        //if (!postId || !userId) return;
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    description: "Post deleted successfully!",
+                    variant: "default",
+                    duration: 1000,
+                });
+
+                // 🔄 Refresh the page or remove post from UI (modify as needed)
+                window.location.reload();
+                navigate(-1);
+
+            } else {
+                toast({
+                    description: result.error || "Failed to delete post",
+                    variant: "destructive",
+                });
+            }
+        } catch (error) {
+            console.error("Error deleting post:", error);
+            toast({
+                description: "An error occurred while deleting the post.",
+                variant: "destructive",
+            });
+        }
+    }
+
+
     if (loading) return <p>Loading...</p>;
     if (!post) return <p>Post not found</p>;
 
@@ -123,11 +169,26 @@ const FullPost = () => {
                             <div className="flex-1">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">{post.user?.name}</h3>
-                                        {post.user?.title && <p className="text-sm text-teal-600">{post.user.title}</p>}
+                                        <div className="flex gap-3">
+
+                                            <h3 className={`font-semibold text-lg text-gray-900  ${user?.role === "patient" ? "" : ""}`}>{user?.name}</h3>
+                                            {user?.role === "doctor" && <Badge
+                                                // className="bg-primary hover:bg-primaryHover text-white"
+                                                className="mt-1 bg-transparent border-teal-300 text-primary pointer-events-none"
+                                            >
+                                                {user?.role}
+                                            </Badge>}
+                                        </div>
+                                        <p className="text-sm text-teal-600">SERIES NAME </p>
+                                        {post.user?.title && <p className="text-sm text-teal-600">{'hhh' + post.user.title}</p>}
                                     </div>
-                                    <span className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString("en-GB")
-                                    }</span>
+
+                                    {post.user?._id === userId ? (
+                                        <DeleteButton onClick={handlePostDelete} />
+                                    ) : (
+                                        <span className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString("en-GB")
+                                        }</span>
+                                    )}
                                 </div>
                             </div>
                         </div>

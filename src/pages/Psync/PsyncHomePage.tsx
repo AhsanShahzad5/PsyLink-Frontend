@@ -43,6 +43,7 @@ const Psync = () => {
               <Post
                     key={post._id} // Use unique key for each post
                     postId={post._id}
+                    authorId={post.user?._id || "unknown"} // Use user ID or fallback
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
                     authoreRole={post.user?.role || "unknown"} // Use user role or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available

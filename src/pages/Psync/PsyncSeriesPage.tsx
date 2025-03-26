@@ -1,44 +1,63 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
-import PsyncSearchbar from "@/Components/psync/PsyncTopBar";
+import userAtom from "@/atoms/userAtom";
+import { useRecoilValue } from "recoil";
+import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
+
 
 const PsyncSeries = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts data
   const [loading, setLoading] = useState(true); // Track loading state
+  const [refresh, setRefresh] = useState(false);
+  
+  //const [posts, setPosts] = useRecoilState(postsAtom);
+const user = useRecoilValue(userAtom);
+const userId = user?._id;
 
   useEffect(() => {
     // Fetch posts from the backend
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/psync/getAllPosts"); // Replace with your API URL
+        const response = await fetch(`http://localhost:8000/api/psync/getMyPosts?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Include cookies
+        });
+
+      
         const data = await response.json();
         console.log("Fetched Posts:", data); // Log the fetched posts
-        setPosts(data); // Update state with fetched posts
+        setPosts(data); // Set posts correctly
         setLoading(false); // Mark loading as complete
       } catch (error) {
         console.error("Error fetching posts:", error);
+        setLoading(false); // Stop loading even if there's an error
       }
     };
-
+  
     fetchPosts();
-  }, [posts]); // Empty dependency array ensures this runs only once
-
-  console.log("psych series");
+  }, [refresh]); 
+  console.log("Posts:", posts); // Log the posts
+  
   return (
-    <div className="flex justify-center mt-6 bg-secondary">
-      <div className="w-[95%] p-6 bg-white rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
+    <div className="flex justify-center mt-12 bg-secondary">
+      <div className="w-[95%] p-6 rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
         <div className="pt-3 max-w-4xl w-full mx-auto">
-          <PsyncSearchbar />
-          {loading ? (
+        <FavouritesBackButton text="My Series"/>
+          {
+          loading ? (
             <p className="text-center text-gray-600">Loading posts...</p>
           ) : posts.length === 0 ? (
             <p className="text-center text-gray-600">No posts available</p>
           ) : (
-            posts.map((post) => (
+            posts?.map((post) => (
               <Post
                     key={post._id} // Use unique key for each post
                     postId={post._id}
-                    authorName={post.user?.name || "Unknown"} // Use user name or fallback
+                    authoreRole={user?.role || "Unknown"} // Use user role or fallback
+                    authorName={user.name || "Unknown"} // Use user name or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                     content={post.description} // Post description
                     timeAgo="7d ago" // Placeholder for dynamic time
@@ -48,7 +67,8 @@ const PsyncSeries = () => {
                     image={post.img || undefined} // Optional image field
                     />
             ))
-          )}
+          )
+          }
         </div>
       </div>
     </div>

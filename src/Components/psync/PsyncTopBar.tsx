@@ -19,6 +19,9 @@ const PsyncTopBar = ({setRefresh}:any) => {
   const handleMyPostsPage = () => {
     navigate(`/${role}/psync/myposts`);
   };
+  const handleMySeriesPage = () => {
+    navigate(`/${role}/psync/myseries`);
+  };
 
 
   return (
@@ -69,7 +72,10 @@ const PsyncTopBar = ({setRefresh}:any) => {
           Add a Post
         </button>
 
-        <button className="flex items-center gap-2 bg-teal-600 text-white px-8 py-3 rounded-full hover:bg-teal-700 transition-colors">
+        <button className="flex items-center gap-2 bg-teal-600 text-white px-8 py-3 rounded-full hover:bg-teal-700 transition-colors"
+        
+        onClick={handleMySeriesPage}
+        >
           {/* Star-like icon for Post in Series */}
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path d="M12.86 2.86l1.33 3.13l3.11 1.46c1.59.75 2.13 2.89.96 4.28l-2.13 2.53l.53 3.27c.28 1.73-1.46 3.14-3.07 2.49l-2.98-1.2l-2.98 1.2c-1.61.65-3.35-.76-3.07-2.49l.53-3.27l-2.13-2.53c-1.16-1.39-.63-3.53.96-4.28l3.11-1.46l1.33-3.13C8.86 1.29 10.74 1.29 12.86 2.86z" />
