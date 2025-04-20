@@ -10,7 +10,6 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RecoilRoot>

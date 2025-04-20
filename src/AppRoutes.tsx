@@ -48,6 +48,9 @@ import SessionDetail from '@/pages/Admin/SessionDetail';
 import Sessions from '@/pages/Admin/Sessions';
 import ForgotPasswordPage from './pages/Patient/ForgotPasswordPage';
 import ResetPassword from './pages/Patient/ResetPasswordPage';
+import { SocketProvider } from './context/SocketProvider'
+import VideoPreview from './pages/Patient/VideoPreview';
+
 
 
 
@@ -141,11 +144,23 @@ const AppRoutes = () => (
             }
         />
         <Route
-            path="/patient/video-consultation"
+            path="/patient/video-consultation/:roomId"
             element={
+                <SocketProvider>
                 <ProtectedRoute allowedRoles={['patient']}>
                     <VideoConsulation />
                 </ProtectedRoute>
+                </SocketProvider>
+            }
+        />
+        <Route
+            path="/patient/video-preview"
+            element={
+                <SocketProvider>
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <VideoPreview />
+                </ProtectedRoute>
+                </SocketProvider>
             }
         />
         <Route
@@ -288,11 +303,13 @@ const AppRoutes = () => (
             }
         />
         <Route
-            path="/doctor/video-consultation"
+            path="/doctor/video-consultation/:roomId"
             element={
+                <SocketProvider>
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <VideoConsulation />
                 </ProtectedRoute>
+                </SocketProvider>
             }
         />
         <Route

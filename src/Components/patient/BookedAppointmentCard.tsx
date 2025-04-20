@@ -3,6 +3,7 @@ import React from "react";
 
 interface BookedAppointment {
   id: number;
+  appointmentId: string;
   doctorName: string;
   specialization: string;
   bookedTimeSlot: string; // E.g., "8:00 PM - 9:00 PM"
@@ -67,7 +68,7 @@ export default function BookedAppointmentCard({
         {bookedAppointment.status === "active" ? (
           <a
             // href={bookedAppointment.meetingLink}
-            href='/patient/video-consultation'
+            href={`/patient/video-preview?appointmentId=${bookedAppointment.appointmentId}`}
             className="w-full sm:w-auto px-10 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
           >
             Join Call

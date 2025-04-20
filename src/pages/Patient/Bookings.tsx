@@ -47,6 +47,7 @@ interface Doctor {
 
   interface BookedAppointment {
   id: number;
+  appointmentId:string;
   doctorName: string;
   specialization: string;
   bookedTimeSlot: string; // E.g., "8:00 PM - 9:00 PM"
@@ -61,6 +62,7 @@ interface Doctor {
 
 interface HistoryAppointment {
   id: number;
+  appointmentId:string;
   doctorName: string;
   specialization: string;
   appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
@@ -72,6 +74,7 @@ interface HistoryAppointment {
 const HistoryAppointments: HistoryAppointment[] = [
   {
     id: 1,
+    appointmentId:"12345",
     doctorName: "Dr. Fahad Tariq Aziz",
     specialization: "Psychologist",
     appointmentTime: "8:00 PM",
@@ -81,6 +84,7 @@ const HistoryAppointments: HistoryAppointment[] = [
   },
   {
     id: 2,
+    appointmentId:"12345",
     doctorName: "Dr. Sarah Ahmed",
     specialization: "Psychiatrist",
     appointmentTime: "10:00 AM",
