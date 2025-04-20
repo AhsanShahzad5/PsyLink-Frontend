@@ -3,7 +3,7 @@
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
-import { Camera, FileText, Image, Mic, PhoneOff, Send } from 'lucide-react';
+import { Camera, CameraOff, FileText, Image, Mic, MicOff , PhoneOff, Send } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -116,11 +116,17 @@ export default function Component() {
   const [remoteSocketId, setRemoteSocketId] = useState(null);
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
   const handleUserJoined = useCallback(({ email, id }) => {
-    console.log(`Email ${email} joined with socket id = ${id}`)
-    setRemoteSocketId(id)
-  }, [])
+    console.log(`===== USER JOINED EVENT =====`);
+    console.log(`User ${email} joined with socket id = ${id}`);
+    console.log(`My socket id = ${socket?.id}`);
+    console.log(`Setting remoteSocketId to ${id}`);
+    setRemoteSocketId(id);
+    console.log(`===== USER JOINED COMPLETE =====`);
+  }, [socket?.id]);
 
   const getUserMediaStream = async () => {
     try {
@@ -171,6 +177,68 @@ export default function Component() {
     await peer.setLocalDescription(ans)
   }, [])
 
+   // New function to toggle audio
+   const toggleAudio = useCallback(() => {
+    if (myStream) {
+      const audioTracks = myStream.getAudioTracks();
+      audioTracks.forEach(track => {
+        track.enabled = !track.enabled;
+      });
+  
+      // Recreate stream to trigger re-render
+      const newStream = new MediaStream([
+        ...myStream.getVideoTracks(),
+        ...audioTracks,
+      ]);
+  
+      setMyStream(newStream);
+      setIsAudioEnabled(audioTracks[0]?.enabled ?? false);
+    }
+  }, [myStream]);
+  
+
+  // New function to toggle video
+  const toggleVideo = useCallback(() => {
+    if (myStream) {
+      const videoTracks = myStream.getVideoTracks();
+      videoTracks.forEach(track => {
+        track.enabled = !track.enabled;
+      });
+  
+      // Recreate stream to trigger re-render
+      const newStream = new MediaStream([
+        ...videoTracks,
+        ...myStream.getAudioTracks(),
+      ]);
+  
+      setMyStream(newStream);
+      setIsVideoEnabled(videoTracks[0]?.enabled ?? false);
+    }
+  }, [myStream]);
+  
+  // New function to end call
+  const endCall = useCallback(() => {
+    setShowReviewModal(true);
+    
+    // Stop all tracks
+    if (myStream) {
+      myStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      setMyStream(null);
+    }
+    
+    // Close peer connection
+    if (peer.peer) {
+      peer.peer.close();
+    }
+    
+    // Reset remote stream
+    setRemoteStream(null);
+    setRemoteSocketId(null);
+  }, [myStream]);
+
+
   useEffect(() => {
     peer.peer?.addEventListener('negotiationneeded', handleNegoNeeded)
     return () => {
@@ -187,22 +255,43 @@ export default function Component() {
 
 
   useEffect(() => {
-
     getUserMediaStream();
-
+    
+    socket?.on('room:full', (data) => {
+      console.error('Room is full:', data.message);
+      alert('This room already has 2 participants. Please try another room.');
+      navigate(-1);
+    });
+    
+    // Add this new handler
+    socket?.on('room:users', ({ users }) => {
+      console.log('RECEIVED ROOM USERS:', users);
+      if (users && users.length > 0 && socket?.id) {
+        // Find other users (not myself)
+        const otherUsers = users.filter(u => u.id !== socket.id);
+        if (otherUsers.length > 0) {
+          console.log('Setting remoteSocketId to:', otherUsers[0].id);
+          setRemoteSocketId(otherUsers[0].id);
+        }
+      }
+    });
+    
     socket?.on('user:joined', handleUserJoined);
     socket?.on('incomming:call', handleIncommingCall);
-    socket?.on("call:accepted", handleCallAccepted)
-    socket?.on('peer:nego:needed', handleNegoNeedIncomming)
-    socket?.on('peer:nego:final', handleNegoNeedFinal)
+    socket?.on("call:accepted", handleCallAccepted);
+    socket?.on('peer:nego:needed', handleNegoNeedIncomming);
+    socket?.on('peer:nego:final', handleNegoNeedFinal);
+    
     return () => {
-      socket?.off('user:joined', handleUserJoined)
+      socket?.off('room:full');
+      socket?.off('room:users');
+      socket?.off('user:joined', handleUserJoined);
       socket?.off('incomming:call', handleIncommingCall);
       socket?.off('call:accepted', handleCallAccepted);
-      socket?.off('peer:nego:needed', handleNegoNeedIncomming)
-      socket?.off('peer:nego:final', handleNegoNeedFinal)
+      socket?.off('peer:nego:needed', handleNegoNeedIncomming);
+      socket?.off('peer:nego:final', handleNegoNeedFinal);
     }
-  }, [socket, handleUserJoined, handleIncommingCall, handleCallAccepted, handleNegoNeedIncomming, handleNegoNeedFinal])
+}, [socket, handleUserJoined, handleIncommingCall, handleCallAccepted, handleNegoNeedIncomming, handleNegoNeedFinal, navigate]);
 
 
   const handleCallUser = useCallback(async () => {
@@ -250,29 +339,32 @@ export default function Component() {
             variant="ghost"
             size="icon"
             onClick={handleCallUser}
-            className="hover:bg-emerald-700 bg-black px-5 flex items-center justify-center"
+            className="hover:bg-emerald-700 bg-black px-24 flex items-center justify-center"
           >
-            Call
+            Ready to Start
           </Button>}
-          {myStream && <Button className="hover:bg-emerald-700 bg-black px-5 flex items-center justify-center" onClick={sendStreams}>Start Video</Button>}
+          {/* {myStream && <Button className="hover:bg-emerald-700 bg-black px-5 flex items-center justify-center" onClick={sendStreams}>Start Video</Button>} */}
           <Button
-            variant="ghost"
+            variant={isVideoEnabled ? "ghost" : "destructive"}
             size="icon"
-            className="hover:bg-emerald-700 flex items-center justify-center"
+            onClick={toggleVideo}
+            className={`${isVideoEnabled ? 'hover:bg-emerald-700' : ''} flex items-center justify-center`}
           >
-            <Camera className="h-5 w-5" />
+            {isVideoEnabled ? <Camera className="h-5 w-5" /> : <CameraOff className="h-5 w-5" />}
           </Button>
           <Button
-            variant="ghost"
+             variant={isAudioEnabled ? "ghost" : "destructive"}
             size="icon"
-            className="hover:bg-emerald-700 flex items-center justify-center"
+            onClick={toggleAudio}
+            className={`${isAudioEnabled ? 'hover:bg-emerald-700' : ''} flex items-center justify-center`}
           >
-            <Mic className="h-5 w-5" />
+            {isAudioEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
           </Button>
           <Button
             variant="destructive"
             size="icon"
-            onClick={() => setShowReviewModal(true)}
+            // onClick={() => setShowReviewModal(true)}
+            onClick={endCall}
             className="flex items-center justify-center"
           >
             <PhoneOff className="h-5 w-5" />
@@ -304,7 +396,7 @@ export default function Component() {
           </div>
 
           <div className="bg-gray-200 rounded-lg overflow-hidden">
-            {remoteStream ? <ReactPlayer playing muted url={remoteStream} width="100%" height="250px" />
+            {remoteStream ? <ReactPlayer playing url={remoteStream} width="100%" height="250px" />
               :
               <img
                 src={patientImage}

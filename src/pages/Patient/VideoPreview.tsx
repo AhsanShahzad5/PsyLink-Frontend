@@ -24,7 +24,7 @@ const VideoPreview: React.FC = () => {
     ) ;
   
     const handleJoinRoom = useCallback((data)=>{
-        const {user,roomId}=data;
+        const {roomId}=data;
         navigate(`/patient/video-consultation/${roomId}`)
     },[navigate])
         
