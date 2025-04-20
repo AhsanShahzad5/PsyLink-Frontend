@@ -18,7 +18,7 @@ const VideoPreview: React.FC = () => {
     const socket = useSocket();
 
     const handleJoinCallButton= useCallback(
-        (e)=>{
+        (_e: React.MouseEvent<HTMLButtonElement>)=>{
             socket?.emit('room:join',{user,roomId})
         },[user,socket]
     ) ;
