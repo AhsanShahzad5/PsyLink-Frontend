@@ -69,26 +69,26 @@ interface HistoryAppointment {
   imageUrl: string;
 }
   
-const HistoryAppointments: HistoryAppointment[] = [
-  {
-    id: 1,
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychologist",
-    appointmentTime: "8:00 PM",
-    date: "2025-10-25",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor1.png",
-  },
-  {
-    id: 2,
-    doctorName: "Dr. Sarah Ahmed",
-    specialization: "Psychiatrist",
-    appointmentTime: "10:00 AM",
-    date: "2025-10-28",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor2.png",
-  },
-];
+// const HistoryAppointments: HistoryAppointment[] = [
+//   {
+//     id: 1,
+//     doctorName: "Dr. Fahad Tariq Aziz",
+//     specialization: "Psychologist",
+//     appointmentTime: "8:00 PM",
+//     date: "2025-10-25",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
+//   },
+//   {
+//     id: 2,
+//     doctorName: "Dr. Sarah Ahmed",
+//     specialization: "Psychiatrist",
+//     appointmentTime: "10:00 AM",
+//     date: "2025-10-28",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
+//   },
+// ];
 
 
 export default function Bookings(): JSX.Element {
@@ -105,6 +105,29 @@ export default function Bookings(): JSX.Element {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+
+  const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
+
+const moveToHistory = (appointment: BookedAppointment) => {
+  // Create a new history appointment object
+  const historyAppointment: HistoryAppointment = {
+    id: appointment.id,
+    doctorName: appointment.doctorName,
+    specialization: appointment.specialization,
+    appointmentTime: appointment.bookedTimeSlot,
+    date: appointment.date,
+    rating: 4, // For now, hardcode the rating or fetch it from your backend
+    imageUrl: appointment.imageUrl,
+  };
+
+  // Remove the appointment from the booked appointments
+  setBookedAppointments(prevAppointments =>
+    prevAppointments.filter(app => app.id !== appointment.id)
+  );
+
+  // Add the appointment to the history list
+  setHistoryAppointments(prevHistory => [...prevHistory, historyAppointment]);
+};
 
 
   const handleViewClick = () => {
@@ -162,6 +185,13 @@ fetchVerifiedDoctors();
   
         if (response.ok) {
           const data = await response.json();
+          // Process the appointments and move completed ones to history
+          const now = new Date();
+          data.forEach((appointment: BookedAppointment) => {
+            if (new Date(appointment.date) < now && appointment.status !== 'active') {
+              moveToHistory(appointment);
+            }
+          });
           setBookedAppointments(data);
         } else {
           console.error("Failed to fetch booked appointments");
@@ -247,31 +277,35 @@ fetchVerifiedDoctors();
 
 
 {activeTab === 'Booked Appointments' && (
-      <div className="space-y-4">
-        {loadingAppointments ? (
-          <p>Loading...</p>
-        ) : bookedAppointments.length > 0 ? (
-          bookedAppointments.map((appointment) => (
-            <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
-          ))
-        ) : (
-          <p>No Booked Appointments</p>
-        )}
-      </div>
+  <div className="space-y-4">
+    {loadingAppointments ? (
+      <p>Loading...</p>
+    ) : bookedAppointments.length > 0 ? (
+      bookedAppointments
+        .filter((appointment) => appointment.status === "active" || appointment.status === "upcoming")
+        .map((appointment) => (
+          <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
+        ))
+    ) : (
+      <p>No Booked Appointments</p>
     )}
+  </div>
+)}
 
 
-        {activeTab === 'History' && (
-           
-          
-            <div className="space-y-4">
-              {HistoryAppointments.map((history) => (
-                 <HistoryAppointmentCard key={history.id} historyCard={history} />
-              
-              ))}
-            </div>
-  
-        )}
+{activeTab === 'History' && (
+  <div className="space-y-4">
+    {historyAppointments.length > 0 ? (
+      historyAppointments.map((history) => (
+        <HistoryAppointmentCard key={history.id} historyCard={history} />
+      ))
+    ) : (
+      <p className="text-center text-xl text-gray-600 font-semibold mt-8">
+      <span className="text-teal-600">No History Available</span>
+    </p>
+    )}
+  </div>
+)}
       </div>
     </div>
     </>
