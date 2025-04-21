@@ -80,6 +80,7 @@ const FullPost = () => {
                 setCommentCount((prev) => prev + 1);
                 setCommentText(""); // Clear input after posting
                 setShowCommentBox(false); // Hide input after posting
+                window.location.reload();
             } else {
                 console.error(result.error);
             }

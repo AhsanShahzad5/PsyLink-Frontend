@@ -51,16 +51,16 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
   useEffect(() => {
     const fetchSeries = async () => {
       if (!userId) return;
-
+      
       setIsLoadingSeries(true);
       try {
         const response = await fetch(`http://localhost:8000/api/psync/series/all`);
         if (response.ok) {
           const data = await response.json();
           // Map the backend data structure to match frontend structure
-          setSeries(data.map((item: any) => ({
-            id: item._id,
-            name: item.title
+          setSeries(data.map((item: any) => ({ 
+            id: item._id, 
+            name: item.title 
           })));
         } else {
           console.error("Failed to fetch series");
@@ -102,55 +102,23 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
 
     try {
       let response;
-
+      
       // Case 1: Creating a new series with a post
       if (newSeriesCreated || (isCreatingNewSeries && newSeriesName.trim())) {
         const seriesTitle = newSeriesCreated ? newSeriesCreated.name : newSeriesName.trim();
-
-        try {
-          console.log("Attempting to create new series with post:", {
+        
+        response = await fetch("http://localhost:8000/api/psync/series/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
             title: seriesTitle,
-            userId: userId,
             postTitle: postData.title,
             postDescription: postData.description,
             img: postData.img
-          });
-
-          response = await fetch("http://localhost:8000/api/psync/series/create", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: seriesTitle,
-              userId: userId,
-              postTitle: postData.title,
-              postDescription: postData.description,
-              img: postData.img
-            }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            console.error("Server error creating series:", {
-              status: response.status,
-              statusText: response.statusText,
-              errorData
-            });
-            throw new Error(`Failed to create series: ${response.status} ${response.statusText}${errorData ? ' - ' + JSON.stringify(errorData) : ''}`);
-          }
-
-          const responseData = await response.json();
-          console.log("Series creation successful:", responseData);
-
-          // Check if the series was actually created in the response
-          if (!responseData.series || !responseData.series.id) {
-            console.warn("Series may not have been created properly:", responseData);
-          }
-        } catch (error) {
-          console.error("Error creating series with post:", error);
-          // You could set some state here to show an error message to the user
-          throw error; // Re-throw to handle it in the caller function if needed
-        }
-      }
+          }),
+        });
+      } 
       // Case 2: Adding post to an existing series
       else if (selectedSeries) {
         response = await fetch("http://localhost:8000/api/psync/series/add-post", {
@@ -214,18 +182,18 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
   const handleSeriesSelect = (clickedSeries: Series) => {
     // Reset new series created state when selecting an existing series
     setNewSeriesCreated(null);
-
+    
     // If no series is selected or a different series is clicked
     if (!selectedSeries || selectedSeries.id !== clickedSeries.id) {
       setSelectedSeries(clickedSeries);
       console.log("Selected Series:", clickedSeries.name);
-    }
+    } 
     // If the same series is clicked again, unselect it
     else if (selectedSeries.id === clickedSeries.id) {
       setSelectedSeries(null);
       console.log("Unselected Series:", clickedSeries.name);
     }
-
+    
     setIsSeriesDropdownOpen(false);
   };
 
@@ -236,18 +204,18 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
         id: `temp-${Date.now()}`,
         name: newSeriesName.trim()
       };
-
+      
       // Add the new series to the list
       setSeries([...series, tempNewSeries]);
-
+      
       // Store the new series separately to track that it's newly created
       setNewSeriesCreated(tempNewSeries);
-
+      
       // Reset selection and creation state
       setSelectedSeries(null);
       setIsCreatingNewSeries(false);
       setNewSeriesName("");
-
+      
       toast({
         description: `Series "${tempNewSeries.name}" will be created when you submit the post`,
         variant: "default"
@@ -284,26 +252,26 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
               <span className="text-xl font-semibold">{user?.name}</span>
             </div>
             <div className="relative">
-              <button
+              <button 
                 onClick={() => !isCreatingNewSeries && setIsSeriesDropdownOpen(!isSeriesDropdownOpen)}
                 className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center"
               >
                 {getSeriesButtonText()}
                 {newSeriesCreated ? (
-                  <X
-                    className="ml-2 w-4 h-4 cursor-pointer"
+                  <X 
+                    className="ml-2 w-4 h-4 cursor-pointer" 
                     onClick={(e) => {
                       e.stopPropagation();
                       setNewSeriesCreated(null);
                       // Remove the temporary series from the list
                       setSeries(series.filter(s => s.id !== newSeriesCreated.id));
-                    }}
+                    }} 
                   />
                 ) : !isCreatingNewSeries && (
                   <ChevronDown className="ml-2 w-4 h-4" />
                 )}
               </button>
-
+              
               {isSeriesDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
                   {isLoadingSeries ? (
@@ -314,8 +282,8 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
                         key={seriesItem.id}
                         onClick={() => handleSeriesSelect(seriesItem)}
                         className={`w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between
-                          ${selectedSeries?.id === seriesItem.id
-                            ? 'bg-teal-600 text-white'
+                          ${selectedSeries?.id === seriesItem.id 
+                            ? 'bg-teal-600 text-white' 
                             : ''}`}
                       >
                         {seriesItem.name}
@@ -343,12 +311,12 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
           </div>
         </DialogHeader>
 
-
+      
         {/* New Series Creation Popup */}
         {isCreatingNewSeries && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl w-96 p-6 relative">
-              <button
+              <button 
                 onClick={() => setIsCreatingNewSeries(false)}
                 className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
               >
@@ -364,13 +332,13 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
                 autoFocus
               />
               <div className="flex justify-end gap-2">
-                <button
+                <button 
                   onClick={() => setIsCreatingNewSeries(false)}
                   className="text-gray-600 hover:text-gray-800 mr-2"
                 >
                   Cancel
                 </button>
-                <button
+                <button 
                   onClick={handleCreateNewSeries}
                   className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
                 >
@@ -417,8 +385,8 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
           {loading ? (
             <LoadingComponent text="Saving..." />
           ) : (
-            <button
-              onClick={handlePostSubmit}
+            <button 
+              onClick={handlePostSubmit} 
               className="bg-teal-600 text-white px-8 py-2 rounded-full hover:bg-teal-700"
             >
               Post

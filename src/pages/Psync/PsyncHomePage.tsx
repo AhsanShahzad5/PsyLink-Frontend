@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
 import PsyncTopBar from "@/Components/psync/PsyncTopBar";
 
@@ -43,6 +43,7 @@ const Psync = () => {
               <Post
                     key={post._id} // Use unique key for each post
                     postId={post._id}
+                    seriesTitle = {post.series[0]?.title || "no series"} // Series title
                     authorId={post.user?._id || "unknown"} // Use user ID or fallback
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
                     authoreRole={post.user?.role || "unknown"} // Use user role or fallback

@@ -35,6 +35,7 @@ export interface PostProps {
   title?: string;
   isFavorited?: boolean;
   authorId?: string;
+  seriesTitle?: string;
 }
 
 const Post = ({
@@ -49,6 +50,7 @@ const Post = ({
   title,
   postId,
   authorId,
+  seriesTitle
 }: PostProps) => {
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
@@ -194,7 +196,7 @@ const Post = ({
                       {authoreRole}
                     </Badge>}
                   </div>
-                  <p className="text-sm text-teal-600">SERIES NAME </p>
+                  <p className="text-sm text-teal-600">{seriesTitle} </p>
                   {/* <p className="text-sm text-teal-600">{authoreRole}</p> */}
 
                 </div>
