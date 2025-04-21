@@ -1,25 +1,23 @@
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 
-// Generate dates dynamically from today to one month ahead
 const generateDates = () => {
   const dates = [];
   const today = new Date();
-
   for (let i = 0; i < 30; i++) {
     const newDate = new Date();
     newDate.setDate(today.getDate() + i);
-    const formattedDate = newDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    const formattedDate = newDate.toISOString().split("T")[0];
     dates.push(formattedDate);
   }
-
   return dates;
 };
 
 const timeSlots = [
   "9:00am - 10:00am",
   "10:00am - 11:00am",
-  "12:00am - 01:00pm",
+  "12:00pm - 01:00pm",
   "12:30pm - 01:30pm",
   "01:00pm - 02:00pm",
   "02:00pm - 03:00pm",
@@ -45,7 +43,7 @@ const DoctorCalender = ({availabilityDetails}:any) => {
 
   useEffect(() => {
     setDates(generateDates());
-    console.log(availabilityDetails);
+    console.log("AVAILABILITY DETAIL FROM PROPS",availabilityDetails);
   }, []);
 
   const updateDateSlotData = (date: string, slotTime: string) => {
@@ -112,27 +110,25 @@ const DoctorCalender = ({availabilityDetails}:any) => {
       });
 
       if (response.ok) {
-        alert("Availability saved successfully!");
-        setDateSlotData([]);
+        toast.success("Availability saved successfully!");
+        // setDateSlotData([]);
       } else {
-        alert("Failed to save availability.");
+        toast.error("Failed to save availability.");
       }
     } catch (error) {
       console.error("Error saving availability:", error);
-      alert("An error occurred while saving availability.");
+      toast.error("An error occurred while saving availability.");
     }
   };
 
   const handleMarkBusy = async () => {
-    // Construct the payload with all dates and their time slots
     const payload = {
       schedules: dateSlotData.map((entry) => ({
         date: entry.date,
-        times: entry.slots.map((slot) => slot.time), // Keep the original format with spaces
+        times: entry.slots.map((slot) => slot.time),
       })),
     };
   
-    // Log the payload for debugging
     console.log(JSON.stringify(payload, null, 2));
   
     try {
@@ -144,8 +140,7 @@ const DoctorCalender = ({availabilityDetails}:any) => {
       });
   
       if (response.ok) {
-        alert("Slots marked as busy successfully!");
-        // Update the state to reflect the busy status
+        toast.success("Slots marked as busy successfully!");
         setDateSlotData((prev) =>
           prev.map((entry) => ({
             ...entry,
@@ -157,17 +152,13 @@ const DoctorCalender = ({availabilityDetails}:any) => {
           }))
         );
       } else {
-        alert("Failed to mark slots as busy.");
+        toast.error("Failed to mark slots as busy.");
       }
     } catch (error) {
       console.error("Error marking slots as busy:", error);
-      alert("An error occurred while marking slots as busy.");
+      toast.error("An error occurred while marking slots as busy.");
     }
   };
-
-  
-  
-  
 
   const convertTo12HourFormat = (slot: string) => {
     const match = slot.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
@@ -185,9 +176,46 @@ const DoctorCalender = ({availabilityDetails}:any) => {
   };
 
   const selectedDate = dates[selectedDateIndex];
-  const selectedDateData = availabilityDetails.find((entry:any) => entry.date === selectedDate);
+  const selectedDateData = (availabilityDetails || []).find((entry: any) => entry.date === selectedDate);
+  console.log("SELECTED DATE DATA : ",selectedDateData);
+
   const availableSlots = selectedDateData?.slots.filter((slot:any) => slot.status === "available") || [];
   const busySlots = selectedDateData?.slots.filter((slot:any) => slot.status === "busy") || [];
+
+  useEffect(() => {
+    const selectedDate = dates[selectedDateIndex];
+    const selectedDateData = (availabilityDetails || []).find(
+      (entry: any) => entry.date === selectedDate
+    );
+  
+    if (selectedDateData) {
+      const updatedSlots = selectedDateData.slots.map((slot: any) => ({
+        time: slot.time,
+        status: slot.status,
+      }));
+  
+      // Sync dateSlotData with availabilityDetails
+      setDateSlotData((prev) => {
+        const updated = prev.filter((entry) => entry.date !== selectedDate);
+        return [...updated, { date: selectedDate, slots: updatedSlots }];
+      });
+    }
+  }, [availabilityDetails, selectedDateIndex, dates]);
+
+  const sortSlotsByTime = (slots: any[]) => {
+    const convertToDate = (timeStr: string) => {
+      const [start] = timeStr.split(" - ");
+      const [hourMin, meridiem] = start.trim().split(/(am|pm)/);
+      let [hour, minute] = hourMin.split(":").map(Number);
+  
+      if (meridiem === "pm" && hour !== 12) hour += 12;
+      if (meridiem === "am" && hour === 12) hour = 0;
+  
+      return new Date(0, 0, 0, hour, minute);
+    };
+  
+    return [...slots].sort((a, b) => convertToDate(a.time).getTime() - convertToDate(b.time).getTime());
+  };
 
   return (
     <div className="bg-white rounded-lg p-6 my-4 border border-[#D9EAF3]">
@@ -256,30 +284,49 @@ const DoctorCalender = ({availabilityDetails}:any) => {
         })}
       </div>
       <div className="mt-6">
-        <h3 className="text-lg font-semibold">Marked Available Slots</h3>
-        {availableSlots.length > 0 ? (
-          <ul className="list-disc pl-6">
-            {availableSlots.map((slot:any) => (
-              <li key={slot._id}>{slot.time}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No slot mark as available</p>
-        )}
-      </div>
+  <h3 className="text-lg font-semibold flex items-center gap-2 text-green-600">
+    <span className="inline-block w-2 h-2 bg-green-500 rounded-full" />
+    Marked Available Slots
+  </h3>
+  {availableSlots.length > 0 ? (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {sortSlotsByTime(availableSlots).map((slot: any) => (
+        <span
+          key={slot._id}
+          className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 border border-green-300"
+        >
+          {slot.time}
+        </span>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-400 italic mt-2">No slots marked as available</p>
+  )}
+</div>
 
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">Busy Slots</h3>
-        {busySlots.length > 0 ? (
-          <ul className="list-disc pl-6 text-red-500">
-            {busySlots.map((slot:any) => (
-              <li key={slot._id}>{slot.time}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No busy slots</p>
-        )}
-      </div>
+<div className="mt-6">
+  <h3 className="text-lg font-semibold flex items-center gap-2 text-red-600">
+    <span className="inline-block w-2 h-2 bg-red-500 rounded-full" />
+    Busy Slots
+  </h3>
+  {busySlots.length > 0 ? (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {sortSlotsByTime(busySlots).map((slot: any) => (
+        <span
+          key={slot._id}
+          className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-700 border border-red-300"
+        >
+          {slot.time}
+        </span>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-400 italic mt-2">No busy slots</p>
+  )}
+</div>
+<ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
+
+
     </div>
   );
 };

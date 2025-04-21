@@ -1,5 +1,5 @@
 import Post from "@/Components/psync/PostComponent";
-import PsyncSearchbar from "@/Components/psync/PsyncSearchbar";
+import PsyncSearchbar from "@/Components/psync/PsyncTopBar";
 
 const Psync = () => {
   return (

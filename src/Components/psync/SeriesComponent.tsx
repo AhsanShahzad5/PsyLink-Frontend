@@ -37,7 +37,7 @@ export interface PostProps {
   authorId?: string;
 }
 
-const Post = ({
+const Series = ({
   authorName,
   authorImage,
   authoreRole,
@@ -326,4 +326,4 @@ export const DeleteButton = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-export default Post;
+export default Series;

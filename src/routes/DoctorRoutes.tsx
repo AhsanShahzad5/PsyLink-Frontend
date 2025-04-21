@@ -1,4 +1,16 @@
 
+import DoctorLayout from '@/layouts/DoctorLayout';
+import DoctorAppointments from '@/pages/Doctor/DoctorAppointments';
+import DoctorClinic from '@/pages/Doctor/DoctorClinic';
+import DoctorDetailForm from '@/pages/Doctor/DoctorDetailForm';
+import DoctorHome from '@/pages/Doctor/DoctorHome';
+import DoctorProfessionalDetailsForm from '@/pages/Doctor/DoctorProfessionalDetailsForm';
+import PaymentAnalyticsDetails from '@/pages/Doctor/PaymentAnalyticsDetails';
+import ThankYouPage from '@/pages/Doctor/ThankYouPage';
+import LoginPage from '@/pages/Patient/Login';
+import VideoConsulation from '@/pages/Patient/VideoConsulation';
+import PsyncHomePage from '@/pages/Psync/PsyncHomePage';
+import ProtectedRoute from '@/ProtectedRoute';
 import { Route } from 'react-router-dom';
 
 const DoctorRoutes = () => (
