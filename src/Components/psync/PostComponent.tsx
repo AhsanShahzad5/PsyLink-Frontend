@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/Components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
@@ -19,8 +19,7 @@ import {
   AlertDialogTrigger
 } from "@/Components/ui/alert-dialog";
 import { Badge } from "../ui/badge";
-
-
+import EditPostModal from "./EditPostModal"; // Import the new component
 
 export interface PostProps {
   postId: string;
@@ -59,6 +58,8 @@ const Post = ({
   const [isFavorited, setIsFavorited] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const handleLike = async () => {
     try {
@@ -134,10 +135,6 @@ const Post = ({
   const navigate = useNavigate();
 
   const handlePostDelete = async () => {
-
-    //console.log("deleted post succesfuly" , authorId);
-    //if (!postId || !userId) return;
-
     try {
       const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
         method: "DELETE",
@@ -172,6 +169,26 @@ const Post = ({
     }
   }
 
+  // Function to open edit modal
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  // Create post data object for edit modal
+  const postDataForEdit = {
+    postId,
+    title: title || "",
+    description: content,
+    img: image || ""
+  };
+
+  // Effect to refresh the component when post is updated
+  useEffect(() => {
+    if (refresh) {
+      // You could fetch updated post data here if needed
+      setRefresh(false);
+    }
+  }, [refresh]);
 
   return (
     <>
@@ -188,21 +205,26 @@ const Post = ({
                 <div>
 
                   <div className="flex gap-3">
-
                     <h3 className={`font-semibold text-lg text-gray-900  ${authoreRole === "patient" ? "" : ""}`}>{authorName}</h3>
                     {authoreRole === "doctor" && <Badge
-                      // className="bg-primary hover:bg-primaryHover text-white"
                       className="mt-1 bg-transparent border-teal-300 text-primary pointer-events-none"
                     >
                       {authoreRole}
                     </Badge>}
                   </div>
                   <p className="text-sm text-teal-600">{seriesTitle} </p>
-                  {/* <p className="text-sm text-teal-600">{authoreRole}</p> */}
-
                 </div>
                 {authorId === userId ? (
-                  <DeleteButton onClick={handlePostDelete} />
+                  <div className="flex gap-3">
+                    <FaPenAlt
+                      className="w-5 h-5 text-gray-600 cursor-pointer hover:text-teal-600 transition-colors duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditClick();
+                      }}
+                    />
+                    <DeleteButton onClick={handlePostDelete} />
+                  </div>
                 ) : (
                   <span className="text-sm text-gray-500">{timeAgo}</span>
                 )}
@@ -230,7 +252,6 @@ const Post = ({
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-
               Like
             </button>
 
@@ -246,13 +267,10 @@ const Post = ({
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-
-
               Comment
             </button>
 
             <button onClick={handleFavorite} className="flex items-center justify-center gap-2 bg-teal-600 text-white px-4 py-2.5 rounded-full hover:bg-teal-700 transition-colors">
-
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                 <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
               </svg>
@@ -280,6 +298,16 @@ const Post = ({
           </div>
         )}
       </Card>
+
+      {/* Edit Post Modal */}
+      {isEditModalOpen && (
+        <EditPostModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          setRefresh={setRefresh}
+          postData={postDataForEdit}
+        />
+      )}
     </>
   );
 };

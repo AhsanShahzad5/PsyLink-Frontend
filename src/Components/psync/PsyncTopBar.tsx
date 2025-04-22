@@ -2,6 +2,7 @@ import { useState} from "react";
 import { Search, User } from "lucide-react";
 import PostModal from "./PsyncPostCreationModal";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SearchBar } from "./SearchBar";
 
 const PsyncTopBar = ({setRefresh}:any) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -48,16 +49,7 @@ const PsyncTopBar = ({setRefresh}:any) => {
       </div>
 
       {/* Search Bar */}
-      <div className="relative mb-8">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2">
-          <Search className="w-5 h-5 text-gray-400" />
-        </div>
-        <input
-          type="text"
-          placeholder="Search for Series"
-          className="w-[50rem] py-4 pl-12 pr-4 rounded-full bg-[#e8f4f4] text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
-      </div>
+     <SearchBar/>
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4">

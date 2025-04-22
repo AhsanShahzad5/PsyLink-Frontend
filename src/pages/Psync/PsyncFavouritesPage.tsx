@@ -3,6 +3,7 @@ import Post from "@/Components/psync/PostComponent";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
+import { useLocation } from "react-router-dom";
 
 
 const Psync = () => {
@@ -14,6 +15,11 @@ const Psync = () => {
   //const [posts, setPosts] = useRecoilState(postsAtom);
 const user = useRecoilValue(userAtom);
 const userId = user?._id;
+
+const location = useLocation();
+
+  // Extract the first part of the pathname (i.e., "doctor" or "patient")
+  const role = location.pathname.split("/")[1];
 
   useEffect(() => {
     // Fetch posts from the backend
@@ -69,6 +75,8 @@ const userId = user?._id;
             posts?.map((post) => (
               <Post
                     key={post._id} // Use unique key for each post
+                    seriesTitle={post.series[0]?.title || ""} // Use series title or fallback
+                    authoreRole={role}
                     postId={post._id}
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
