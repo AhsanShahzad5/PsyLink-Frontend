@@ -134,6 +134,9 @@ const PsyncSeries = () => {
     navigate(`/${role}/psync/post/${postId}`);
   };
 
+
+ 
+
   // Setup click outside listener to close the hover preview
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

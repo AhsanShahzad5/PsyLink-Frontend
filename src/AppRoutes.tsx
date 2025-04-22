@@ -53,6 +53,7 @@ import PsyncFavouritesPage from './pages/Psync/PsyncFavouritesPage';
 import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
 import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
+import SearchResults from './Components/psync/SearchResults';
 
 
 
@@ -268,7 +269,19 @@ const AppRoutes = () => (
             element={
                 <ProtectedRoute allowedRoles={['patient']}>
                     <PatientLayout>
-                        <PsyncIndividualSeriesPage/>
+                        <PsyncIndividualSeriesPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+
+
+        <Route
+            path="/patient/psync/search"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <SearchResults />
                     </PatientLayout>
                 </ProtectedRoute>
             }
@@ -408,12 +421,22 @@ const AppRoutes = () => (
             element={
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorLayout>
-                    <PsyncIndividualSeriesPage/>
+                        <PsyncIndividualSeriesPage />
                     </DoctorLayout>
                 </ProtectedRoute>
             }
         />
 
+        <Route
+            path="/doctor/psync/search"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <SearchResults />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
 
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route

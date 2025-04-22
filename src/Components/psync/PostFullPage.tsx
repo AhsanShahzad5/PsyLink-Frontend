@@ -152,7 +152,38 @@ const FullPost = () => {
         }
     }
 
-
+    const getTimeAgo = (dateString:any) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+        
+        let interval = Math.floor(seconds / 31536000);
+        if (interval >= 1) {
+          return interval === 1 ? "1 year ago" : `${interval} years ago`;
+        }
+        
+        interval = Math.floor(seconds / 2592000);
+        if (interval >= 1) {
+          return interval === 1 ? "1 month ago" : `${interval} months ago`;
+        }
+        
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) {
+          return interval === 1 ? "1 day ago" : `${interval} days ago`;
+        }
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) {
+          return interval === 1 ? "1 hour ago" : `${interval} hours ago`;
+        }
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) {
+          return interval === 1 ? "1 minute ago" : `${interval} minutes ago`;
+        }
+        
+        return seconds <= 5 ? "just now" : `${Math.floor(seconds)} seconds ago`;
+      };
     if (loading) return <p>Loading...</p>;
     if (!post) return <p>Post not found</p>;
 
@@ -189,8 +220,9 @@ const FullPost = () => {
                                     {post.user?._id === userId ? (
                                         <DeleteButton onClick={handlePostDelete} />
                                     ) : (
-                                        <span className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString("en-GB")
-                                        }</span>
+                                        <span className="text-sm text-gray-500">
+                                            {getTimeAgo(post.createdAt)}
+                                        </span>
                                     )}
                                 </div>
                             </div>
