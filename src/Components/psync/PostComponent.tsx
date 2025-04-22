@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import { toast } from "@/hooks/use-toast";
-
+import { FaPenAlt } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import {
   AlertDialog,
@@ -24,7 +24,7 @@ import { Badge } from "../ui/badge";
 
 export interface PostProps {
   postId: string;
-  authoreRole: string;
+  authoreRole?: string;
   authorName: string;
   authorImage?: string;
   content: string;

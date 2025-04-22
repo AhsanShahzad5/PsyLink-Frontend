@@ -1,9 +1,11 @@
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
+import { useRecoilValue } from "recoil";
+import  userAtom  from "../../atoms/userAtom"; // Adjust the import path if needed
 
 // Define the interfaces for the data structures
 interface Post {
@@ -16,6 +18,7 @@ interface Post {
   timeAgo: string;
   likeCount: number;
   commentCount: number;
+  img: string;
 }
 
 interface SeriesItem {
@@ -29,6 +32,34 @@ interface HoveredPostData {
   seriesTitle: string;
 }
 
+// API response interfaces
+interface ApiPost {
+  _id: string;
+  title: string;
+  description: string;
+  img: string;
+  likes?: string[]; // Add this
+  comments?: { userId: string; comment: string; _id: string }[]; // Add this
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ApiUser {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+interface ApiSeriesItem {
+  _id: string;
+  title: string;
+  posts: ApiPost[];
+  createdBy: ApiUser;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 const PsyncSeries = () => {
   const navigate = useNavigate();
   const [series, setSeries] = useState<SeriesItem[]>([]);
@@ -38,139 +69,69 @@ const PsyncSeries = () => {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const postRefs = useRef<{ [key: number]: HTMLElement }>({});
   
-  // Mock data for demonstration - replace with actual API call
+  // Get user ID from Recoil state
+  const user = useRecoilValue(userAtom);
+  const userId = user?._id;
+  const location = useLocation();
+
+  // Extract the first part of the pathname (i.e., "doctor" or "patient")
+  const role = location.pathname.split("/")[1];
+  
+  // Fetch data from API
   useEffect(() => {
-    // Simulate fetching series data
     const fetchSeries = async () => {
-      // Replace with actual API call
-      const mockSeries: SeriesItem[] = [
-        {
-          id: 1,
-          title: "Mental Health Awareness",
-          posts: [
-            {
-              id: 101,
-              authorName: "Dr. Smith",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Understanding Anxiety",
-              content: "Anxiety is a normal emotion that everyone experiences at times. Many people feel anxious, or nervous, when faced with a problem at work, before taking a test, or making an important decision...",
-              timeAgo: "2 days ago",
-              likeCount: 24,
-              commentCount: 5
-            },
-            {
-              id: 102,
-              authorName: "Dr. Smith",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Managing Depression",
-              content: "Depression is more than just feeling sad. It's a serious mental health condition that requires understanding and medical care...",
-              timeAgo: "5 days ago",
-              likeCount: 31,
-              commentCount: 8
-            }
-          ]
-        },
-        {
-          id: 2,
-          title: "Physical Wellness",
-          posts: [
-            {
-              id: 201,
-              authorName: "Jane Doe",
-              authorRole: "patient",
-              authorImage: "/api/placeholder/40/40",
-              title: "My Exercise Journey",
-              content: "I've been on a journey to improve my physical health for the past 6 months. Starting with simple walks and gradually building up to more intense workouts...",
-              timeAgo: "1 day ago",
-              likeCount: 18,
-              commentCount: 3
-            },
-            {
-              id: 202,
-              authorName: "Dr. Johnson",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Benefits of Regular Exercise",
-              content: "Regular physical activity is one of the most important things you can do for your health. Being physically active can improve your brain health, help manage weight, reduce the risk of disease...",
-              timeAgo: "3 days ago",
-              likeCount: 42,
-              commentCount: 7
-            },
-            {
-              id: 205,
-              authorName: "Dr. Johnson",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Benefits of Regular Exercise",
-              content: "Regular physical activity is one of the most important things you can do for your health. Being physically active can improve your brain health, help manage weight, reduce the risk of disease...",
-              timeAgo: "3 days ago",
-              likeCount: 42,
-              commentCount: 7
-            },
-            {
-              id: 206,
-              authorName: "Dr. Johnson",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Benefits of Regular Exercise",
-              content: "Regular physical activity is one of the most important things you can do for your health. Being physically active can improve your brain health, help manage weight, reduce the risk of disease...",
-              timeAgo: "3 days ago",
-              likeCount: 42,
-              commentCount: 7
-            },
-            {
-              id: 207,
-              authorName: "Dr. Johnson",
-              authorRole: "doctor",
-              authorImage: "/api/placeholder/40/40",
-              title: "Benefits of Regular Exercise",
-              content: "Regular physical activity is one of the most important things you can do for your health. Being physically active can improve your brain health, help manage weight, reduce the risk of disease...",
-              timeAgo: "3 days ago",
-              likeCount: 42,
-              commentCount: 7
-            },
-            {
-              id: 208,
-              authorName: "Jane Doe",
-              authorRole: "patient",
-              authorImage: "/api/placeholder/40/40",
-              title: "Healthy Eating Habits",
-              content: "Developing healthy eating habits isn't as confusing or restrictive as many people imagine. The essential steps are to eat mostly foods derived from plants and limit highly processed foods...",
-              timeAgo: "6 days ago",
-              likeCount: 27,
-              commentCount: 4
-            }
-          ]
-        },
-        {
-          id: 3,
-          title: "Recovery Stories",
-          posts: [
-            {
-              id: 301,
-              authorName: "John Smith",
-              authorRole: "patient",
-              authorImage: "/api/placeholder/40/40",
-              title: "My Road to Recovery",
-              content: "Six months ago, I was diagnosed with a condition that changed my life. Here's my journey and the lessons I've learned along the way...",
-              timeAgo: "4 days ago",
-              likeCount: 56,
-              commentCount: 12
-            }
-          ]
-        }
-      ];
+      if (!userId) return;
       
-      setSeries(mockSeries);
+      try {
+        const response = await fetch(`http://localhost:8000/api/psync/series/user/${userId}`);
+        
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+        
+        const apiData: ApiSeriesItem[] = await response.json();
+        
+        // Transform API data to match our component's data structure
+        const transformedSeries: any = apiData.map(item => {
+          return {
+            //id: parseInt(item._id.substring(0, 8), 16), // Convert MongoDB ID to a number for our interface
+            id: item._id ,
+            title: item.title,
+            posts: item.posts.map(post => {
+              // Calculate time ago
+              const createdAt = new Date(post.createdAt);
+              const now = new Date();
+              const diffInDays = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
+              const timeAgo = diffInDays <= 0 ? "Today" : diffInDays === 1 ? "Yesterday" : `${diffInDays} days ago`;
+              
+              return {
+                id: post._id , // Convert MongoDB ID to a number
+                authorName: item.createdBy.name,
+                authorRole: "patient", // Default role, adjust if needed
+                authorImage: "/api/placeholder/40/40", // Use post image or placeholder
+                title: post.title,
+                content: post.description,
+                timeAgo: timeAgo,
+                likeCount: post.likes?.length || 0, // Use the actual likes array length
+                commentCount: post.comments?.length || 0, // Use the actual comments array length
+                img: post.img || "" ,
+              };
+            })
+          };
+        });
+        
+        setSeries(transformedSeries);
+      } catch (error) {
+        console.error("Error fetching series data:", error);
+        // You might want to set an error state here
+      }
     };
 
     fetchSeries();
-  }, []);
+  }, [userId]);
 
-  const handlePostClick = (postId: number, authorRole: string) => {
-    navigate(`/${authorRole}/psync/post/${postId}`);
+  const handlePostClick = (postId: any) => {
+    navigate(`/${role}/psync/post/${postId}`);
   };
 
   // Setup click outside listener to close the hover preview
@@ -233,7 +194,7 @@ const PsyncSeries = () => {
     for (const seriesItem of series) {
       for (const post of seriesItem.posts) {
         if (post.id === hoveredPost) {
-          return { post, seriesTitle: seriesItem.title };
+          return { post, seriesTitle: seriesItem.title  };
         }
       }
     }
@@ -251,10 +212,9 @@ const PsyncSeries = () => {
 
   const hoveredPostData = getHoveredPostData();
 
-  const hoverToIndividualSeriesPage = () => {
-    //navigate(`/${hoveredPostData?.post.authorRole}/psync/series/${hoveredPostData?.post.id}`);
-    navigate('/patient/psync/myseries/1');
-  }
+  const hoverToIndividualSeriesPage = (seriesId: number) => {
+    navigate(`/${role}/psync/myseries/${seriesId}`);
+  };
 
   return (
     <div className="flex justify-center mt-12 bg-secondary">
@@ -262,52 +222,67 @@ const PsyncSeries = () => {
         <div className="pt-3 max-w-7xl w-full mx-auto">
           <FavouritesBackButton text="My Series" />
           
-          <div className="mt-8 space-y-10">
-            {series.map((seriesItem) => (
-              <div key={seriesItem.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="flex flex-col md:flex-row">
-                  {/* Series Title */}
-                  <div className="md:w-1/4 bg-gray-50 p-6 flex items-center justify-center border-r border-gray-200">
-                    <h2 className="text-2xl font-bold text-gray-800 hover:cursor-pointer hover:underline" onClick={hoverToIndividualSeriesPage}>{seriesItem.title}</h2>
-                  </div>
-                  
-                  {/* Posts Preview */}
-                  <div className="md:w-3/4 p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {seriesItem.posts.map((post) => (
-                        <div 
-                          key={post.id} 
-                          className="relative group"
-                          onMouseEnter={(e) => handleMouseEnter(post.id, e)}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          <div 
-                            className="bg-teal-50 border border-teal-200 rounded-lg p-4 h-40 cursor-pointer 
-                            transition-all duration-200 group-hover:shadow-lg group-hover:border-teal-300"
-                            onClick={() => handlePostClick(post.id, post.authorRole)}
-                          >
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm">
-                                {post.authorName[0]}
+          {series.length === 0 ? (
+            <div className="mt-8 flex justify-center items-center h-64">
+              <p className="text-gray-500 text-lg">No series found. Create a new series to get started.</p>
+            </div>
+          ) : (
+            <div className="mt-8 space-y-10">
+              {series.map((seriesItem) => (
+                <div key={seriesItem.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="flex flex-col md:flex-row">
+                    {/* Series Title */}
+                    <div className="md:w-1/4 bg-gray-50 p-6 flex items-center justify-center border-r border-gray-200">
+                      <h2 
+                        className="text-2xl font-bold text-gray-800 hover:cursor-pointer hover:underline" 
+                        onClick={() => hoverToIndividualSeriesPage(seriesItem.id)}
+                      >
+                        {seriesItem.title}
+                      </h2>
+                    </div>
+                    
+                    {/* Posts Preview */}
+                    <div className="md:w-3/4 p-6">
+                      {seriesItem.posts.length === 0 ? (
+                        <p className="text-gray-500 text-center py-8">No posts in this series yet.</p>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {seriesItem.posts.map((post) => (
+                            <div 
+                              key={post.id} 
+                              className="relative group"
+                              onMouseEnter={(e) => handleMouseEnter(post.id, e)}
+                              onMouseLeave={handleMouseLeave}
+                            >
+                              <div 
+                                className="bg-teal-50 border border-teal-200 rounded-lg p-4 h-40 cursor-pointer 
+                                transition-all duration-200 group-hover:shadow-lg group-hover:border-teal-300"
+                                onClick={() => handlePostClick(post.id)}
+                              >
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm">
+                                    {post.authorName[0]}
+                                  </div>
+                                  <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
+                                  {post.authorRole === "doctor" && (
+                                    <Badge className="bg-transparent border border-teal-300 text-teal-600 text-xs">
+                                      {post.authorRole}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{post.title}</h3>
+                                <p className="text-gray-600 text-sm line-clamp-2">{post.content}</p>
                               </div>
-                              <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
-                              {post.authorRole === "doctor" && (
-                                <Badge className="bg-transparent border border-teal-300 text-teal-600 text-xs">
-                                  {post.authorRole}
-                                </Badge>
-                              )}
                             </div>
-                            <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{post.title}</h3>
-                            <p className="text-gray-600 text-sm line-clamp-2">{post.content}</p>
-                          </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       
@@ -351,39 +326,33 @@ const PsyncSeries = () => {
               
               <h1 className="text-xl font-bold text-gray-800 mb-3">{hoveredPostData.post.title}</h1>
               <div className="max-h-60 overflow-y-auto pr-2 mb-4">
+                {console.log(hoveredPostData) as any}
                 <p className="text-gray-700">{hoveredPostData.post.content}</p>
               </div>
               
               <div className="text-sm text-gray-500 mt-2 mb-4">
-                {hoveredPostData.post.likeCount} Likes • {hoveredPostData.post.commentCount} Comments
+                {hoveredPostData.post.likeCount || 0} Likes • {hoveredPostData.post.commentCount || 0} Comments
               </div>
               
-              <div className="pt-3 border-t border-gray-100">
-                <div className="flex justify-between">
-                  <button className="text-teal-600 flex items-center gap-1 text-sm hover:text-teal-800 transition-colors">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
-                    Like
-                  </button>
-                  <button className="text-teal-600 flex items-center gap-1 text-sm hover:text-teal-800 transition-colors">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    Comment
-                  </button>
-                  <button className="text-teal-600 flex items-center gap-1 text-sm hover:text-teal-800 transition-colors">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                      <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-                    </svg>
-                    Favorite
-                  </button>
+             {/* a small preview div to show post.img if it exisits */}
+
+                {hoveredPostData.post.img && (
+                <div className="relative mb-4">
+                  <img 
+                  src={hoveredPostData.post.img} 
+                  alt="Post Preview" 
+                  className="w-full h-20 object-cover rounded-lg opacity-80"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
                 </div>
-              </div>
+                )}
+              
+              {/* Button to view full post */}
+
               
               <button 
                 className="w-full mt-4 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors"
-                onClick={() => handlePostClick(hoveredPostData.post.id, hoveredPostData.post.authorRole)}
+                onClick={() => handlePostClick(hoveredPostData.post.id)}
               >
                 View Full Post
               </button>

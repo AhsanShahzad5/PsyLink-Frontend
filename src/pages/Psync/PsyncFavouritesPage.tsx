@@ -1,6 +1,5 @@
 import  { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
-import BackButton from "@/Components/patient/backButton";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";

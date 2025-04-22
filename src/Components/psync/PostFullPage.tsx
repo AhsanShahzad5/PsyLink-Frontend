@@ -30,6 +30,8 @@ const FullPost = () => {
             try {
                 const response = await fetch(`http://localhost:8000/api/psync/post/${postId}`);
                 const result = await response.json();
+                console.log(result);
+                
                 if (response.ok) {
                     setPost(result);
                     setLikeCount(result.likes.length);
@@ -180,7 +182,7 @@ const FullPost = () => {
                                                 {user?.role}
                                             </Badge>}
                                         </div>
-                                        <p className="text-sm text-teal-600">SERIES NAME </p>
+                                        <p className="text-sm text-teal-600">{post.series[0]?.title || 'SERIES NAME'} </p>
                                         {post.user?.title && <p className="text-sm text-teal-600">{'hhh' + post.user.title}</p>}
                                     </div>
 
