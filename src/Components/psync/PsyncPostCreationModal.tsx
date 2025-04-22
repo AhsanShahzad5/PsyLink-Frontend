@@ -54,9 +54,11 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
 
       setIsLoadingSeries(true);
       try {
-        const response = await fetch(`http://localhost:8000/api/psync/series/all`);
+        // const response = await fetch(`http://localhost:8000/api/psync/series/all`);
+        const response = await fetch(`http://localhost:8000/api/psync/series/user/${userId}`);
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched series:", data);
           // Map the backend data structure to match frontend structure
           setSeries(data.map((item: any) => ({
             id: item._id,

@@ -3,6 +3,7 @@ import Post from "@/Components/psync/PostComponent";
 import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
+import { toast } from "@/hooks/use-toast";
 
 
 const Psync = () => {
@@ -39,8 +40,9 @@ const userId = user?._id;
   
     fetchPosts();
   }, [refresh]); 
-  console.log("Posts:", posts); // Log the posts
   
+  
+
   return (
     <div className="flex justify-center mt-12 bg-secondary">
       <div className="w-[95%] p-6 rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
@@ -56,7 +58,9 @@ const userId = user?._id;
               <Post
                     key={post._id} // Use unique key for each post
                     postId={post._id}
+                    seriesTitle= {post.series[0]?.title || "no series"} // Series title
                     authoreRole={user?.role || "Unknown"} // Use user role or fallback
+                    authorId={post?.userId || "unknown"} // Use user ID or fallback
                     authorName={user.name || "Unknown"} // Use user name or fallback
                     authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                     content={post.description} // Post description

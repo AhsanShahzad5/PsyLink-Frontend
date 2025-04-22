@@ -172,6 +172,7 @@ const Post = ({
     }
   }
 
+
   return (
     <>
       <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden">

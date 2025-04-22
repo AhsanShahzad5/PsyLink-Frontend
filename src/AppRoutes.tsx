@@ -51,7 +51,8 @@ import ResetPassword from './pages/Patient/ResetPasswordPage';
 import PostFullPage from './Components/psync/PostFullPage';
 import PsyncFavouritesPage from './pages/Psync/PsyncFavouritesPage';
 import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
-import PsyncSeries from './pages/Psync/PsyncSeriesPage';
+import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
+import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 
 
 
@@ -262,6 +263,16 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+        <Route
+            path="/patient/psync/myseries/:seriesId"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PsyncIndividualSeriesPage/>
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
 
         <Route
             path="/doctor/login"
@@ -388,6 +399,16 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorLayout>
                         <PsyncSeries />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/psync/myseries/:seriesId"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <PsyncIndividualSeriesPage/>
                     </DoctorLayout>
                 </ProtectedRoute>
             }
