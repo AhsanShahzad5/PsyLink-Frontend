@@ -22,9 +22,10 @@ interface PostModalProps {
   isOpen: boolean;
   onClose: () => void;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  preSelectedSeries?: Series; // New prop for pre-selected series
 }
 
-const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) => {
+const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preSelectedSeries }) => {
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
   const [postData, setPostData] = useState({ title: "", description: "", img: "" });
@@ -47,14 +48,20 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
     }
   }, [imgUrl]);
 
-  // Fetch user's series when modal opens
+  // Set the pre-selected series when modal opens
+  useEffect(() => {
+    if (isOpen && preSelectedSeries) {
+      setSelectedSeries(preSelectedSeries);
+    }
+  }, [isOpen, preSelectedSeries]);
+
+  // Fetch user's series when modal opens (only if no preSelectedSeries)
   useEffect(() => {
     const fetchSeries = async () => {
-      if (!userId) return;
+      if (!userId || preSelectedSeries) return;
 
       setIsLoadingSeries(true);
       try {
-        // const response = await fetch(`http://localhost:8000/api/psync/series/all`);
         const response = await fetch(`http://localhost:8000/api/psync/series/user/${userId}`);
         if (response.ok) {
           const data = await response.json();
@@ -74,22 +81,25 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
       }
     };
 
-    if (isOpen && userId) {
+    if (isOpen && userId && !preSelectedSeries) {
       fetchSeries();
     }
-  }, [isOpen, userId]);
+  }, [isOpen, userId, preSelectedSeries]);
 
   // Reset state when modal is closed or reopened
   useEffect(() => {
     if (!isOpen) {
-      setSelectedSeries(null);
+      // Don't reset selectedSeries if preSelectedSeries is provided
+      if (!preSelectedSeries) {
+        setSelectedSeries(null);
+      }
       setNewSeriesCreated(null);
       setPostData({ title: "", description: "", img: "" });
       setIsSeriesDropdownOpen(false);
       setIsCreatingNewSeries(false);
       setNewSeriesName("");
     }
-  }, [isOpen]);
+  }, [isOpen, preSelectedSeries]);
 
   const handlePostSubmit = async () => {
     if (!postData.title || !postData.description) {
@@ -149,8 +159,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
           }
         } catch (error) {
           console.error("Error creating series with post:", error);
-          // You could set some state here to show an error message to the user
-          throw error; // Re-throw to handle it in the caller function if needed
+          throw error;
         }
       }
       // Case 2: Adding post to an existing series
@@ -285,63 +294,76 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
               <img src="/src/assets/shared/abbad.png" alt="User avatar" className="w-12 h-12 rounded-full" />
               <span className="text-xl font-semibold">{user?.name}</span>
             </div>
-            <div className="relative">
-              <button
-                onClick={() => !isCreatingNewSeries && setIsSeriesDropdownOpen(!isSeriesDropdownOpen)}
-                className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center"
-              >
-                {getSeriesButtonText()}
-                {newSeriesCreated ? (
-                  <X
-                    className="ml-2 w-4 h-4 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setNewSeriesCreated(null);
-                      // Remove the temporary series from the list
-                      setSeries(series.filter(s => s.id !== newSeriesCreated.id));
-                    }}
-                  />
-                ) : !isCreatingNewSeries && (
-                  <ChevronDown className="ml-2 w-4 h-4" />
-                )}
-              </button>
-
-              {isSeriesDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
-                  {isLoadingSeries ? (
-                    <div className="px-4 py-2 text-center">Loading series...</div>
-                  ) : series.length > 0 ? (
-                    series.map((seriesItem) => (
-                      <button
-                        key={seriesItem.id}
-                        onClick={() => handleSeriesSelect(seriesItem)}
-                        className={`w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between
-                          ${selectedSeries?.id === seriesItem.id
-                            ? 'bg-teal-600 text-white'
-                            : ''}`}
-                      >
-                        {seriesItem.name}
-                        {seriesItem.id === newSeriesCreated?.id && " (New)"}
-                        {selectedSeries?.id === seriesItem.id && (
-                          <span className="text-white">✓</span>
-                        )}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-center text-gray-500">No series found</div>
+            {/* Only show series selector if not pre-selected */}
+            {!preSelectedSeries && (
+              <div className="relative">
+                <button
+                  onClick={() => !isCreatingNewSeries && setIsSeriesDropdownOpen(!isSeriesDropdownOpen)}
+                  className="bg-teal-600 text-white px-6 py-2 rounded-full hover:bg-teal-700 flex items-center"
+                >
+                  {getSeriesButtonText()}
+                  {newSeriesCreated ? (
+                    <X
+                      className="ml-2 w-4 h-4 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNewSeriesCreated(null);
+                        // Remove the temporary series from the list
+                        setSeries(series.filter(s => s.id !== newSeriesCreated.id));
+                      }}
+                    />
+                  ) : !isCreatingNewSeries && (
+                    <ChevronDown className="ml-2 w-4 h-4" />
                   )}
-                  <button
-                    onClick={() => {
-                      setIsCreatingNewSeries(true);
-                      setIsSeriesDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-teal-600"
-                  >
-                    <Plus className="mr-2 w-4 h-4" /> Create New Series
-                  </button>
-                </div>
-              )}
-            </div>
+                </button>
+
+                {isSeriesDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
+                    {isLoadingSeries ? (
+                      <div className="px-4 py-2 text-center">Loading series...</div>
+                    ) : series.length > 0 ? (
+                      series.map((seriesItem) => (
+                        <button
+                          key={seriesItem.id}
+                          onClick={() => handleSeriesSelect(seriesItem)}
+                          className={`w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between
+                            ${selectedSeries?.id === seriesItem.id
+                              ? 'bg-teal-600 text-white'
+                              : ''}`}
+                        >
+                          {seriesItem.name}
+                          {seriesItem.id === newSeriesCreated?.id && " (New)"}
+                          {selectedSeries?.id === seriesItem.id && (
+                            <span className="text-white">✓</span>
+                          )}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-center text-gray-500">No series found</div>
+                    )}
+                    <button
+                      onClick={() => {
+                        setIsCreatingNewSeries(true);
+                        setIsSeriesDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-teal-600"
+                    >
+                      <Plus className="mr-2 w-4 h-4" /> Create New Series
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {/* Show pre-selected series as disabled button */}
+            {preSelectedSeries && (
+              <div className="relative">
+                <button
+                  className="bg-teal-600 text-white px-6 py-2 rounded-full cursor-default flex items-center"
+                >
+                  {preSelectedSeries.name}
+                </button>
+              </div>
+            )}
           </div>
         </DialogHeader>
 
@@ -423,7 +445,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh }) =>
               onClick={handlePostSubmit}
               className="bg-teal-600 text-white px-8 py-2 rounded-full hover:bg-teal-700"
             >
-              Post
+              {preSelectedSeries ? "Add to Series" : "Post"}
             </button>
           )}
         </div>
