@@ -54,7 +54,9 @@ import VideoPreview from './pages/Patient/VideoPreview';
 import PostFullPage from './Components/psync/PostFullPage';
 import PsyncFavouritesPage from './pages/Psync/PsyncFavouritesPage';
 import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
-import PsyncSeries from './pages/Psync/PsyncSeriesPage';
+import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
+import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
+import SearchResults from './Components/psync/SearchResults';
 
 
 const AppRoutes = () => (
@@ -276,6 +278,28 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+        <Route
+            path="/patient/psync/myseries/:seriesId"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PsyncIndividualSeriesPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+
+
+        <Route
+            path="/patient/psync/search"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <SearchResults />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
 
         <Route
             path="/doctor/login"
@@ -408,7 +432,27 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+        <Route
+            path="/doctor/psync/myseries/:seriesId"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PsyncIndividualSeriesPage />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
 
+        <Route
+            path="/doctor/psync/search"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <SearchResults />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
 
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
