@@ -132,18 +132,18 @@ export default function Bookings(): JSX.Element {
 
   const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
 
-  const moveToHistory = (appointment: BookedAppointment) => {
-    // Create a new history appointment object
-    const historyAppointment: HistoryAppointment = {
-      id: appointment.id,
-      doctorName: appointment.doctorName,
-      specialization: appointment.specialization,
-      appointmentTime: appointment.bookedTimeSlot,
-      date: appointment.date,
-      rating: 4, // For now, hardcode the rating or fetch it from your backend
-      imageUrl: appointment.imageUrl,
-      appointmentId: ''
-    };
+const moveToHistory = (appointment: BookedAppointment) => {
+  // Create a new history appointment object
+  const historyAppointment: HistoryAppointment = {
+    id: appointment.id,
+    doctorName: appointment.doctorName,
+    specialization: appointment.specialization,
+    appointmentTime: appointment.bookedTimeSlot,
+    date: appointment.date,
+    rating: 4, // For now, hardcode the rating or fetch it from your backend
+    imageUrl: appointment.imageUrl,
+    appointmentId: appointment.appointmentId
+  };
 
     // Remove the appointment from the booked appointments
     setBookedAppointments(prevAppointments =>

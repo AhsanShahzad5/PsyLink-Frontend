@@ -150,7 +150,7 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
-        <Route
+        {/* <Route
             path="/patient/video-consultation/:roomId"
             element={
                 <SocketProvider>
@@ -159,7 +159,7 @@ const AppRoutes = () => (
                     </ProtectedRoute>
                 </SocketProvider>
             }
-        />
+        /> */}
         <Route
             path="/patient/video-preview"
             element={
@@ -371,13 +371,23 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
-        <Route
-            path="/doctor/video-consultation/:roomId"
+         <Route
+            path="/doctor/video-preview"
             element={
                 <SocketProvider>
-                    <ProtectedRoute allowedRoles={['doctor']}>
-                        <VideoConsulation />
-                    </ProtectedRoute>
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <VideoPreview />
+                </ProtectedRoute>
+                </SocketProvider>
+            }
+        />
+        <Route
+            path="/video-consultation/:roomId"
+            element={
+                <SocketProvider>
+                <ProtectedRoute allowedRoles={['doctor','patient']}>
+                    <VideoConsulation />
+                </ProtectedRoute>
                 </SocketProvider>
             }
         />

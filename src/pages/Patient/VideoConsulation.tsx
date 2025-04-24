@@ -108,8 +108,8 @@ function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
 export default function Component() {
 
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const doctorImage = "/src/assets/shared/fahad.png";
-  const patientImage = "/src/assets/shared/abbad.png";
+  const doctorImage = "/src/assets/shared/UserPlaceholderDoc.jpg";
+  const patientImage = "/src/assets/shared/UserPlaceholder.jpg";
   const prescriptionImage = "/src/assets/shared/perscription.png";
   const navigate = useNavigate();
   const socket = useSocket()
@@ -387,9 +387,9 @@ export default function Component() {
             {myStream ? <ReactPlayer playing muted url={myStream} width="100%" height="250px" />
               :
               <img
-                src={doctorImage}
+                src={patientImage}
                 alt="Video feed"
-                className="w-full h-[250px] object-cover"
+                className="w-[550px] h-[250px] justify-self-center object-cover"
               />
             }
 
@@ -399,9 +399,9 @@ export default function Component() {
             {remoteStream ? <ReactPlayer playing url={remoteStream} width="100%" height="250px" />
               :
               <img
-                src={patientImage}
+                src={doctorImage}
                 alt="Video feed"
-                className="w-full h-[250px] object-cover"
+                className="w-[550px] h-[250px] object-cover justify-self-center"
               />
             }
           </div>

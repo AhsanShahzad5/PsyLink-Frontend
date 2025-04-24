@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,12 +32,67 @@ interface DailyProgress {
   tasks: ProgressTask[];
 }
 
+// Interface for ongoing program based on debug output
+interface OngoingProgram {
+  daysCompleted: number;
+  endDate: string;
+  planName: string;
+  programId: string;
+  startDate: string;
+  tasksCompleted: number;
+  todayProgressId: string;
+  todayTasks: Array<any>;
+  totalDays: number;
+  totalTasks: number;
+}
+
 const ExerciseDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Try to pull the program off of location.state
   const program = (location.state as Program) || null;
+
+  // Fetch ongoing programs to check if this program is already enrolled
+  useEffect(() => {
+    const fetchOngoingPrograms = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/patient/getOngoingPrograms", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch ongoing programs");
+        }
+
+        const data = await response.json();
+        console.log("Ongoing programs:", data);
+        
+        // Check if the current program is already enrolled
+        if (data && data.programs && Array.isArray(data.programs) && program) {
+          const isEnrolled = data.programs.some(
+            (ongoingProgram: OngoingProgram) => ongoingProgram.planName === program.planName
+          );
+          
+          setIsAlreadyEnrolled(isEnrolled);
+          console.log("Is program already enrolled:", isEnrolled);
+        }
+      } catch (error) {
+        console.error("Error fetching ongoing programs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (program) {
+      fetchOngoingPrograms();
+    }
+  }, [program]);
 
   if (!program) {
     return (
@@ -48,6 +103,15 @@ const ExerciseDetailPage: React.FC = () => {
   }
 
   const handleApply = async () => {
+    // If already enrolled, show message and return
+    if (isAlreadyEnrolled) {
+      toast.info("You are already enrolled in this program", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
     // 1. compute start & end dates
     const startDate = new Date();
     const days = parseInt(program.duration); // 15 or 30
@@ -95,6 +159,9 @@ const ExerciseDetailPage: React.FC = () => {
         autoClose: 3000,
       });
       
+      // Update enrolled status
+      setIsAlreadyEnrolled(true);
+      
       // Optional: navigate after success
       // navigate("/patient/dashboard");
       
@@ -108,6 +175,15 @@ const ExerciseDetailPage: React.FC = () => {
       });
     }
   };
+
+  // Render loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <p className="text-lg text-[#02968A]">Loading program details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent p-6 mt-16">
@@ -149,13 +225,18 @@ const ExerciseDetailPage: React.FC = () => {
           </button>
 
           <button
-            className="px-10 py-2 text-white font-outfit font-normal text-lg sm:text-base rounded-full flex items-center justify-center"
+            className={`px-10 py-2 text-white font-outfit font-normal text-lg sm:text-base rounded-full flex items-center justify-center ${
+              isAlreadyEnrolled ? 'opacity-50 cursor-not-allowed bg-gray-500' : ''
+            }`}
             onClick={handleApply}
+            disabled={isAlreadyEnrolled}
             style={{
-              background: "linear-gradient(360deg, #064034 20%, #047D72 100%)",
+              background: isAlreadyEnrolled 
+                ? "linear-gradient(360deg, #888888 20%, #AAAAAA 100%)" 
+                : "linear-gradient(360deg, #064034 20%, #047D72 100%)",
             }}
           >
-            Apply
+            {isAlreadyEnrolled ? "Already Enrolled" : "Apply"}
           </button>
         </div>
 
