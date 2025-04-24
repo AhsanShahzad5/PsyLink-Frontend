@@ -33,7 +33,7 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
     appointments
   } = doctorCard;
 
-  console.log("Doctor Card 1 :", doctorCard);
+//  console.log("Doctor Card 1 :", doctorCard);
 
   const navigate = useNavigate();
 

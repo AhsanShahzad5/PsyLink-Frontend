@@ -44,27 +44,27 @@ export default function Component({
         navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/detailForm`);
       }
     },
-    {
-      label: 'Card Management',
-      icon: CreditCard,
-      onClick: () => {
-        console.log('Card Management clicked');
-        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync`);
-      }
-    },
+    // {
+    //   label: 'Card Management',
+    //   icon: CreditCard,
+    //   onClick: () => {
+    //     console.log('Card Management clicked');
+    //     navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync`);
+    //   }
+    // },
     {
       label: 'My Posts',
       icon: FileText,
       onClick: () => {
         console.log('My Posts clicked');
-        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync`);
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync/myposts`);
       }
     },
-    {
-      label: 'Settings',
-      icon: Settings,
-      onClick: () => console.log('Settings clicked')
-    },
+    // {
+    //   label: 'Settings',
+    //   icon: Settings,
+    //   onClick: () => console.log('Settings clicked')
+    // },
     {
       label: 'Logout',
       icon: LogOut,

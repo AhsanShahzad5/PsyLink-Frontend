@@ -71,28 +71,28 @@ interface HistoryAppointment {
   imageUrl: string;
 }
   
-const HistoryAppointments: HistoryAppointment[] = [
-  {
-    id: 1,
-    appointmentId:"12345",
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychologist",
-    appointmentTime: "8:00 PM",
-    date: "2025-10-25",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor1.png",
-  },
-  {
-    id: 2,
-    appointmentId:"12345",
-    doctorName: "Dr. Sarah Ahmed",
-    specialization: "Psychiatrist",
-    appointmentTime: "10:00 AM",
-    date: "2025-10-28",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor2.png",
-  },
-];
+// const HistoryAppointments: HistoryAppointment[] = [
+//   {
+//     id: 1,
+//     appointmentId:"12345",
+//     doctorName: "Dr. Fahad Tariq Aziz",
+//     specialization: "Psychologist",
+//     appointmentTime: "8:00 PM",
+//     date: "2025-10-25",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
+//   },
+//   {
+//     id: 2,
+//     appointmentId:"12345",
+//     doctorName: "Dr. Sarah Ahmed",
+//     specialization: "Psychiatrist",
+//     appointmentTime: "10:00 AM",
+//     date: "2025-10-28",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
+//   },
+// ];
 // const HistoryAppointments: HistoryAppointment[] = [
 //   {
 //     id: 1,
@@ -142,7 +142,7 @@ const moveToHistory = (appointment: BookedAppointment) => {
     date: appointment.date,
     rating: 4, // For now, hardcode the rating or fetch it from your backend
     imageUrl: appointment.imageUrl,
-    appointmentId: ''
+    appointmentId: appointment.appointmentId
   };
 
   // Remove the appointment from the booked appointments
