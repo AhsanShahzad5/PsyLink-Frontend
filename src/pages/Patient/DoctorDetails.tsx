@@ -79,7 +79,10 @@ const DoctorProfile: React.FC = () => {
       
           if (response.ok) {
             const data = await response.json();
+
             setIsAppointmentSuccess(true);
+            
+            
             console.log("Response:", data);
           } else {
             const error = await response.json();
