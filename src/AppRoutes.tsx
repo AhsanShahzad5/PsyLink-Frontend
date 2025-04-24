@@ -57,7 +57,6 @@ import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 import PsyncSeries from './pages/Psync/PsyncSeriesPage';
 
 
-
 const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
