@@ -57,6 +57,7 @@ import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
 import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
+import PaymentCheck from './pages/PaymentCheck';
 
 
 
@@ -64,7 +65,7 @@ const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/test" element={<DoctorClinic />} />
+        <Route path="/test" element={<PaymentCheck/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

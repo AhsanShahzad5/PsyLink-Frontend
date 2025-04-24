@@ -60,11 +60,11 @@ export default function Component({
         navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync/myposts`);
       }
     },
-    // {
-    //   label: 'Settings',
-    //   icon: Settings,
-    //   onClick: () => console.log('Settings clicked')
-    // },
+    ...(window.location.pathname.includes('/doctor') ? [{
+      label: 'Professional Settings',
+      icon: Settings,
+      onClick: () => navigate('/doctor/professionaldetailForm')
+    }] : []),
     {
       label: 'Logout',
       icon: LogOut,
