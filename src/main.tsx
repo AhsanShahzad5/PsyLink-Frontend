@@ -11,7 +11,6 @@ import store from './store';
 import { Toaster } from './Components/ui/toaster'
 
 
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RecoilRoot>

@@ -47,6 +47,7 @@ interface Doctor {
 
   interface BookedAppointment {
   id: number;
+  appointmentId:string;
   doctorName: string;
   specialization: string;
   bookedTimeSlot: string; // E.g., "8:00 PM - 9:00 PM"
@@ -61,6 +62,7 @@ interface Doctor {
 
 interface HistoryAppointment {
   id: number;
+  appointmentId:string;
   doctorName: string;
   specialization: string;
   appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
@@ -69,6 +71,28 @@ interface HistoryAppointment {
   imageUrl: string;
 }
   
+const HistoryAppointments: HistoryAppointment[] = [
+  {
+    id: 1,
+    appointmentId:"12345",
+    doctorName: "Dr. Fahad Tariq Aziz",
+    specialization: "Psychologist",
+    appointmentTime: "8:00 PM",
+    date: "2025-10-25",
+    rating: 4.8,
+    imageUrl: "/src/assets/patient/doctor/doctor1.png",
+  },
+  {
+    id: 2,
+    appointmentId:"12345",
+    doctorName: "Dr. Sarah Ahmed",
+    specialization: "Psychiatrist",
+    appointmentTime: "10:00 AM",
+    date: "2025-10-28",
+    rating: 4.8,
+    imageUrl: "/src/assets/patient/doctor/doctor2.png",
+  },
+];
 // const HistoryAppointments: HistoryAppointment[] = [
 //   {
 //     id: 1,
@@ -118,6 +142,7 @@ const moveToHistory = (appointment: BookedAppointment) => {
     date: appointment.date,
     rating: 4, // For now, hardcode the rating or fetch it from your backend
     imageUrl: appointment.imageUrl,
+    appointmentId: ''
   };
 
   // Remove the appointment from the booked appointments
@@ -211,9 +236,6 @@ fetchVerifiedDoctors();
   return (
    <>
     {/* <Navbar/>     */}
-
-    
-
       {/* Main Content */}
    <div className="bg-[#D3EDEB] min-h-screen w-full flex justify-center mt-32 ">
        <div className="w-full max-w-screen-xl p-4 bg-[#D3EDEB] mt-10">

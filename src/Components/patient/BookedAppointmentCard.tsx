@@ -3,6 +3,7 @@ import React from "react";
 
 interface BookedAppointment {
   id: number;
+  appointmentId: string;
   doctorName: string;
   specialization: string;
   bookedTimeSlot: string; // E.g., "8:00 PM - 9:00 PM"
@@ -64,9 +65,24 @@ export default function BookedAppointmentCard({
 
       {/* Call to Action */}
       <div className="flex flex-col items-center sm:items-end w-full sm:w-auto">
+
+        {/* use to check join call button, comment other part below --- Start */}
+
+        {/* <a
+          href={`/patient/video-preview?appointmentId=${bookedAppointment.appointmentId}`}
+          className="w-full sm:w-auto px-10 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors flex items-center justify-center"
+        >
+          <Phone size={16} className="mr-2 text-white" />
+          <span>Join Call</span>
+        </a> */}
+
+      {/* use to check join call button --- End */}
+
+        {/* Use this for actual implementation */}
         {bookedAppointment.status === "active" ? (
           <a
-            href='/patient/video-consultation'
+            // href={bookedAppointment.meetingLink}
+            href={`/patient/video-preview?appointmentId=${bookedAppointment.appointmentId}`}
             className="w-full sm:w-auto px-10 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
           >
             Join Call
