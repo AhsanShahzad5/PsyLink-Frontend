@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 // Define the Task interface based on TaskSchema
 interface Task {
@@ -26,6 +27,25 @@ type ProgramWithColor = Program & { bgColor: string };
 // Type that allows null values for placeholder cards
 type ProgramOrNull = ProgramWithColor | null;
 
+// Interface for ongoing program data based on the debug output
+interface OngoingProgram {
+  daysCompleted: number;
+  endDate: string;
+  planName: string;
+  programId: string;
+  startDate: string;
+  tasksCompleted: number;
+  todayProgressId: string;
+  todayTasks: Array<any>;
+  totalDays: number;
+  totalTasks: number;
+}
+
+// Interface for the response from getOngoingPrograms
+interface OngoingProgramsResponse {
+  programs: OngoingProgram[];
+}
+
 const Programs: React.FC = () => {
   const navigate = useNavigate();
   
@@ -36,6 +56,7 @@ const Programs: React.FC = () => {
   const [allPrograms, setAllPrograms] = useState<ProgramWithColor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [ongoingPrograms, setOngoingPrograms] = useState<OngoingProgram[]>([]);
   
   // State for pagination
   const [popularIndex, setPopularIndex] = useState(0);
@@ -57,7 +78,15 @@ const Programs: React.FC = () => {
     "nutrition": "linear-gradient(to right, #b4ec51, #429321)", // Green-Yellow
     "sleep": "linear-gradient(to right, #141E30, #243B55)", // Dark Blue
     "wellness": "linear-gradient(to right, #00F260, #0575E6)", // Green-Blue
-    
+    "goal" : " linear-gradient(90deg,rgba(98, 107, 33, 1) 0%, rgba(11, 69, 27, 1) 36%, rgba(9, 38, 48, 1) 100%)",
+    "connection" : "linear-gradient(90deg,rgba(74, 19, 19, 1) 0%, rgba(255, 64, 147, 1) 36%, rgba(128, 0, 26, 1) 100%)",
+    "creative" : "linear-gradient(90deg,rgba(0, 255, 183, 1) 0%, rgba(0, 153, 36, 1) 36%, rgba(255, 247, 0, 1) 100%)",
+    //"cognitive" : "linear-gradient(nulldeg,rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%)",
+    "affirmation" : "linear-gradient(90deg,rgba(71, 203, 255, 1) 0%, rgba(0, 78, 173, 1) 50%, rgba(255, 245, 245, 1) 100%)",
+    "digital" : "linear-gradient(90deg,rgba(0, 240, 236, 1) 13%, rgba(0, 0, 0, 1) 52%, rgba(0, 55, 255, 1) 92%)",
+    "Nature" : "linear-gradient(90deg,rgba(14, 207, 0, 1) 13%, rgba(0, 92, 23, 1) 52%, rgba(14, 207, 0, 1) 92%)",
+    "yoga" : "linear-gradient(90deg,rgba(209, 169, 212, 1) 13%, rgba(255, 157, 0, 1) 52%, rgba(176, 51, 72, 1) 92%)",
+    "journaling":"linear-gradient(90deg,rgba(97, 47, 36, 1) 0%, rgba(105, 61, 4, 1) 35%, rgba(201, 138, 0, 1) 100%",
     // Default gradient for programs without specific theme matches
     "default": "linear-gradient(to right, #4776E6, #8E54E9)" // Blue-Purple
   };
@@ -77,43 +106,92 @@ const Programs: React.FC = () => {
     return programThemes.default;
   };
 
+  // Fetch ongoing programs from API
+  const fetchOngoingPrograms = async () => {
+    try {
+      const response = await fetch("/api/patient/getOngoingPrograms", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch ongoing programs");
+      }
+
+      const data = await response.json();
+      console.log("this is ongoing Program", data);
+      
+      // Extract the ongoing programs from the nested structure
+      if (data && data.programs && Array.isArray(data.programs)) {
+        setOngoingPrograms(data.programs);
+        return data.programs;
+      }
+      
+      return [];
+    } catch (err) {
+      console.error("Error fetching ongoing programs:", err);
+      return [];
+    }
+  };
+
   // Fetch programs from API
   useEffect(() => {
-    const fetchPrograms = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:8000/api/program/getPrograms");
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        // First fetch all programs
+        const programsResponse = await fetch("http://localhost:8000/api/program/getPrograms");
+        
+        if (!programsResponse.ok) {
+          throw new Error(`HTTP error! Status: ${programsResponse.status}`);
         }
         
-        const programs = await response.json();
-        console.log("this is fetched programs :", programs);
+        const allProgramsData = await programsResponse.json();
+        console.log("this is fetched programs:", allProgramsData);
         
-        if (programs && Array.isArray(programs)) {
+        // Then fetch ongoing programs
+        const userOngoingPrograms = await fetchOngoingPrograms();
+        
+        if (allProgramsData && Array.isArray(allProgramsData)) {
           // Assign theme-appropriate colors to programs based on name
-          const programsWithColors = programs.map((program: Program) => ({
+          const programsWithColors = allProgramsData.map((program: Program) => ({
             ...program,
             bgColor: getThemeGradient(program.planName)
           }));
           
           // Get the last 5 plans for Popular
-          const lastFive = programsWithColors.length >= 5 
-            ? programsWithColors.slice(-5) 
+          const lastSix = programsWithColors.length >= 6 
+            ? programsWithColors.slice(-6) 
             : programsWithColors;
           
           // Get All Programs
           setAllPrograms(programsWithColors);  
           
           // Get the first 5 plans for Calming
-          const firstFive = programsWithColors.length >= 5 
-            ? programsWithColors.slice(0, 5) 
+          const firstSix = programsWithColors.length >= 6 
+            ? programsWithColors.slice(0, 6) 
             : programsWithColors;
           
-          setPopularPrograms(lastFive);
-          setYourPrograms([]); // Empty array for Your Courses
-          setCalmingPrograms(firstFive);
+          setPopularPrograms(lastSix);
+          
+          // Filter for Your Programs - programs that match planName in ongoingPrograms
+          if (userOngoingPrograms && userOngoingPrograms.length > 0) {
+            const ongoingPlanNames = userOngoingPrograms.map(program => program.planName);
+            console.log("Ongoing plan names:", ongoingPlanNames);
+            
+            const yourProgramsFiltered = programsWithColors.filter(program => 
+              ongoingPlanNames.includes(program.planName)
+            );
+            console.log("Your programs filtered:", yourProgramsFiltered);
+            
+            setYourPrograms(yourProgramsFiltered);
+          } else {
+            setYourPrograms([]); // Empty array if no ongoing programs
+          }
+          
+          setCalmingPrograms(firstSix);
         }
       } catch (err) {
         setError("Failed to fetch programs. Please try again later.");
@@ -123,7 +201,7 @@ const Programs: React.FC = () => {
       }
     };
 
-    fetchPrograms();
+    fetchData();
   }, []);
 
   // Handle program card click
@@ -231,7 +309,7 @@ const Programs: React.FC = () => {
               className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-[#02968A] text-xl sm:text-3xl p-4 h-12 w-12 flex items-center justify-center bg-white/80 rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={currentIndex === 0}
             >
-              &larr;
+              <ChevronLeft size={24} strokeWidth={4}  />
             </button>
             
             {/* Cards Container */}
@@ -245,7 +323,7 @@ const Programs: React.FC = () => {
               className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-[#02968A] text-xl sm:text-3xl p-4 h-12 w-12 flex items-center justify-center bg-white/80 rounded-full shadow-md ${currentIndex + maxVisibleCards >= programs.length ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={currentIndex + maxVisibleCards >= programs.length}
             >
-              &rarr;
+              <ChevronRight size={24} strokeWidth={4}  />
             </button>
           </div>
         )}
@@ -291,3 +369,4 @@ const Programs: React.FC = () => {
 };
 
 export default Programs;
+

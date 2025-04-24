@@ -1,39 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../Components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+
+
+
+
+interface Task {
+  taskName: string;
+  repetitions: number;
+  completed: boolean;
+}
+
+interface OngoingProgram {
+  programId: string;
+  planName: string;
+  startDate: string;
+  endDate: string;
+  todayTasks: Task[];
+  todayProgressId: string;
+  daysCompleted: number;
+  totalDays: number;
+  tasksCompleted: number;
+  totalTasks: number;
+}
 
 const HomePage: React.FC = () => {
-
   const user = useRecoilValue(userAtom);
-  
-  // Modified courseTasks array to include varying completion levels
-  const courseTasks = [
-    { id: 1, task: "Deep Breaths", progress: "20 / 20" },
-    { id: 2, task: "Meditation", progress: "15 / 20" },
-    { id: 3, task: "Journaling", progress: "10 / 20" },
-    { id: 4, task: "Mindfulness Exercise", progress: "20 / 20" },
-    { id: 5, task: "Positive Affirmations", progress: "18 / 20" },
-    { id: 6, task: "Visualization", progress: "20 / 20" },
-    { id: 7, task: "Gratitude Practice", progress: "17 / 20" },
-    { id: 8, task: "Goal Setting", progress: "20 / 20" },
-    { id: 9, task: "Stress Management", progress: "5 / 20" }, // Example of a task not completed
-  ];
-
   const [selectedMood, setSelectedMood] = useState("");
   const [selectedCard, setSelectedCard] = useState("");
+  const [programs, setPrograms] = useState<OngoingProgram[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
+  
+  const currentProgram = programs[currentIndex] || null;
+  
+  useEffect(() => {
+    fetchOngoingPrograms();
+  }, []);
 
-  const handleQuickClick = (title:any) => {
+  const fetchOngoingPrograms = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/patient/getOngoingPrograms", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch ongoing programs");
+      }
+
+      const data = await response.json();
+      console.log("this is ongoing Program",data)
+      
+      // Use the first ongoing program if available
+      if (data.programs && data.programs.length > 0) {
+        setPrograms(data.programs);
+        setCurrentIndex(0); // start with the first program
+      }
+
+    } catch (error) {
+      console.error("Error fetching ongoing programs:", error);
+      toast.error("Failed to load your programs. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMarkTask = async (taskIndex: number) => {
+    if (!currentProgram) return;
+
+    try {
+      const response = await fetch("/api/patient/markTaskComplete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          programId: currentProgram.programId,
+          dailyProgressId: currentProgram.todayProgressId,
+          taskIndex,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update task");
+      }
+
+      const data = await response.json();
+      
+      // Update the local state to reflect the change
+      setPrograms(prev => {
+        const updated = [...prev];
+      
+        if (!updated[currentIndex]) return prev;
+      
+        const updatedTasks = [...updated[currentIndex].todayTasks];
+        updatedTasks[taskIndex] = {
+          ...updatedTasks[taskIndex],
+          completed: data.completed,
+        };
+      
+        const tasksCompletedDelta = data.completed ? 1 : -1;
+      
+        updated[currentIndex] = {
+          ...updated[currentIndex],
+          todayTasks: updatedTasks,
+          tasksCompleted: updated[currentIndex].tasksCompleted + tasksCompletedDelta,
+        };
+      
+        return updated;
+      });
+      
+      toast.success(data.message);
+    } catch (error) {
+      console.error("Error marking task:", error);
+      toast.error("Failed to update task. Please try again.");
+    }
+  };
+
+  const handleQuickClick = (title: string) => {
     navigate(`/patient/${title}`);
-    setSelectedCard(title)
-  } 
+    setSelectedCard(title);
+  };
 
   return (
     <div className="min-h-screen bg-[#D3EDEB] mt-4 mx-10">
-      {/* <Navbar/> */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
 
       {/* Main Content */}
       <div className="pt-20 flex flex-col lg:flex-row w-full gap-6">
@@ -48,29 +159,28 @@ const HomePage: React.FC = () => {
         <div className="w-full lg:w-2/3 space-y-6">
           {/* How Are You Feeling Today? Section */}
           <div className="bg-white p-6 rounded-xl shadow-md">
-  <h2 className="text-2xl font-semibold mb-4 text-center lg:text-left">How Are You Feeling Today?</h2>
-  <div className="flex flex-wrap justify-center gap-4 lg:justify-around">
-    {["Depressed", "Sad", "Neutral", "Happy", "Joyful"].map((mood) => (
-      <div
-        key={mood}
-        className={`flex flex-col items-center cursor-pointer p-2 transition-all duration-300 ${
-          selectedMood === mood ? "border-2 border-[#02968A] rounded-xl" : "hover:border-2 hover:border-gray-300 rounded-lg"
-        }`}
-        onClick={() => {
-          setSelectedMood(mood);
-          console.log(`Selected Mood: ${mood}`);
-        }}
-        style={{ minWidth: '120px', maxWidth: '160px' }} // Ensures that the items do not shrink too much or grow too large
-      >
-        <div className="bg-[#fff] h-16 w-16 mt-4 rounded-full flex items-center justify-center text-white text-3xl">
-          <img src={`/src/assets/patient/homepage/${mood}.png`} alt={mood} />
-        </div>
-        <span className="mt-2 text-lg font-medium">{mood}</span>
-      </div>
-    ))}
-  </div>
-</div>
-
+            <h2 className="text-2xl font-semibold mb-4 text-center lg:text-left">How Are You Feeling Today?</h2>
+            <div className="flex flex-wrap justify-center gap-4 lg:justify-around">
+              {["Depressed", "Sad", "Neutral", "Happy", "Joyful"].map((mood) => (
+                <div
+                  key={mood}
+                  className={`flex flex-col items-center cursor-pointer p-2 transition-all duration-300 ${
+                    selectedMood === mood ? "border-2 border-[#02968A] rounded-xl" : "hover:border-2 hover:border-gray-300 rounded-lg"
+                  }`}
+                  onClick={() => {
+                    setSelectedMood(mood);
+                    console.log(`Selected Mood: ${mood}`);
+                  }}
+                  style={{ minWidth: '120px', maxWidth: '160px' }}
+                >
+                  <div className="bg-[#fff] h-16 w-16 mt-4 rounded-full flex items-center justify-center text-white text-3xl">
+                    <img src={`/src/assets/patient/homepage/${mood}.png`} alt={mood} />
+                  </div>
+                  <span className="mt-2 text-lg font-medium">{mood}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Quick Access Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -88,68 +198,116 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Course Tasks Section */}
-<div className="w-full mt-10 px-4 md:px-0">
-  <div className="bg-white p-6 rounded-xl shadow-md">
-    <h2 className="text-2xl font-semibold mb-4">Course Tasks</h2>
-    <div className="flex flex-col md:flex-row items-center md:space-x-6 text-center md:text-left">
-      <div className="mb-4 md:mb-0">
-        <p className="text-lg font-semibold">Plan - B</p>
-        <p className="text-sm text-gray-600">5/14 Days</p>
-      </div>
-      <div className="relative mb-4 md:mb-0">
-        <svg viewBox="0 0 36 36" className="w-24 h-24 mx-auto md:mx-0">
-          <path
-            className="text-gray-300"
-            fill="none"
-            strokeWidth="3"
-            d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
-          />
-          <path
-            className="text-[#02968A]"
-            fill="none"
-            strokeDasharray="70, 100"
-            strokeWidth="3"
-            d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold">
-          7 / 10
-        </div>
-      </div>
-      <p className="text-lg font-semibold text-gray-600">Completed</p>
-    </div>
+      <div className="w-full mt-10 px-4 md:px-0">
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-2xl font-semibold mb-4">Course Tasks</h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <p>Loading program data...</p>
+            </div>
+          ) : currentProgram ? (
+            <>
+              <div className="flex flex-col md:flex-row items-center md:space-x-6 text-center md:text-left">
+                <div className="mb-4 md:mb-0">
+                  <div className="flex items-center space-x-4 justify-center md:justify-start">
+  <button
+    disabled={currentIndex === 0}
+    onClick={() => setCurrentIndex(prev => Math.max(prev - 1, 0))}
+    className="text-2xl font-bold text-[#02968A] disabled:text-gray-400"
+    title="Previous Program"
+  >
+   <ChevronLeft size={24} strokeWidth={4}  />
 
-    {/* Scrollable Task List with Completion Indicator */}
-    <div className="mt-6 h-96 overflow-y-auto space-y-4">
-      {courseTasks.map((task) => {
-        const isCompleted = task.progress === "20 / 20";
-        return (
-          <div
-            key={task.id}
-            className="flex flex-col sm:flex-row items-center justify-between p-3 border-b last:border-b-0 space-y-2 sm:space-y-0 sm:space-x-4"
-          >
-            <span className="w-full sm:w-1/3 text-lg text-center sm:text-left">
-              {task.task}
-            </span>
-            <span className="w-full sm:w-1/3 text-lg text-center">
-              {task.progress}
-            </span>
-            <span className="w-full sm:w-1/3 text-lg text-center sm:text-right">
-              {isCompleted ? (
-                <span className="text-green-600">✔</span>
-              ) : (
-                <span className="text-red-600">❌</span>
-              )}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  </div>
+  </button>
+  <p className="text-lg font-semibold">{currentProgram.planName}</p>
+  <button
+    disabled={currentIndex === programs.length - 1}
+    onClick={() => setCurrentIndex(prev => Math.min(prev + 1, programs.length - 1))}
+    className="text-2xl font-bold text-[#02968A] disabled:text-gray-400"
+    title="Next Program"
+  >
+   <ChevronRight size={24} strokeWidth={4}  />
+
+  </button>
 </div>
 
+                  <p className="text-sm text-gray-600">
+                    {currentProgram.daysCompleted}/{currentProgram.totalDays} Days
+                  </p>
+                </div>
+                <div className="relative mb-4 md:mb-0">
+                  <svg viewBox="0 0 36 36" className="w-24 h-24 mx-auto md:mx-0">
+                    <path
+                      className="text-gray-300"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="3"
+                      d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
+                    />
+                    <path
+                      className="text-[#02968A]"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeDasharray={`${(currentProgram.tasksCompleted / currentProgram.totalTasks) * 100}, 100`}
+                      strokeWidth="3"
+                      d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold">
+                    {currentProgram.tasksCompleted} / {currentProgram.totalTasks}
+                  </div>
+                </div>
+                <p className="text-lg font-semibold text-gray-600">Completed</p>
+              </div>
 
-      
+              {/* Scrollable Task List with Completion Indicator */}
+              <div className="mt-6 h-96 overflow-y-auto space-y-4">
+                {currentProgram.todayTasks.length > 0 ? (
+                  currentProgram.todayTasks.map((task, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col sm:flex-row items-center justify-between p-3 border-b last:border-b-0 space-y-2 sm:space-y-0 sm:space-x-4"
+                    >
+                      <span className="w-full sm:w-1/3 text-lg text-center sm:text-left">
+                        {task.taskName}
+                      </span>
+                      <span className="w-full sm:w-1/3 text-lg text-center">
+                        {task.repetitions} repetitions
+                      </span>
+                      <span className="w-full sm:w-1/3 flex justify-end">
+                        {task.completed ? (
+                          <button 
+                            className="bg-green-100 text-green-800 px-4 py-2 rounded-md font-medium hover:bg-green-200 transition"
+                            onClick={() => handleMarkTask(index)}
+                          >
+                            ✓ Done
+                          </button>
+                        ) : (
+                          <button 
+                            className="bg-[#02968A] text-white px-4 py-2 rounded-md font-medium hover:bg-[#017D72] transition"
+                            onClick={() => handleMarkTask(index)}
+                          >
+                            Mark Done
+                          </button>
+                        )}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex justify-center items-center h-64">
+                    <p>No tasks found for today.</p>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex justify-center items-center h-64">
+              <p>No ongoing programs found. Please apply a program to get started.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
