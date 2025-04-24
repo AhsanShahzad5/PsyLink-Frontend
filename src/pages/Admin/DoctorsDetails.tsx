@@ -26,7 +26,8 @@ const DoctorsDetails: React.FC = () => {
     );
   }
 
-
+  console.table(doctor);
+  
   const handleApprove = async () => {
     setLoading(true);
     setError(null);
@@ -46,7 +47,7 @@ const DoctorsDetails: React.FC = () => {
       if (!response.ok) {
         throw new Error("Failed to approve doctor.");
       }
-
+   
       setSuccess("Doctor approved successfully!");
       setTimeout(() => navigate("/admin/doctors"), 2000); // Navigate back after 2 seconds
     } catch (err: any) {
@@ -55,10 +56,15 @@ const DoctorsDetails: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  const handleDeleteUser = () => {
+    console.log(`Delete user with ID: ${doctor.id}`);
+    // API call will be added later
+  };
 
   return (
     <div className="p-6 bg-secondary">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg  h-screen  p-6">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg h-screen p-6">
         {/* Header */}
         <div className="flex items-center mb-6">
           <FaArrowLeft
@@ -68,16 +74,27 @@ const DoctorsDetails: React.FC = () => {
           />
           <h1 className="text-3xl font-semibold">{doctor.name}</h1>
           <div className="ml-auto flex gap-4">
-          <button
-              className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover disabled:opacity-50"
-              onClick={handleApprove}
-              disabled={loading}
-            >
-              {loading ? "Approving..." : "Approve"}
-            </button>
-            <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
-              Remove
-            </button>
+            {doctor.status === "approved" ? (
+              <button 
+                className="px-4 w-[140px] py-2 rounded-xl bg-red-500 text-white shadow hover:bg-red-600"
+                onClick={handleDeleteUser}
+              >
+                Delete User
+              </button>
+            ) : (
+              <>
+                <button
+                  className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover disabled:opacity-50"
+                  onClick={handleApprove}
+                  disabled={loading}
+                >
+                  {loading ? "Approving..." : "Approve"}
+                </button>
+                <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
+                  Remove
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="overflow-auto h-[88%] custom-scrollbar">
@@ -120,6 +137,10 @@ const DoctorsDetails: React.FC = () => {
                 <td className="py-2 font-semibold text-gray-600">Phone:</td>
                 <td className="py-2">{doctor.phone}</td>
               </tr>
+              <tr className="border-t border-gray-200">
+                <td className="py-2 font-semibold text-gray-600">Status:</td>
+                <td className="py-2">{doctor.status}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -142,8 +163,8 @@ const DoctorsDetails: React.FC = () => {
                 <td className="py-2">{doctor.education.join(", ")}</td>
               </tr>
               <tr className="border-t border-gray-200">
-                <td className="py-2 font-semibold text-gray-600">License Certification:</td>
-                <td className="py-2">{doctor.licenseCertification}</td>
+                {/* <td className="py-2 font-semibold text-gray-600">License Certification:</td>
+                <td className="py-2">{doctor.licenseCertification}</td> */}
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">CNIC Number:</td>
@@ -172,15 +193,15 @@ const DoctorsDetails: React.FC = () => {
             <thead>
               <tr className="text-gray-600">
                 <th className="py-2">Session ID</th>
-                <th className="py-2">Patient Name</th>
+                <th className="py-2">Patient Ids</th>
               </tr>
             </thead>
             <tbody>
               {doctor.appointments.length > 0 ? (
                 doctor.appointments.map((appointment, index) => (
                   <tr key={index} className="border-t border-gray-200">
-                    <td className="py-2">{appointment.sessionId}</td>
-                    <td className="py-2">{appointment.patientName}</td>
+                    <td className="py-2">{appointment.appointmentId}</td>
+                    <td className="py-2">{appointment.patientId}</td>
                   </tr>
                 ))
               ) : (
@@ -195,40 +216,39 @@ const DoctorsDetails: React.FC = () => {
         </div>
 
        {/* Psyc Posts Section */}
-<h2 className="text-xl font-semibold mb-4 text-primary text-left">Psyc Posts</h2>
-<div className="border-t border-gray-200 pt-4">
-  <table className="table-auto w-full text-left border-collapse">
-    <thead>
-      <tr className="text-gray-600">
-        <th className="py-2">Post ID</th>
-        <th className="py-2">Posted On</th>
-        <th className="py-2">Actions</th> {/* Added Actions column */}
-      </tr>
-    </thead>
-    <tbody>
-      {doctor.posts.length > 0 ? (
-        doctor.posts.map((post, index) => (
-          <tr key={index} className="border-t border-gray-200">
-            <td className="py-2">{post.postId}</td>
-            <td className="py-2">{post.postedOn}</td>
-            <td className="py-2">
-              <button className="text-teal-500 font-semibold hover:underline">
-                View →
-              </button>
-            </td> {/* Added View button */}
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan={3} className="py-2 text-center text-gray-500">
-            No Psyc Posts Found
-          </td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-</div>
-
+        <h2 className="text-xl font-semibold mb-4 text-primary text-left">Psyc Posts</h2>
+        <div className="border-t border-gray-200 pt-4">
+          <table className="table-auto w-full text-left border-collapse">
+            <thead>
+              <tr className="text-gray-600">
+                <th className="py-2">Post ID</th>
+                <th className="py-2">Post Title</th>
+                {/* <th className="py-2">Actions</th> */}
+              </tr>
+            </thead>
+            <tbody>
+              {doctor.posts.length > 0 ? (
+                doctor.posts.map((post, index) => (
+                  <tr key={index} className="border-t border-gray-200">
+                    <td className="py-2">{post.postId}</td>
+                    <td className="py-2">{post.postedOn}</td>
+                    <td className="py-2">
+                      <button className="text-teal-500 font-semibold hover:underline">
+                        View →
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="py-2 text-center text-gray-500">
+                    No Psyc Posts Found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       </div>
     </div>

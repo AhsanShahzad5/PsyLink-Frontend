@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import Post from "@/Components/psync/PostComponent";
 import PsyncTopBar from "@/Components/psync/PsyncTopBar";
+import { useLocation } from "react-router-dom";
 
 const Psync = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts data
   const [loading, setLoading] = useState(true); // Track loading state
   const [refresh, setRefresh] = useState(false);
- 
+   // Extract the first part of the pathname (i.e., "doctor" or "patient")
+   const location = useLocation();
+   const role = location.pathname.split("/")[1];
   //const [posts, setPosts] = useRecoilState(postsAtom);
   useEffect(() => {
     // Fetch posts from the backend
@@ -14,7 +17,7 @@ const Psync = () => {
       try {
         const response = await fetch("http://localhost:8000/api/psync/getAllPosts"); // Replace with your API URL
         const data = await response.json();
-        console.log("Fetched Posts:", data); // Log the fetched posts
+        console.table("Fetched Posts:", data); // Log the fetched posts
         setPosts(data); // Update state with fetched posts
         setLoading(false); // Mark loading as complete
       } catch (error) {
@@ -75,7 +78,7 @@ const Psync = () => {
                   seriesTitle={post.series[0]?.title || "no series"} // Series title
                   authorId={post.user?._id || "unknown"} // Use user ID or fallback
                   authorName={post.user?.name || "Unknown"} // Use user name or fallback
-                  authoreRole={post.user?.role || "unknown"} // Use user role or fallback
+                  authoreRole={role || post.user?.role || "unknown"} // Use user role or fallback
                   authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                   content={post.description} // Post description
                   timeAgo={getTimeAgo(post.createdAt) || "7d ago"} // Placeholder for dynamic time

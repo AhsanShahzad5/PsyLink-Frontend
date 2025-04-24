@@ -136,24 +136,30 @@ const Post = ({
 
   const handlePostDelete = async () => {
     try {
+      // Check if current user is admin and include that in the request body
+      const isAdmin = authoreRole === "admin"; // Assuming you have access to userRole
+      
       const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ 
+          userId,
+          isAdmin // Send this flag to the backend
+        }),
       });
-
+  
       const result = await response.json();
-
+  
       if (response.ok) {
         toast({
           description: "Post deleted successfully!",
           variant: "default",
           duration: 1000,
         });
-
+  
         // 🔄 Refresh the page or remove post from UI (modify as needed)
         window.location.reload();
-
+  
       } else {
         toast({
           description: result.error || "Failed to delete post",
@@ -167,7 +173,7 @@ const Post = ({
         variant: "destructive",
       });
     }
-  }
+  };
 
   // Function to open edit modal
   const handleEditClick = () => {
@@ -213,20 +219,24 @@ const Post = ({
                   <p className="text-xs sm:text-sm text-teal-600 truncate">{seriesTitle}</p>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
-                  {authorId === userId ? (
+
+                  {(authorId === userId || authoreRole === 'admin') ? (
                     <div className="flex gap-3">
-                      <FaPenAlt
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 cursor-pointer hover:text-teal-600 transition-colors duration-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick();
-                        }}
-                      />
+                      {authorId === userId && (
+                        <FaPenAlt
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 cursor-pointer hover:text-teal-600 transition-colors duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditClick();
+                          }}
+                        />
+                      )}
                       <DeleteButton onClick={handlePostDelete} />
                     </div>
                   ) : (
                     <span className="text-xs sm:text-sm text-gray-500 hidden sm:inline">{timeAgo}</span>
                   )}
+
                 </div>
               </div>
             </div>
@@ -252,15 +262,28 @@ const Post = ({
 
         <CardFooter className="border-t border-gray-100 p-2 sm:p-3">
           <div className="flex flex-row w-full gap-1 sm:gap-2">
-            <button onClick={handleLike} className="flex items-center justify-center gap-1 sm:gap-2 bg-teal-600 text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full hover:bg-teal-700 transition-colors flex-1 text-xs sm:text-base">
+
+            <button
+              onClick={authoreRole === 'admin' ? undefined : handleLike}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-teal-600 hover:bg-teal-700'
+                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={authoreRole === 'admin'}
+            >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-              <span className="hidden xs:inline">Like</span>
+              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Like'}</span>
             </button>
+
             <button
-              onClick={() => setShowCommentBox(!showCommentBox)}
-              className="flex items-center justify-center gap-1 sm:gap-2 bg-teal-600 text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full hover:bg-teal-700 transition-colors flex-1 text-xs sm:text-base"
+              onClick={authoreRole === 'admin' ? undefined : () => setShowCommentBox(!showCommentBox)}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-teal-600 hover:bg-teal-700'
+                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={authoreRole === 'admin'}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path
@@ -270,14 +293,24 @@ const Post = ({
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-              <span className="hidden xs:inline">Comment</span>
+              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Comment'}</span>
             </button>
-            <button onClick={handleFavorite} className="flex items-center justify-center gap-1 sm:gap-2 bg-teal-600 text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full hover:bg-teal-700 transition-colors flex-1 text-xs sm:text-base">
+
+            <button
+              onClick={authoreRole === 'admin' ? undefined : handleFavorite}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-teal-600 hover:bg-teal-700'
+                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={authoreRole === 'admin'}
+            >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
               </svg>
-              <span className="hidden xs:inline">Favorite</span>
+              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Favorite'}</span>
             </button>
+
+
           </div>
         </CardFooter>
 
@@ -344,12 +377,12 @@ export const DeleteButton = ({ onClick }: { onClick: () => void }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-          <AlertDialogCancel className="text-teal-700 border-teal-500 hover:bg-teal-50 text-sm sm:text-base">
+          <AlertDialogCancel className="bg-primary text-white border-teal-500 hover:bg-teal-700 text-sm sm:text-base">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirmDelete}
-            className="bg-teal-600 hover:bg-teal-700 text-white text-sm sm:text-base"
+            className="bg-red-700 hover:bg-red-800 text-white text-sm sm:text-base"
           >
             Confirm
           </AlertDialogAction>

@@ -65,7 +65,7 @@ const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/test" element={<PaymentCheck/>} />
+        <Route path="/test" element={<PatientDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -154,9 +154,9 @@ const AppRoutes = () => (
             path="/patient/video-consultation/:roomId"
             element={
                 <SocketProvider>
-                <ProtectedRoute allowedRoles={['patient']}>
-                    <VideoConsulation />
-                </ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['patient']}>
+                        <VideoConsulation />
+                    </ProtectedRoute>
                 </SocketProvider>
             }
         />
@@ -164,9 +164,9 @@ const AppRoutes = () => (
             path="/patient/video-preview"
             element={
                 <SocketProvider>
-                <ProtectedRoute allowedRoles={['patient']}>
-                    <VideoPreview />
-                </ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['patient']}>
+                        <VideoPreview />
+                    </ProtectedRoute>
                 </SocketProvider>
             }
         />
@@ -375,9 +375,9 @@ const AppRoutes = () => (
             path="/doctor/video-consultation/:roomId"
             element={
                 <SocketProvider>
-                <ProtectedRoute allowedRoles={['doctor']}>
-                    <VideoConsulation />
-                </ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['doctor']}>
+                        <VideoConsulation />
+                    </ProtectedRoute>
                 </SocketProvider>
             }
         />
@@ -478,7 +478,7 @@ const AppRoutes = () => (
             }
         />
         <Route
-            path="/admin/patients/patient-details"
+            path="/admin/patients/:id"
             element={
                 <ProtectedRoute allowedRoles={['admin']}>
                     <AdminLayout>
@@ -582,7 +582,81 @@ const AppRoutes = () => (
             element={
                 <ProtectedRoute allowedRoles={['admin']}>
                     <AdminLayout>
-                        <Psync />
+                        <PsyncHomePage />
+                        {/* <Psync /> */}
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+
+
+        {/* Admin Psync Routes */}
+        <Route
+            path="/admin/psync"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PsyncHomePage />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/post/:postId"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PostFullPage />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/favouriteposts"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PsyncFavouritesPage />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/myposts"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PsyncMyPostsPage />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/myseries"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PsyncSeries />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/myseries/:seriesId"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <PsyncIndividualSeriesPage />
+                    </AdminLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/admin/psync/search"
+            element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminLayout>
+                        <SearchResults />
                     </AdminLayout>
                 </ProtectedRoute>
             }
