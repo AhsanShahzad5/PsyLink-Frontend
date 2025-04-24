@@ -236,9 +236,6 @@ fetchVerifiedDoctors();
   return (
    <>
     {/* <Navbar/>     */}
-
-    
-
       {/* Main Content */}
    <div className="bg-[#D3EDEB] min-h-screen w-full flex justify-center mt-32 ">
        <div className="w-full max-w-screen-xl p-4 bg-[#D3EDEB] mt-10">

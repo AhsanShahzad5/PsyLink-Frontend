@@ -65,6 +65,20 @@ export default function BookedAppointmentCard({
 
       {/* Call to Action */}
       <div className="flex flex-col items-center sm:items-end w-full sm:w-auto">
+
+        {/* use to check join call button, comment other part below --- Start */}
+
+        {/* <a
+          href={`/patient/video-preview?appointmentId=${bookedAppointment.appointmentId}`}
+          className="w-full sm:w-auto px-10 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors flex items-center justify-center"
+        >
+          <Phone size={16} className="mr-2 text-white" />
+          <span>Join Call</span>
+        </a> */}
+
+      {/* use to check join call button --- End */}
+
+        {/* Use this for actual implementation */}
         {bookedAppointment.status === "active" ? (
           <a
             // href={bookedAppointment.meetingLink}
