@@ -173,7 +173,7 @@ const ProfessionalDetailForm: React.FC = () => {
       
       if (response.ok) {
         setMessage('Professional details submitted successfully!');
-        navigate(`/${user?.role}/thankyoupage`);
+        navigate('/doctor/thankyoupage');
       } else {
         setMessage(data.message || 'Failed to submit the form.');
         toast({

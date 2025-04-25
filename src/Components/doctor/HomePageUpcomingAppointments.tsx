@@ -86,14 +86,14 @@ export const HomeUpcomingAppointments = () => {
         </h3>
         <div className="flex justify-center items-center h-64 text-center">
           <p className="text-red-500">
-            Error loading appointments: {error}
+             {error}
             <br />
-            <button 
+            {/* <button 
               className="mt-2 text-blue-500 underline" 
               onClick={() => window.location.reload()}
             >
               Try again
-            </button>
+            </button> */}
           </p>
         </div>
       </div>
