@@ -1,78 +1,314 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaClock, FaMapMarkerAlt, FaPenAlt, FaStar } from "react-icons/fa";
 
-const DoctorIntro = ({ clinicDetails }:any) => {
-    if (!clinicDetails) {
-        return <div>No clinic details available</div>;
+const DoctorIntro = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    specialisation: "",
+    educationBackground: "",
+    city: "",
+    country: "",
+    startTime: "",
+    endTime: "",
+    consultationFee: "",
+  });
+
+  const [newImage, setNewImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("/default-doctor.jpg"); // Better path, change if needed
+
+  useEffect(() => {
+    const fetchClinicDetails = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/doctor/clinic-details", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setFormData(prev => ({
+            ...prev,
+            ...data.clinic,
+          }));
+  
+          if (data.clinic.image) {
+            setImagePreview(data.clinic.image);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching clinic details", err);
       }
-    
-      const {
-        fullName,
-        specialisation,
-        educationBackground,
-        city,
-        country,
-        startTime,
-        endTime,
-        consultationFee,
-      } = clinicDetails;
+    };
+  
+    fetchClinicDetails();
+  }, []);
+  
+  
 
-    
-    return (
-        <div className="bg-[#F5FAFE] border border-[#D6E4EF] shadow-md rounded-lg p-6">
-            <div className="flex justify-between mb-5">
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-                    <h2 className="text-[2rem] font-bold  "> Your personal details</h2>
-                    <FaPenAlt size={30} className="cursor-pointer text-gray-700" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                {/* Image Section */}
-                <div className="sm:col-span-3 flex flex-col items-center">
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setNewImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
-                    <img
-                        src="/src/assets/patient/doctor/doctor.jpg"
-                        className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg object-cover"
-                        alt="Doctor"
-                    />
-                    <button className="mt-4 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm">
-                        Change Photo
-                    </button>
-                </div>
+  const handleSave = async () => {
+    try {
+      let base64Image = "";
+  
+      if (newImage) {
+        base64Image = await toBase64(newImage) as string;
+      }
+  
+      const response = await fetch("http://localhost:8000/api/doctor/clinic-details", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          ...formData,
+          image: base64Image, // add base64 encoded image if available
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+  
+        setFormData(prevState => ({
+          ...prevState,
+          ...data.clinic,
+        }));
+  
+        if (data.clinic.image) {
+          setImagePreview(data.clinic.image); // Update preview after saving
+        }
+  
+        setIsEditing(false);
+      } else {
+        alert("Failed to save clinic details.");
+      }
+    } catch (err) {
+      console.error("Error saving clinic details", err);
+    }
+  };
 
-                {/* Info Section */}
-                <div className="sm:col-span-6 relative flex flex-col">
-                    {/* Pencil Icon */}
-                    
-                    <h1 className="text-[22px] sm:text-[24px] font-semibold text-[#222] leading-[28px]">
-                        {fullName}
-                    </h1>
-                    <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
-                        {specialisation}
-                    </p>
-                    <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
-                        {educationBackground}
-                    </p>
-                    <p className="text-[14px] sm:text-[16px] font-medium text-[#707070] flex items-center mt-6">
-                        <FaMapMarkerAlt className="text-primary mr-2" />
-                        {city} - {country}
-                    </p>
-                </div>
+  const toBase64 = (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  
+  
 
-                {/* Timings and Fee Section */}
-                <div className="sm:col-span-3 text-center flex flex-col justify-center items-center gap-2">
-                    <p className="text-[16px] sm:text-[18px] font-light text-[#222] flex items-center gap-2">
-                        <FaClock className="text-primary" /> {startTime} - {endTime}
-                    </p>
-                    <p className="text-[16px] sm:text-[18px] font-light text-[#222] mt-4">
-                        {consultationFee}
-                    </p>
-                    <p className="text-[14px] sm:text-[16px] font-light text-[#2C43D6] underline flex items-center gap-1">
-                        <FaStar className="text-[#FFD700]" /> 4.8 (224 reviews)
-                    </p>
-                </div>
-            </div>
+  const safeDisplay = (text: any, placeholder = "Not available") => {
+    if (typeof text === "string") {
+      return text.trim() !== "" ? text : placeholder;
+    }
+    if (typeof text === "number") {
+      return text.toString();
+    }
+    return placeholder;
+  };
+
+  const formatTime = (time24: string) => {
+    if (!time24) return "";
+    const [hoursStr, minutes] = time24.split(":");
+    let hours = parseInt(hoursStr, 10);
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // 0 -> 12
+    return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+  };
+  
+
+  return (
+    <div className="bg-[#F5FAFE] border border-[#D6E4EF] shadow-md rounded-lg p-6">
+      <div className="flex justify-between mb-5">
+        <h2 className="text-[2rem] font-bold">Your personal details</h2>
+        <FaPenAlt
+          size={28}
+          className="cursor-pointer text-gray-600 hover:text-primary transition-all"
+          onClick={() => setIsEditing(true)}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+        {/* Doctor Image Section */}
+<div className="sm:col-span-3 flex flex-col items-center">
+<div className="sm:col-span-3 flex justify-center">
+            <img
+              src={imagePreview}
+              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
+              alt="img"
+            />
+          </div>
+  {isEditing && (
+    <div className="flex flex-col items-center w-full max-w-xs space-y-3">
+      <label className="w-full">
+        <div className="flex flex-col items-center px-4 py-3 bg-white rounded-lg border border-gray-300 cursor-pointer hover:bg-gray-50 transition">
+          <span className="text-sm font-medium text-gray-700">Choose new photo</span>
+          <span className="text-xs text-gray-500">JPG, PNG up to 5MB</span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
         </div>
-    );
+      </label>
+      
+      
+    </div>
+  )}
+</div>
+
+
+        {/* Doctor Info Section */}
+        <div className="sm:col-span-6 relative flex flex-col">
+          <h1 className="text-[22px] sm:text-[24px] font-semibold text-[#222] leading-[28px]">
+            {isEditing ? (
+              <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                className="text-[22px] sm:text-[24px] border-b-2 outline-none w-full"
+              />
+            ) : (
+              safeDisplay(formData.fullName, "Full Name not set")
+            )}
+          </h1>
+
+          <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
+            {isEditing ? (
+              <input
+                type="text"
+                name="specialisation"
+                placeholder="Specialisation"
+                value={formData.specialisation}
+                onChange={handleInputChange}
+                className="border-b-2 outline-none w-full"
+              />
+            ) : (
+              safeDisplay(formData.specialisation, "Specialisation not set")
+            )}
+          </p>
+
+          <p className="text-[16px] sm:text-[18px] font-light text-[#333] mt-5">
+            {isEditing ? (
+              <input
+                type="text"
+                name="educationBackground"
+                placeholder="Education Background"
+                value={formData.educationBackground}
+                onChange={handleInputChange}
+                className="border-b-2 outline-none w-full"
+              />
+            ) : (
+              safeDisplay(formData.educationBackground, "Education not set")
+            )}
+          </p>
+
+          <p className="text-[14px] sm:text-[16px] font-medium text-[#707070] flex items-center mt-6">
+            <FaMapMarkerAlt className="text-primary mr-2" />
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="border-b-2 outline-none mr-2"
+                />
+                -
+                <input
+                  type="text"
+                  name="country"
+                  placeholder="Country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="border-b-2 outline-none ml-2"
+                />
+              </>
+            ) : (
+              `${safeDisplay(formData.city, "City")} - ${safeDisplay(formData.country, "Country")}`
+            )}
+          </p>
+        </div>
+
+        {/* Clinic Timing and Fee */}
+        <div className="sm:col-span-3 text-center flex flex-col justify-center items-center gap-2">
+        <p className="text-[16px] sm:text-[18px] font-light text-[#222] flex items-center gap-2">
+  <FaClock className="text-primary" />
+  {isEditing ? (
+    <>
+      <input
+        type="time"
+        name="startTime"
+        value={formData.startTime}
+        onChange={handleInputChange}
+        className="border-b-2 outline-none"
+      />
+      -
+      <input
+        type="time"
+        name="endTime"
+        value={formData.endTime}
+        onChange={handleInputChange}
+        className="border-b-2 outline-none"
+      />
+    </>
+  ) : (
+    <>
+      {formatTime(formData.startTime)} - {formatTime(formData.endTime)}
+    </>
+  )}
+</p>
+
+
+          <p className="text-[16px] sm:text-[18px] font-light text-[#222] mt-4">
+            {isEditing ? (
+              <input
+                type="number"
+                name="consultationFee"
+                placeholder="Consultation Fee"
+                value={formData.consultationFee}
+                onChange={handleInputChange}
+                className="border-b-2 outline-none"
+              />
+            ) : (
+              `Rs${safeDisplay(formData.consultationFee, "Fee not set")}`
+            )}
+          </p>
+
+          {isEditing && (
+            <button
+              onClick={handleSave}
+              className="mt-4 bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2 rounded-lg shadow-md transition"
+            >
+              Save Changes
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default DoctorIntro;
+
