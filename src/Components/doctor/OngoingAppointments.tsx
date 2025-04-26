@@ -187,7 +187,11 @@ const OngoingAppointments: React.FC = () => {
         const userId = user._id;
         if (!userId) throw new Error('User ID not found');
 
-        const res = await fetch(`/api/doctor/appointments/upcoming?doctorId=${userId}`, {
+        //abbad code
+        // const res = await fetch(`/api/doctor/appointments/upcoming?doctorId=${userId}`, {
+        
+        //ahsan
+        const res = await fetch(`http://localhost:8000/api/doctor/appointments/upcoming?doctorId=${userId}`, {
           credentials: 'include'
         });
         const body = await res.json();

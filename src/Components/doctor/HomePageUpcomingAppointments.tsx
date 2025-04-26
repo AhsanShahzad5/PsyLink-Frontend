@@ -30,7 +30,11 @@ export const HomeUpcomingAppointments = () => {
 
         console.log("Fetching appointments for user:", userId);
         
-        const response = await fetch(`/api/doctor/appointments/upcoming?doctorId=${userId}`);
+        //abbad code url
+        //const response = await fetch(`/api/doctor/appointments/upcoming?doctorId=${userId}`);
+        
+       //ahsan code url 
+        const response = await fetch(`http://localhost:8000/api/doctor/appointments/upcoming?doctorId=${userId}`);
         console.log("Response status:", response.status);
         
         if (!response.ok) {

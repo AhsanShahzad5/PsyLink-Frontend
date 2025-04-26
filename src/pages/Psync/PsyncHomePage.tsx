@@ -9,7 +9,7 @@ const Psync = () => {
   const [refresh, setRefresh] = useState(false);
    // Extract the first part of the pathname (i.e., "doctor" or "patient")
    const location = useLocation();
-   const role = location.pathname.split("/")[1];
+   const roleOfLoggedInUser = location.pathname.split("/")[1];
   //const [posts, setPosts] = useRecoilState(postsAtom);
   useEffect(() => {
     // Fetch posts from the backend
@@ -78,7 +78,7 @@ const Psync = () => {
                   seriesTitle={post.series[0]?.title || "no series"} // Series title
                   authorId={post.user?._id || "unknown"} // Use user ID or fallback
                   authorName={post.user?.name || "Unknown"} // Use user name or fallback
-                  authoreRole={role || post.user?.role || "unknown"} // Use user role or fallback
+                  authoreRole={post.user?.role || "unknown"} // Use user role or fallback
                   authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
                   content={post.description} // Post description
                   timeAgo={getTimeAgo(post.createdAt) || "7d ago"} // Placeholder for dynamic time
@@ -86,6 +86,7 @@ const Psync = () => {
                   comments={post.comments?.length || 0} // Total comments
                   title={post.title} // Post title
                   image={post.img || undefined} // Optional image field
+                  roleOfLoggedInUser={roleOfLoggedInUser} // Role of the logged-in user
                 />
               ))
             )}

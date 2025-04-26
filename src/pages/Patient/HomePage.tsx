@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import MoodLogging from '@/Components/patient/MoodLogging';
 
 
 
@@ -31,7 +32,6 @@ interface OngoingProgram {
 
 const HomePage: React.FC = () => {
   const user = useRecoilValue(userAtom);
-  const [selectedMood, setSelectedMood] = useState("");
   const [selectedCard, setSelectedCard] = useState("");
   const [programs, setPrograms] = useState<OngoingProgram[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -158,29 +158,7 @@ const HomePage: React.FC = () => {
         {/* Right Section: How Are You Feeling Today? and Quick Access */}
         <div className="w-full lg:w-2/3 space-y-6">
           {/* How Are You Feeling Today? Section */}
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 text-center lg:text-left">How Are You Feeling Today?</h2>
-            <div className="flex flex-wrap justify-center gap-4 lg:justify-around">
-              {["Depressed", "Sad", "Neutral", "Happy", "Joyful"].map((mood) => (
-                <div
-                  key={mood}
-                  className={`flex flex-col items-center cursor-pointer p-2 transition-all duration-300 ${
-                    selectedMood === mood ? "border-2 border-[#02968A] rounded-xl" : "hover:border-2 hover:border-gray-300 rounded-lg"
-                  }`}
-                  onClick={() => {
-                    setSelectedMood(mood);
-                    console.log(`Selected Mood: ${mood}`);
-                  }}
-                  style={{ minWidth: '120px', maxWidth: '160px' }}
-                >
-                  <div className="bg-[#fff] h-16 w-16 mt-4 rounded-full flex items-center justify-center text-white text-3xl">
-                    <img src={`/src/assets/patient/homepage/${mood}.png`} alt={mood} />
-                  </div>
-                  <span className="mt-2 text-lg font-medium">{mood}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <MoodLogging />
 
           {/* Quick Access Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
