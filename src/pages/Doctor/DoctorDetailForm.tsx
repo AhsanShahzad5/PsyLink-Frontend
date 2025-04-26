@@ -170,6 +170,8 @@ const DetailForm: React.FC = () => {
             duration: 1000
           });
           
+        
+        
           // Navigate to home after update
           setTimeout(() => {
             navigate(`/${user?.role}/home`);
@@ -177,7 +179,7 @@ const DetailForm: React.FC = () => {
         } else {
           // If creating new details
           setMessage('Form submitted successfully!');
-          navigate(`/${user?.role}/professionaldetailForm`);
+          navigate(`/doctor/professionaldetailForm`);
         }
       } else {
         setMessage(data.message || 'Failed to submit the form.');

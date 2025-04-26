@@ -37,11 +37,44 @@ const LoginPage: React.FC = () => {
     return true;
   };
 
+  // const handleLogin = async (e: any) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) return;
+
+  //   try {
+  //     const res = await fetch('http://localhost:8000/api/user/login', {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-Type': "application/json"
+  //       },
+  //       body: JSON.stringify(formData),
+  //       credentials: 'include',
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (data.error) {
+  //       setError("Incorrect email or password.");
+  //       console.error(data.error);
+  //       return;
+  //     } else {
+  //       navigate(`/${formData.role}/home`);
+  //     }
+
+  //     localStorage.setItem('psylink', JSON.stringify(data));
+  //     dispatch(setUser(data));
+  //     setUser1(data);
+
+  //   } catch (error) {
+  //     setError("An error occurred while logging in. Please try again.");
+  //     console.log("Error signing up:", error);
+  //   }
+  // };
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
-
     if (!validateForm()) return;
-
     try {
       const res = await fetch('http://localhost:8000/api/user/login', {
         method: "POST",
@@ -51,21 +84,32 @@ const LoginPage: React.FC = () => {
         body: JSON.stringify(formData),
         credentials: 'include',
       });
-
       const data = await res.json();
-
       if (data.error) {
         setError("Incorrect email or password.");
         console.error(data.error);
         return;
-      } else {
-        navigate(`/${formData.role}/home`);
       }
-
+      // Store authentication data first
       localStorage.setItem('psylink', JSON.stringify(data));
       dispatch(setUser(data));
       setUser1(data);
-
+      
+      // Check profile completion status and redirect accordingly
+      if (!data.profileCompleted) {
+        // If profile is not complete, redirect to the details form
+        if (formData.role.toLowerCase() === 'patient') {
+          navigate('/patient/detailForm');
+        } else if (formData.role.toLowerCase() === 'doctor') {
+          navigate('/doctor/detailForm');
+        } else {
+          // For admin or other roles that don't need profile completion
+          navigate(`/${formData.role}/home`);
+        }
+      } else {
+        // Profile is complete, go to home page
+        navigate(`/${formData.role}/home`);
+      }
     } catch (error) {
       setError("An error occurred while logging in. Please try again.");
       console.log("Error signing up:", error);
