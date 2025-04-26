@@ -211,6 +211,7 @@ const moveToHistory = (appointment: BookedAppointment) => {
         if (response.ok) {
           const data = await response.json();
           // Process the appointments and move completed ones to history
+          console.log("This is data coming from booked appointment api : ",data)
           const now = new Date();
           data.forEach((appointment: BookedAppointment) => {
             if (new Date(appointment.date) < now && appointment.status !== 'active') {
@@ -231,7 +232,7 @@ const moveToHistory = (appointment: BookedAppointment) => {
     fetchBookedAppointments();
   }, []);
 
-
+  console.log("These are Booked Appointments in Bookings.tsx: ",bookedAppointments)
 
   return (
     <>

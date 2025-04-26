@@ -3,13 +3,18 @@
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
-import { Camera, CameraOff, FileText, Image, Mic, MicOff , PhoneOff, Send } from 'lucide-react';
+import { Camera, CameraOff, FileText, Image, Mic, MicOff, Pen, PhoneOff, Send } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "@/context/SocketProvider";
 import ReactPlayer from "react-player"
 import peer from "@/service/peer";
+import { useRecoilValue } from 'recoil';
+import userAtom from '@/atoms/userAtom';
+import PrescriptionPopUp from "../../Components/doctor/PrescriptionPopUpDoc";
+import axios from "axios";
+
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,7 +30,7 @@ function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
       <div className="bg-white p-8 rounded-lg max-w-4xl w-full">
 
         <div className="flex flex-row justify-between items-start">
@@ -71,15 +76,15 @@ function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
             Public Review
           </label>
           <textarea
-            className="form-textarea bg-[#F5F5F5] p-2 mt-1 block w-full rounded-md border-black shadow-sm  "
+            className="form-textarea bg-[#F5F5F5] p-2 mt-1 block w-full rounded-md border-black shadow-sm"
             rows={4}
             placeholder="Your public review"
           ></textarea>
-          <label className="block text-lg  font-medium text-gray-700 text-left">
+          <label className="block text-lg font-medium text-gray-700 text-left">
             Private Review (Optional)
           </label>
           <textarea
-            className="form-textarea p-2 bg-[#F5F5F5] mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+            className="form-textarea p-2 bg-[#F5F5F5] mt-1 block w-full rounded-md border-gray-300 shadow-sm"
             rows={4}
             placeholder="Your private review"
           ></textarea>
@@ -105,9 +110,29 @@ function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
 
 
 
-export default function Component() {
+export default function VideoConsultation() {
+  // Extract appointment ID from URL params
+  const { roomId } = useParams<{ roomId: string }>();
+  const appointmentId = roomId;
+  
 
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showPrescriptionPopUp, setShowPrescriptionPopUp] = useState(false);
+  const [prescriptionData, setPrescriptionData] = useState({
+    doctorId:"",
+    doctorName: "",
+    doctorSpeciality: "",
+    patientId:"",
+    patientName: "",
+    patientGender: "",
+    patientAge: "",
+    date: new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+  });
+  
   const doctorImage = "/src/assets/shared/UserPlaceholderDoc.jpg";
   const patientImage = "/src/assets/shared/UserPlaceholder.jpg";
   const prescriptionImage = "/src/assets/shared/perscription.png";
@@ -118,6 +143,42 @@ export default function Component() {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [showVideoOverlay, setShowVideoOverlay] = useState(false);
+  const user = useRecoilValue(userAtom);
+
+  const handleWritePrescription = async () => {
+    try {
+      // Fetch the prescription details from the API
+      const response = await axios.get(`/api/doctor/${appointmentId}/details`);
+      const data = response.data;
+      
+      console.log("this is prescription req data :" , data)
+
+      // Update prescription data with fetched details
+      setPrescriptionData({
+        doctorId: data.doctorInfo.doctorId || user?._id || "Unknown DoctorId",
+        doctorName: data.doctorInfo.name || user?.name || "Doctor",
+        doctorSpeciality: data.doctorSpeciality || "Psychiatrist",
+        patientId: data.patientInfo.patientId || "Unknown PatientId",
+        patientName: data.patientInfo.name || "User",
+        patientGender: data.patientInfo.gender || "Male/Female",
+        patientAge: data.patientInfo.age || "Unknown",
+        date: new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })
+      });
+
+      
+      // Show the prescription popup
+      setShowPrescriptionPopUp(true);
+    } catch (error) {
+      console.error("Failed to fetch prescription details:", error);
+      // Show popup with default values in case of error
+      setShowPrescriptionPopUp(true);
+    }
+  };
 
   const handleUserJoined = useCallback(({ email, id }) => {
     console.log(`===== USER JOINED EVENT =====`);
@@ -177,7 +238,7 @@ export default function Component() {
     await peer.setLocalDescription(ans)
   }, [])
 
-   // New function to toggle audio
+   // Function to toggle audio
    const toggleAudio = useCallback(() => {
     if (myStream) {
       const audioTracks = myStream.getAudioTracks();
@@ -197,8 +258,11 @@ export default function Component() {
   }, [myStream]);
   
 
-  // New function to toggle video
+  // Modified function to toggle video with overlay
   const toggleVideo = useCallback(() => {
+    setIsVideoEnabled(!isVideoEnabled);
+    setShowVideoOverlay(!showVideoOverlay);
+
     if (myStream) {
       const videoTracks = myStream.getVideoTracks();
       videoTracks.forEach(track => {
@@ -212,13 +276,15 @@ export default function Component() {
       ]);
   
       setMyStream(newStream);
-      setIsVideoEnabled(videoTracks[0]?.enabled ?? false);
     }
-  }, [myStream]);
+  }, [myStream, isVideoEnabled, showVideoOverlay]);
   
-  // New function to end call
+  // Function to end call - modified to check user role
   const endCall = useCallback(() => {
-    setShowReviewModal(true);
+    // Only show review modal if user is not a doctor
+    if (user?.role !== 'doctor') {
+      setShowReviewModal(true);
+    }
     
     // Stop all tracks
     if (myStream) {
@@ -236,8 +302,11 @@ export default function Component() {
     // Reset remote stream
     setRemoteStream(null);
     setRemoteSocketId(null);
-  }, [myStream]);
+  }, [myStream, user?.role]);
 
+  useEffect(() => {
+    console.log("RoomId received in VideoConsultation:", appointmentId);
+  }, [appointmentId]);
 
   useEffect(() => {
     peer.peer?.addEventListener('negotiationneeded', handleNegoNeeded)
@@ -302,6 +371,23 @@ export default function Component() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Prescription Popup */}
+      {showPrescriptionPopUp && (
+        <PrescriptionPopUp 
+          isOpen={showPrescriptionPopUp}
+          onClose={() => setShowPrescriptionPopUp(false)}
+          doctorName={prescriptionData.doctorName}
+          doctorId={prescriptionData.doctorId}
+          doctorSpeciality={prescriptionData.doctorSpeciality}
+          patientId={prescriptionData.patientId}
+          patientName={prescriptionData.patientName}
+          patientGender={prescriptionData.patientGender}
+          patientAge={prescriptionData.patientAge}
+          date={prescriptionData.date}
+          appointmentId={appointmentId}
+        />
+      )}
+      
       {/* Header */}
       <header className="bg-emerald-600 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-white gap-4 sm:gap-0">
         {/* Left Section: Back Button and Session Info */}
@@ -329,7 +415,7 @@ export default function Component() {
           </button>
           <div className="flex flex-col items-start sm:flex sm:items-cente sm:justify-centerr gap-1">
             <h1 className="text-lg sm:text-xl font-semibold">Consultation Room <p>{remoteSocketId ? "Connected" : "Nobody in room"}</p></h1>
-            <span className="text-sm opacity-80">Session ID: 572937</span>
+            <span className="text-sm opacity-80">Session ID: {appointmentId}</span>
           </div>
         </div>
 
@@ -363,7 +449,6 @@ export default function Component() {
           <Button
             variant="destructive"
             size="icon"
-            // onClick={() => setShowReviewModal(true)}
             onClick={endCall}
             className="flex items-center justify-center"
           >
@@ -382,17 +467,24 @@ export default function Component() {
         {/* Video and Profile Section */}
 
         <div className="md:col-span-2 space-y-4">
-          {/* Main Video Feed */}
-          <div className="bg-gray-200 rounded-lg overflow-hidden">
-            {myStream ? <ReactPlayer playing muted url={myStream} width="100%" height="250px" />
-              :
+          {/* Main Video Feed with overlay when video is disabled */}
+          <div className="bg-gray-200 rounded-lg overflow-hidden relative">
+            {myStream ? (
+              <>
+                <ReactPlayer playing muted url={myStream} width="100%" height="250px" />
+                {showVideoOverlay && (
+                  <div className="absolute inset-0 bg-black flex items-center justify-center">
+                    <p className="text-white">Camera Off</p>
+                  </div>
+                )}
+              </>
+            ) : (
               <img
                 src={patientImage}
                 alt="Video feed"
                 className="w-[550px] h-[250px] justify-self-center object-cover"
               />
-            }
-
+            )}
           </div>
 
           <div className="bg-gray-200 rounded-lg overflow-hidden">
@@ -428,6 +520,19 @@ export default function Component() {
 
         {/* Chat Section */}
         <Card className="h-[600px] flex flex-col">
+          {/* Write Prescription Button - Only shown for doctors */}
+          {user?.role === 'doctor' && (
+            <div className="p-4 border-b">
+              <Button 
+                variant="outline" 
+                className="w-full bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border-emerald-300"
+                onClick={handleWritePrescription}
+              >
+                <Pen className="h-4 w-4 mr-2" /> Write Prescription
+              </Button>
+            </div>
+          )}
+          
           <div className="flex-1 p-4 overflow-y-auto space-y-4">
             {/* Chat Messages */}
             <div className="flex justify-end">
@@ -448,7 +553,6 @@ export default function Component() {
           </div>
 
           {/* Chat Input */}
-          {/* Chat Input */}
           <div className="p-4 border-t">
             <div className="flex gap-2">
               <Button variant="outline" size="icon">
@@ -464,6 +568,8 @@ export default function Component() {
             </div>
           </div>
         </Card>
+
+        
       </div>
     </div>
   )
