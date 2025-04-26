@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const generateDates = () => {
-  const dates: string[] = [];
+  const dates = [];
   const today = new Date();
   for (let i = 0; i < 30; i++) {
     const newDate = new Date();
@@ -15,320 +16,365 @@ const generateDates = () => {
 };
 
 const timeSlots = [
-  "9:00am - 10:00am",
-  "10:00am - 11:00am",
-  "12:00pm - 01:00pm",
-  "12:30pm - 01:30pm",
-  "01:00pm - 02:00pm",
-  "02:00pm - 03:00pm",
-  "03:00pm - 04:00pm",
-  "04:30pm - 05:30pm",
-  "05:00pm - 06:00pm",
+  "9:00am-10:00am",
+  "10:00am-11:00am",
+  "11:00am-12:00am",
+  "12:00pm-01:00pm",
+  "01:00pm-02:00pm",
+  "02:00pm-03:00pm",
+  "03:00pm-04:00pm",
+  "04:00pm-05:00pm",
+  "05:00pm-06:00pm",
+  "06:00pm-07:00pm",
+  "07:00pm-08:00pm",
+  "08:00pm-09:00pm",
+  "09:00pm-10:00pm",
 ];
 
-interface Slot {
-  time: string;
+interface SlotStatus {
+  availableSlots: string[];
+  bookedSlots: string[];
+  busySlots: string[];
 }
 
-interface DateSlots {
-  date: string;
-  slots: Slot[];
-}
-
-const DoctorCalender = ({availabilityDetails}:any) => {
-  const [dateSlotData, setDateSlotData] = useState<DateSlots[]>([]);
-  const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0);
-  const [visibleDates, setVisibleDates] = useState<number[]>([0, 1, 2, 3]);
+const DoctorCalender = () => {
   const [dates, setDates] = useState<string[]>([]);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
+  const [visibleDates, setVisibleDates] = useState([0, 1, 2, 3]);
+  const [availabilityMap, setAvailabilityMap] = useState<Record<string, SlotStatus>>({});
+  const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setDates(generateDates());
-    console.log("AVAILABILITY DETAIL FROM PROPS",availabilityDetails);
+    fetchAvailability();
   }, []);
 
-  const updateDateSlotData = (date: string, slotTime: string) => {
-    setDateSlotData((prev) => {
-      const dateIndex = prev.findIndex((entry) => entry.date === date);
+  const fetchAvailability = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/doctor/availability", {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      console.log(data);
 
-      if (dateIndex === -1) {
-        return [...prev, { date, slots: [{ time: slotTime }] }];
-      } else {
-        const dateEntry = prev[dateIndex];
-        const slotIndex = dateEntry.slots.findIndex((slot) => slot.time === slotTime);
+      // Process the API response correctly based on the format you're receiving
+      const mappedData: Record<string, SlotStatus> = {};
+      
+      if (data.availability && Array.isArray(data.availability)) {
+        data.availability.forEach((entry: any) => {
+          // Normalize slot format if needed
+          const availableSlots = Array.isArray(entry.availableSlots) 
+            ? entry.availableSlots.map((slot: string) => normalizeSlotFormat(slot))
+            : [];
+          
+          const bookedSlots = Array.isArray(entry.bookedSlots)
+            ? entry.bookedSlots.map((slot: string) => normalizeSlotFormat(slot))
+            : [];
+          
+          const busySlots = Array.isArray(entry.busySlots)
+            ? entry.busySlots.map((slot: string) => normalizeSlotFormat(slot))
+            : [];
 
-        if (slotIndex === -1) {
-          const updatedSlots = [...dateEntry.slots, { time: slotTime }];
-          return [
-            ...prev.slice(0, dateIndex),
-            { ...dateEntry, slots: updatedSlots },
-            ...prev.slice(dateIndex + 1),
-          ];
-        } else {
-          const updatedSlots = dateEntry.slots.filter((slot) => slot.time !== slotTime);
-          return updatedSlots.length > 0
-            ? [
-                ...prev.slice(0, dateIndex),
-                { ...dateEntry, slots: updatedSlots },
-                ...prev.slice(dateIndex + 1),
-              ]
-            : [...prev.slice(0, dateIndex), ...prev.slice(dateIndex + 1)];
-        }
+          mappedData[entry.date] = {
+            availableSlots,
+            bookedSlots,
+            busySlots,
+          };
+        });
       }
-    });
+
+      setAvailabilityMap(mappedData);
+      toast.success("Calendar data loaded");
+    } catch (error) {
+      console.error("Failed to fetch availability:", error);
+      toast.error("Failed to fetch availability data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to normalize slot format to ensure consistent comparison
+  const normalizeSlotFormat = (slot: string): string => {
+    // Convert formats like "09:00PM" to "09:00pm-10:00pm"
+    if (!slot.includes("-")) {
+      const time = slot.slice(0, 5);
+      const period = slot.slice(5).toLowerCase();
+      
+      // Extract hour and parse it
+      const hourStr = slot.slice(0, 2);
+      const hour = parseInt(hourStr);
+      
+      // Calculate end time (add 1 hour)
+      const endHour = hour === 12 ? 1 : (hour + 1) % 12 || 12;
+      const endHourStr = endHour < 10 ? `0${endHour}` : `${endHour}`;
+      
+      return `${time.toLowerCase()}${period}-${endHourStr}:00${period}`;
+    }
+    return slot.toLowerCase();
   };
 
   const handlePrevDate = () => {
     if (visibleDates[0] > 0) {
-      setVisibleDates(visibleDates.map((date) => date - 1));
+      setVisibleDates(visibleDates.map((d) => d - 1));
       setSelectedDateIndex(selectedDateIndex - 1);
     }
   };
 
   const handleNextDate = () => {
     if (visibleDates[visibleDates.length - 1] < dates.length - 1) {
-      setVisibleDates(visibleDates.map((date) => date + 1));
+      setVisibleDates(visibleDates.map((d) => d + 1));
       setSelectedDateIndex(selectedDateIndex + 1);
     }
   };
 
+  const toggleSlot = (slot: string) => {
+    const slotStatus = getSlotStatus(slot);
+    
+    // Don't allow toggling already booked slots
+    if (slotStatus === "booked") {
+      toast.info("This slot is already booked");
+      return;
+    }
+    
+    setSelectedSlots((prev) =>
+      prev.includes(slot) ? prev.filter((s) => s !== slot) : [...prev, slot]
+    );
+  };
+
   const handleSaveAvailability = async () => {
-    const formattedPayload = {
-      availability: dateSlotData.map((entry) => ({
-        date: entry.date,
-        slots: entry.slots.map((slot) => ({
-          time: convertTo12HourFormat(slot.time),
-        })),
-      })),
+    if (selectedSlots.length === 0) {
+      toast.error("Select slots first!");
+      return;
+    }
+
+    const payload = {
+      availability: [
+        {
+          date: dates[selectedDateIndex],
+          slots: selectedSlots.map((slot) => ({
+            time: slot.split("-")[0].toUpperCase(), // Only sending start time
+          })),
+        },
+      ],
     };
 
     try {
       const response = await fetch("http://localhost:8000/api/doctor/availability/set", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
-        body: JSON.stringify(formattedPayload),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        toast.success("Availability saved successfully!");
-        // setDateSlotData([]);
+        toast.success("Availability saved!");
+        setSelectedSlots([]);
+        fetchAvailability();
       } else {
-        toast.error("Failed to save availability.");
+        toast.error("Failed to save availability");
       }
     } catch (error) {
-      console.error("Error saving availability:", error);
-      toast.error("An error occurred while saving availability.");
+      console.error(error);
+      toast.error("Failed to save");
     }
   };
 
   const handleMarkBusy = async () => {
+    if (selectedSlots.length === 0) {
+      toast.error("Select slots first!");
+      return;
+    }
+
     const payload = {
-      schedules: dateSlotData.map((entry) => ({
-        date: entry.date,
-        times: entry.slots.map((slot) => slot.time),
-      })),
+      schedules: [
+        {
+          date: dates[selectedDateIndex],
+          times: selectedSlots.map((slot) => slot.split("-")[0].toUpperCase()),
+        },
+      ],
     };
-  
-    console.log(JSON.stringify(payload, null, 2));
-  
+
     try {
       const response = await fetch("http://localhost:8000/api/doctor/availability/busy", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
-        toast.success("Slots marked as busy successfully!");
-        setDateSlotData((prev) =>
-          prev.map((entry) => ({
-            ...entry,
-            slots: entry.slots.map((slot) =>
-              payload.schedules.find((s) => s.date === entry.date)?.times.includes(slot.time)
-                ? { ...slot, status: "busy" }
-                : slot
-            ),
-          }))
-        );
+        toast.success("Slots marked busy!");
+        setSelectedSlots([]);
+        fetchAvailability();
       } else {
-        toast.error("Failed to mark slots as busy.");
+        toast.error("Failed to mark busy");
       }
     } catch (error) {
-      console.error("Error marking slots as busy:", error);
-      toast.error("An error occurred while marking slots as busy.");
+      console.error(error);
+      toast.error("Failed to mark busy");
     }
   };
 
-  const convertTo12HourFormat = (slot: string) => {
-    const match = slot.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
-    if (!match) return slot;
+  const getSlotStatus = (slot: string): "free" | "available" | "booked" | "busy" => {
+    const todayDate = dates[selectedDateIndex];
+    const availability = availabilityMap[todayDate];
+    const normalizedSlot = slot.toLowerCase();
 
-    const [_, startH, startM, endH, endM] = match.map(Number);
+    if (!availability) return "free";
 
-    const formatAMPM = (h: number, m: number) => {
-      const ampm = h >= 12 ? "pm" : "am";
-      const hour = h % 12 || 12;
-      return `${hour}:${m.toString().padStart(2, "0")}${ampm}`;
-    };
+    // Check if the slot is in any of the status arrays
+    if (availability.bookedSlots.some(s => s.toLowerCase() === normalizedSlot)) return "booked";
+    if (availability.availableSlots.some(s => s.toLowerCase() === normalizedSlot)) return "available";
+    if (availability.busySlots.some(s => s.toLowerCase() === normalizedSlot)) return "busy";
 
-    return `${formatAMPM(startH, startM)}-${formatAMPM(endH, endM)}`;
+    return "free";
   };
 
-  const selectedDate = dates[selectedDateIndex];
-  const selectedDateData = (availabilityDetails || []).find((entry: any) => entry.date === selectedDate);
-  console.log("SELECTED DATE DATA : ",selectedDateData);
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
 
-  const availableSlots = selectedDateData?.slots.filter((slot:any) => slot.status === "available") || [];
-  const busySlots = selectedDateData?.slots.filter((slot:any) => slot.status === "busy") || [];
+  const renderSlotButton = (slot: string) => {
+    const status = getSlotStatus(slot);
+    const isSelected = selectedSlots.includes(slot);
 
-  useEffect(() => {
-    const selectedDate = dates[selectedDateIndex];
-    const selectedDateData = (availabilityDetails || []).find(
-      (entry: any) => entry.date === selectedDate
+    // Base style for all slots
+    let baseStyle = "py-3 rounded-md text-center text-sm font-medium transition-all";
+    
+    // Status-specific styles
+    let statusStyle = "";
+    switch (status) {
+      case "free":
+        statusStyle = "bg-gray-100 text-gray-700 hover:bg-gray-200";
+        break;
+      case "available":
+        statusStyle = "bg-green-100 text-green-700 hover:bg-green-200";
+        break;
+      case "booked":
+        statusStyle = "bg-blue-100 text-blue-700 cursor-not-allowed";
+        break;
+      case "busy":
+        statusStyle = "bg-red-100 text-red-700 hover:bg-red-200";
+        break;
+    }
+
+    // Selected state (only for non-booked slots)
+    let selectedStyle = "";
+    if (isSelected && status !== "booked") {
+      selectedStyle = "ring-2 ring-primary ring-offset-1";
+    }
+
+    return (
+      <button
+        key={slot}
+        onClick={() => toggleSlot(slot)}
+        disabled={status === "booked"}
+        className={`${baseStyle} ${statusStyle} ${selectedStyle}`}
+      >
+        {slot}
+      </button>
     );
-  
-    if (selectedDateData) {
-      const updatedSlots = selectedDateData.slots.map((slot: any) => ({
-        time: slot.time,
-        status: slot.status,
-      }));
-  
-      // Sync dateSlotData with availabilityDetails
-      setDateSlotData((prev) => {
-        const updated = prev.filter((entry) => entry.date !== selectedDate);
-        return [...updated, { date: selectedDate, slots: updatedSlots }];
-      });
-    }
-  }, [availabilityDetails, selectedDateIndex, dates]);
-
-  const sortSlotsByTime = (slots: any[]) => {
-    const convertToDate = (timeStr: string) => {
-      const [start] = timeStr.split(" - ");
-      const [hourMin, meridiem] = start.trim().split(/(am|pm)/);
-      let [hour, minute] = hourMin.split(":").map(Number);
-  
-      if (meridiem === "pm" && hour !== 12) hour += 12;
-      if (meridiem === "am" && hour === 12) hour = 0;
-  
-      return new Date(0, 0, 0, hour, minute);
-    };
-  
-    return [...slots].sort((a, b) => convertToDate(a.time).getTime() - convertToDate(b.time).getTime());
   };
 
   return (
     <div className="bg-white rounded-lg p-6 my-4 border border-[#D9EAF3]">
-      <h2 className="text-lg sm:text-xl font-bold mb-6">Your Calendar</h2>
+      <h2 className="text-lg font-bold mb-6">Your Calendar</h2>
 
       <div className="flex items-center justify-between sm:justify-start gap-4 mb-4">
-        <FaInfoCircle className="text-lg" />
-        <button className="flex items-center gap-2 bg-red-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-red-700"  onClick={handleMarkBusy}>
-          Mark Busy
-        </button>
-        <button className="bg-primary text-white text-sm font-medium py-2 px-6 rounded-md hover:bg-[#027A73]">
-          Booked
-        </button>
-        <button
-          className="bg-primary text-white text-sm font-medium py-2 px-6 rounded-md hover:bg-[#027A73]"
-          onClick={handleSaveAvailability}
-        >
-          Available
-        </button>
-      </div>
-
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-        <FaChevronLeft
-          size={25}
-          className={`cursor-pointer ${visibleDates[0] === 0 ? "text-gray-300" : "text-primary"}`}
-          onClick={handlePrevDate}
-        />
-        {visibleDates.map((index) => (
-          <button
-            key={index}
-            className={`text-[1rem] font-medium px-4 py-2 rounded-md ${
-              selectedDateIndex === index
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-primary"
-            }`}
-            onClick={() => setSelectedDateIndex(index)}
+        <div className="flex items-center text-blue-600">
+          <FaInfoCircle className="text-lg mr-2" />
+          <span className="text-sm">Select slots to mark as available or busy</span>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors" 
+            onClick={handleMarkBusy}
           >
-            {dates[index]}
+            Mark Busy
           </button>
-        ))}
-        <FaChevronRight
-          size={25}
-          className={`cursor-pointer ${
-            visibleDates[visibleDates.length - 1] === dates.length - 1 ? "text-gray-300" : "text-primary"
-          }`}
-          onClick={handleNextDate}
-        />
+          <button 
+            className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" 
+            onClick={handleSaveAvailability}
+          >
+            Mark Available
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {timeSlots.map((slot, index) => {
-          const dateEntry = dateSlotData.find((entry) => entry.date === dates[selectedDateIndex]);
-          const isSelected = dateEntry?.slots.some((s) => s.time === slot);
-
-          return (
+      <div className="flex items-center justify-between border-b pb-4 mb-6">
+        <button 
+          onClick={handlePrevDate}
+          className="p-2 rounded-full hover:bg-gray-100"
+        >
+          <FaChevronLeft size={20} className="text-gray-600" />
+        </button>
+        
+        <div className="flex space-x-2">
+          {visibleDates.map((i) => (
             <button
-              key={index}
-              className={`py-3 rounded-md text-center text-sm font-medium ${
-                isSelected ? "bg-primary text-white" : "bg-[#F6F6F6] text-gray-700 hover:bg-[#E6F8F6] hover:text-primary"
+              key={i}
+              onClick={() => setSelectedDateIndex(i)}
+              className={`px-4 py-2 rounded-md ${
+                selectedDateIndex === i 
+                  ? "bg-primary bg-opacity-10 text-primary font-bold" 
+                  : "text-gray-500 hover:bg-gray-100"
               }`}
-              onClick={() => updateDateSlotData(dates[selectedDateIndex], slot)}
             >
-              {slot}
+              {dates[i] ? formatDate(dates[i]) : ""}
             </button>
-          );
-        })}
+          ))}
+        </div>
+        
+        <button 
+          onClick={handleNextDate}
+          className="p-2 rounded-full hover:bg-gray-100"
+        >
+          <FaChevronRight size={20} className="text-gray-600" />
+        </button>
       </div>
-      <div className="mt-6">
-  <h3 className="text-lg font-semibold flex items-center gap-2 text-green-600">
-    <span className="inline-block w-2 h-2 bg-green-500 rounded-full" />
-    Marked Available Slots
-  </h3>
-  {availableSlots.length > 0 ? (
-    <div className="flex flex-wrap gap-2 mt-2">
-      {sortSlotsByTime(availableSlots).map((slot: any) => (
-        <span
-          key={slot._id}
-          className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 border border-green-300"
-        >
-          {slot.time}
-        </span>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-400 italic mt-2">No slots marked as available</p>
-  )}
-</div>
 
-<div className="mt-6">
-  <h3 className="text-lg font-semibold flex items-center gap-2 text-red-600">
-    <span className="inline-block w-2 h-2 bg-red-500 rounded-full" />
-    Busy Slots
-  </h3>
-  {busySlots.length > 0 ? (
-    <div className="flex flex-wrap gap-2 mt-2">
-      {sortSlotsByTime(busySlots).map((slot: any) => (
-        <span
-          key={slot._id}
-          className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-700 border border-red-300"
-        >
-          {slot.time}
-        </span>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-400 italic mt-2">No busy slots</p>
-  )}
-</div>
-<ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {timeSlots.map((slot) => renderSlotButton(slot))}
+        </div>
+      )}
 
+      <div className="mt-6 flex flex-wrap gap-4 justify-start">
+        <div className="flex items-center">
+          <div className="w-4 h-4 bg-gray-100 rounded mr-2"></div>
+          <span className="text-sm text-gray-600">Free</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 bg-green-100 rounded mr-2"></div>
+          <span className="text-sm text-green-600">Available</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 bg-blue-100 rounded mr-2"></div>
+          <span className="text-sm text-blue-600">Booked</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 bg-red-100 rounded mr-2"></div>
+          <span className="text-sm text-red-600">Busy</span>
+        </div>
+      </div>
 
+      <ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
     </div>
   );
 };
 
 export default DoctorCalender;
+
