@@ -13,109 +13,13 @@ import peer from "@/service/peer";
 import { useRecoilValue } from 'recoil';
 import userAtom from '@/atoms/userAtom';
 import PrescriptionPopUp from "../../Components/doctor/PrescriptionPopUpDoc";
-import axios from "axios";
-
-interface ReviewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
-  const [rating, setRating] = useState<number>(0);
-
-  if (!isOpen) return null;
-
-  const handleRating = (index: number) => {
-    setRating(index);
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
-      <div className="bg-white p-8 rounded-lg max-w-4xl w-full">
-
-        <div className="flex flex-row justify-between items-start">
-          <div className="p-2">
-
-            <h2 className="text-2xl font-semibold text-left">Leave a Review</h2>
-            <p className="text-left w-96 mt-4">
-              We hope this session was helpful for you.
-              Please be kind to leave a review for the doctor.
-              You can even send the doctor a private review only visible to the doctor.
-            </p>
-
-          </div>
-
-          <div className="flex flex-col m-6 mr-8">
-            <div className="flex justify-center items-center space-x-2">
-              {/* Star Rating */}
-              {[1, 2, 3, 4, 5].map((index) => (
-                <svg
-                  key={index}
-                  onClick={() => handleRating(index)}
-                  className={`w-8 h-8 cursor-pointer ${index <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.813l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.537 1.118l-2.8-2.034a1 1 0 0 0-1.176 0l-2.8 2.034c-.782.57-1.837-.197-1.537-1.118l1.07-3.292a1 1 0 0 0-.364-1.118l-2.8-2.034c-.783-.573-.381-1.813.588-1.813h3.462a1 1 0 0 0 .95-.69l1.07-3.292z"></path>
-                </svg>
-              ))}
-            </div>
-            <div>
-              <label className="block text-lg font-medium text-center">
-                Tell Us Your Experience
-              </label>
-            </div>
-          </div>
-
-        </div>
-
-
-
-        <div className="space-y-4 px-10 mt-6">
-          <label className="block text-lg font-medium text-gray-700 text-left">
-            Public Review
-          </label>
-          <textarea
-            className="form-textarea bg-[#F5F5F5] p-2 mt-1 block w-full rounded-md border-black shadow-sm"
-            rows={4}
-            placeholder="Your public review"
-          ></textarea>
-          <label className="block text-lg font-medium text-gray-700 text-left">
-            Private Review (Optional)
-          </label>
-          <textarea
-            className="form-textarea p-2 bg-[#F5F5F5] mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            rows={4}
-            placeholder="Your private review"
-          ></textarea>
-        </div>
-
-
-
-        <div className="flex justify-end items-end mt-6 mr-6">
-
-          <button
-            className="ml-4 text-green-500 hover:text-green-700 font-bold py-2 px-4 rounded"
-            type="button"
-            onClick={onClose}
-          >
-            Submit
-          </button>
-        </div>
-
-      </div>
-    </div>
-  );
-}
-
-
+import ReviewModal from "../../Components/patient/reviewModal"; // Import the new ReviewModal component
 
 export default function VideoConsultation() {
   // Extract appointment ID from URL params
   const { roomId } = useParams<{ roomId: string }>();
   const appointmentId = roomId;
   
-
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showPrescriptionPopUp, setShowPrescriptionPopUp] = useState(false);
   const [prescriptionData, setPrescriptionData] = useState({
@@ -149,10 +53,10 @@ export default function VideoConsultation() {
   const handleWritePrescription = async () => {
     try {
       // Fetch the prescription details from the API
-      const response = await axios.get(`/api/doctor/${appointmentId}/details`);
-      const data = response.data;
+      const response = await fetch(`/api/doctor/${appointmentId}/details`);
+      const data = await response.json();
       
-      console.log("this is prescription req data :" , data)
+      console.log("this is prescription req data :", data);
 
       // Update prescription data with fetched details
       setPrescriptionData({
@@ -170,7 +74,6 @@ export default function VideoConsultation() {
         })
       });
 
-      
       // Show the prescription popup
       setShowPrescriptionPopUp(true);
     } catch (error) {
@@ -388,6 +291,13 @@ export default function VideoConsultation() {
         />
       )}
       
+      {/* Review Modal - Now using the imported component */}
+      <ReviewModal 
+        isOpen={showReviewModal} 
+        onClose={() => setShowReviewModal(false)} 
+        appointmentId={appointmentId}
+      />
+      
       {/* Header */}
       <header className="bg-emerald-600 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-white gap-4 sm:gap-0">
         {/* Left Section: Back Button and Session Info */}
@@ -457,15 +367,9 @@ export default function VideoConsultation() {
         </div>
       </header>
 
-
-      <ReviewModal isOpen={showReviewModal} onClose={() => setShowReviewModal(false)} />
-
       {/* Main Content */}
       <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-
-
         {/* Video and Profile Section */}
-
         <div className="md:col-span-2 space-y-4">
           {/* Main Video Feed with overlay when video is disabled */}
           <div className="bg-gray-200 rounded-lg overflow-hidden relative">
@@ -498,9 +402,6 @@ export default function VideoConsultation() {
             }
           </div>
 
-
-
-
           {/* Profile Card */}
           <Card className="p-4 border-2 border-emerald-500">
             <div className="flex items-center gap-4">
@@ -515,8 +416,6 @@ export default function VideoConsultation() {
             </div>
           </Card>
         </div>
-
-
 
         {/* Chat Section */}
         <Card className="h-[600px] flex flex-col">
@@ -568,8 +467,6 @@ export default function VideoConsultation() {
             </div>
           </div>
         </Card>
-
-        
       </div>
     </div>
   )

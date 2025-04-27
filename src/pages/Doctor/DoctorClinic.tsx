@@ -4,6 +4,16 @@ import DoctorCalender from "@/Components/doctor/DoctorCalender";
 import DoctorIntro from "@/Components/doctor/DoctorIntro";
 import DoctorStatsBar from "@/Components/doctor/DoctorStatsBar";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import userAtom from "@/atoms/userAtom";
+import DocReviews from "@/Components/doctor/DocReviews";
+
+
+
+  
+
+
+
 
 const DoctorClinic = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,6 +21,8 @@ const DoctorClinic = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [clinicDetails, setClinicDetails] = useState(null);
   const [availabilityDetails, setAvailabilityDetails] = useState(null);
+  const user = useRecoilValue(userAtom);
+  const doctorId = user._id;
 
   useEffect(() => {
     const fetchVerificationStatus = async () => {
@@ -80,7 +92,7 @@ const DoctorClinic = () => {
         <DoctorIntro />
         <DoctorCalender />
         <DoctorAboutSection />
-        <DoctorStatsBar />
+        <DocReviews doctorId={doctorId}/>
       </div>
     </div>
   );

@@ -58,6 +58,7 @@ import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
 import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
 import PaymentCheck from './pages/PaymentCheck';
+import PrivateReviews from './pages/Doctor/PrivateReviews';
 
 
 
@@ -360,6 +361,16 @@ const AppRoutes = () => (
             element={
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorProfessionalDetailsForm />
+                </ProtectedRoute>
+            }
+        />
+         <Route
+            path="/doctor/clinic/privateReviews"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <PrivateReviews />    
+                    </DoctorLayout>
                 </ProtectedRoute>
             }
         />

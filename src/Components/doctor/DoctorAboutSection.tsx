@@ -125,7 +125,7 @@ const DoctorAboutSection = () => {
   return (
     <div className="bg-white rounded-lg p-5 my-2">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[2rem] font-bold">About Your Clinic</h2>
+        <h2 className="text-[2.5rem] ml-10">About Your Clinic</h2>
         <FaPenAlt
           size={30}
           className="cursor-pointer text-gray-600 hover:text-black transition"
