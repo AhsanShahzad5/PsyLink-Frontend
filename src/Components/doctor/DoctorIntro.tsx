@@ -30,6 +30,7 @@ const DoctorIntro = () => {
   
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setFormData(prev => ({
             ...prev,
             ...data.clinic,

@@ -17,7 +17,7 @@ export interface Doctor {
   education: string[];
   licenseCertification: string;
   cnicNumber: string;
-  availability: string;
+  availability: any;
   feeRate: string;
   bankAccountNumber: string;
   appointments: { appointmentId: string; patientId: string }[];
@@ -52,6 +52,7 @@ const Doctors: React.FC = () => {
         }
         
         const pendingData = await pendingResponse.json();
+        console.log("Pending DATA", pendingData);
         
         // Fetch approved doctors
         const approvedResponse = await fetch(
@@ -70,12 +71,14 @@ const Doctors: React.FC = () => {
         
         const approvedData = await approvedResponse.json();
 
+        
         // Map API data to Doctor structure with status
         const mapDoctorData = (data: any[], status: "pending" | "approved"): Doctor[] => {
+          console.log("doctor personal", data);
           return data.map((doctor: any) => ({
             id: doctor?._id || "N/A",
             name: doctor?.clinic?.fullName || doctor?.personalDetails?.fullName || "N/A",
-            email: "N/A", // Add actual field if available in API
+            email: doctor?.email || "N/A", // Add actual field if available in API
             dateOfBirth: doctor?.personalDetails?.dateOfBirth || "N/A",
             gender: doctor?.personalDetails?.gender || "N/A",
             profilePicture: doctor?.personalDetails?.image || "N/A",
@@ -87,8 +90,8 @@ const Doctors: React.FC = () => {
             education: [doctor?.professionalDetails?.educationalBackground || "N/A"],
             licenseCertification: doctor?.professionalDetails?.licenseImage || "N/A",
             cnicNumber: doctor?.professionalDetails?.cnicNumber || "N/A",
-            availability: "N/A", // Add actual field if available in API
-            feeRate: doctor?.clinic?.consultationFee?.toString() || "N/A",
+            availability: doctor?.professionalDetails?.availableHours || "N/A", // Add actual field if available in API
+            feeRate: doctor?.professionalDetails?.consultationFee?.toString() || "N/A",
             bankAccountNumber: doctor?.professionalDetails?.bankDetails?.accountNumber || "N/A",
             appointments: doctor?.appointments || [],
             posts: [], // Add actual field if available in API

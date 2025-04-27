@@ -134,6 +134,33 @@ const ProfessionalDetailForm: React.FC = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    console.log({
+      specialization,
+      cnicNumber,
+      educationalBackground,
+      availabilityStart,
+      availabilityEnd,
+      consultationFee,
+      bankAccount,
+      imgUrl
+    });
+    if (
+      ! specialization ||
+      ! cnicNumber ||
+      ! educationalBackground ||
+      ! availabilityStart ||
+      ! availabilityEnd ||
+      ! consultationFee ||
+      ! bankAccount ||
+      ! imgUrl
+    ) {
+      toast({
+        description: "Please fill all required fields before submitting.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
 
     const payload = {
       specialisation: specialization,
@@ -154,6 +181,7 @@ const ProfessionalDetailForm: React.FC = () => {
         iban: bankDetails.iban,
       },
     };
+    console.log("payload", payload);
 
     dispatch(setProfessionalDetails(payload));
     setLoading(true);
@@ -205,6 +233,30 @@ const ProfessionalDetailForm: React.FC = () => {
     );
   }
 
+  const handlePmdcChange = (value: string) => {
+    // Remove any non-numeric characters and hyphen
+    let numericValue = value.replace(/[^\d]/g, '');
+    let letter = value.replace(/[^A-Za-z]/g, ''); // Extract the letter part
+
+    if (numericValue.length > 6) {
+      numericValue = numericValue.slice(0, 6); // Limit to 6 digits
+    }
+
+    // Format PMDC number as "123456 - M"
+    let formattedPmdc = numericValue;
+    if (numericValue.length === 6 && letter.length > 0) {
+      formattedPmdc = numericValue + ' - ' + letter.toUpperCase();
+    }
+
+    setPmdcNumber(formattedPmdc);
+  };
+
+  const validatePmdcNumber = (value: string) => {
+    // Regular expression for validation: 6 digits, followed by ' - ' and 1 letter
+    const regex = /^\d{6} - [A-Za-z]$/;
+    return regex.test(value);
+  };
+
   return (
     <div className="mt-5 p-5">
       <BackButton className="ml-10"/>
@@ -222,25 +274,56 @@ const ProfessionalDetailForm: React.FC = () => {
           </p>
           <div>
             <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10 px-4 md:px-20">
-              <InputField
-                label="Specialization"
-                value={specialization}
-                onChange={setSpecialization}
-              />
+            <SelectField
+  label="Specialization"
+  value={specialization}
+  onChange={(value) => {
+    console.log("Selected Specialization: ", value); // Log selected value
+    setSpecialization(value);
+  }}
+
+  required={true}
+  options={['Psychology', 'Psychiatrist']}
+/>
               <InputField
                 label="CNIC Number"
                 value={cnicNumber}
-                onChange={setCnicNumber}
+                onChange={(value) => {
+                  let numericValue = value.replace(/\D/g, '');
+              
+                  if (numericValue.length > 13) {
+                    numericValue = numericValue.slice(0, 13);
+                  }
+              
+                  let formattedCnic = numericValue;
+                  if (numericValue.length > 5) {
+                    formattedCnic = numericValue.slice(0, 5) + '-' + numericValue.slice(5);
+                  }
+                  if (numericValue.length > 12) {
+                    formattedCnic = formattedCnic.slice(0, 13) + '-' + formattedCnic.slice(13);
+                  }
+              
+                  setCnicNumber(formattedCnic);
+                }}
+                required={true}
               />
-              <InputField
-                label="PMDC Number"
-                value={pmdcNumber}
-                onChange={setPmdcNumber}
-              />
+               <div className="relative">
+    <InputField
+      label="PMDC Number"
+      value={pmdcNumber}
+      onChange={handlePmdcChange}
+    />
+    {!validatePmdcNumber(pmdcNumber) && pmdcNumber && (
+      <p className="text-red-500 text-sm absolute bottom-[-24px] left-0">
+        Please enter a valid PMDC number in the format: 123456 - M
+      </p>
+    )}
+  </div>
               <InputField
                 label="Educational Background"
                 value={educationalBackground}
                 onChange={setEducationalBackground}
+                required={true}
               />
               <div className="md:col-span-2 flex gap-4">
                 <div className="flex-1">
@@ -249,6 +332,7 @@ const ProfessionalDetailForm: React.FC = () => {
                     value={availabilityStart}
                     options={TimeOptions}
                     onChange={setAvailabilityStart}
+                    required={true}
                   />
                 </div>
                 <div className="flex-1">
@@ -257,6 +341,7 @@ const ProfessionalDetailForm: React.FC = () => {
                     value={availabilityEnd}
                     options={TimeOptions}
                     onChange={setAvailabilityEnd}
+                    required={true}
                   />
                 </div>
               </div>
@@ -267,19 +352,28 @@ const ProfessionalDetailForm: React.FC = () => {
                   value={bankAccount}
                   onClick={() => setIsBankDetailsModalOpen(true)}
                   readOnly={true}
+                  required={true}
                 />
               </div>
 
               <InputField
                 label="Consultation Fee"
                 value={consultationFee}
-                onChange={setConsultationFee}
+                onChange={(value) => {
+                  let numericValue = value.replace(/[^\d]/g, '');
+              
+                  const formattedFee = numericValue ? `${numericValue}` : '';
+              
+                  setConsultationFee(formattedFee);
+                }}
+                required={true}
               />
             </form>
             <UploadImage
               label="License/Certification Proof"
               text="Choose image"
               onImageChange={handleImageChange}
+              required={true}
             />
             {imgUrl && (
               <img src={imgUrl} alt="Preview" className="mt-4 rounded-[15px] h-48 object-cover mx-auto" />

@@ -7,13 +7,15 @@ interface CitySelectProps {
   countryCode: string; // e.g., 'IN', 'US'
   value: string;
   onChange: (value: string) => void;
+  required: boolean
 }
 
 export const CitySelect: React.FC<CitySelectProps> = ({
   label,
   countryCode,
   value,
-  onChange
+  onChange,
+  required=false
 }) => {
   const cities = countryCode ? City.getCitiesOfCountry(countryCode) : [];
 
@@ -26,7 +28,9 @@ export const CitySelect: React.FC<CitySelectProps> = ({
 
   return (
     <div className="flex flex-col items-start w-full">
-      <label className="block text-lg md:text-xl font-medium text-gray-700 ">{label}</label>
+      <label className="block text-lg md:text-xl font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
       <Select
         options={options}
         value={selectedOption}

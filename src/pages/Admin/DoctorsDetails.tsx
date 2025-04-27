@@ -8,6 +8,8 @@ const DoctorsDetails: React.FC = () => {
   const location = useLocation();
   const doctor = location.state?.doctor as Doctor;
 
+  console.log("DOCTOR", doctor);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -27,6 +29,12 @@ const DoctorsDetails: React.FC = () => {
   }
 
   console.table(doctor);
+  
+  // Format date function
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+  };
   
   const handleApprove = async () => {
     setLoading(true);
@@ -115,7 +123,7 @@ const DoctorsDetails: React.FC = () => {
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Date of Birth:</td>
-                <td className="py-2">{doctor.dateOfBirth}</td>
+                <td className="py-2">{formatDate(doctor.dateOfBirth)}</td>
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Gender:</td>
@@ -123,7 +131,17 @@ const DoctorsDetails: React.FC = () => {
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Profile Picture:</td>
-                <td className="py-2">{doctor.profilePicture}</td>
+                <td className="py-2">
+                  {doctor.profilePicture && (
+                    <div className="w-24 h-24 overflow-hidden rounded-lg">
+                      <img 
+                        src={doctor.profilePicture} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </td>
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Country:</td>
@@ -163,8 +181,18 @@ const DoctorsDetails: React.FC = () => {
                 <td className="py-2">{doctor.education.join(", ")}</td>
               </tr>
               <tr className="border-t border-gray-200">
-                {/* <td className="py-2 font-semibold text-gray-600">License Certification:</td>
-                <td className="py-2">{doctor.licenseCertification}</td> */}
+                <td className="py-2 font-semibold text-gray-600">License Certification:</td>
+                <td className="py-2">
+                  {doctor.licenseCertification && (
+                    <div className="w-48 overflow-hidden rounded-lg">
+                      <img 
+                        src={doctor.licenseCertification} 
+                        alt="License Certification" 
+                        className="w-full object-contain"
+                      />
+                    </div>
+                  )}
+                </td>
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">CNIC Number:</td>
@@ -172,7 +200,7 @@ const DoctorsDetails: React.FC = () => {
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Availability:</td>
-                <td className="py-2">{doctor.availability}</td>
+                <td className="py-2">{doctor?.availability?.[0]?.startTime} - {doctor?.availability?.[0]?.endTime}</td>
               </tr>
               <tr className="border-t border-gray-200">
                 <td className="py-2 font-semibold text-gray-600">Fee Rate:</td>
