@@ -14,7 +14,7 @@ const VideoPreview: React.FC = () => {
 
      const [searchParams] = useSearchParams();
      const roomId = searchParams.get('appointmentId');
-
+     console.log("This is roomId in videoPreview",roomId)
     const socket = useSocket();
 
     const handleJoinCallButton= useCallback(
@@ -23,10 +23,12 @@ const VideoPreview: React.FC = () => {
         },[user,socket]
     ) ;
   
-    const handleJoinRoom = useCallback((data)=>{
-        const {roomId}=data;
-        navigate(`/video-consultation/${roomId}`)
-    },[navigate])
+    const handleJoinRoom = useCallback((data) => {
+      console.log("Data received on room:join event =>", data);
+      const { roomId } = data;
+      navigate(`/video-consultation/${roomId}`);
+  }, [navigate]);
+  
         
 
     useEffect(() => {
