@@ -258,21 +258,21 @@ fetchVerifiedDoctors();
         
           {/* Doctor Cards */}
           <div className="space-y-4">
-  {doctors.map((doctor: any) => (
+  {doctors?.map((doctor: any) => (
     <DoctorCard
       key={doctor._id} // Use unique ID
       doctorCard={{
         id : doctor._id || "N/A",
-        fullName: doctor.clinic.fullName || "N/A",
-        image: doctor.clinic.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available   data.clinic.image
-        description: doctor.clinic.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
-        consultationFee: doctor.clinic.consultationFee || 0, // Default fee if missing
-        city: doctor.clinic.city || "N/A", // Handle missing city
-        country: doctor.clinic.country || "N/A", // Handle missing country
-        specialisation: doctor.clinic.specialisation || "N/A",
-        educationBackground: doctor.clinic.educationBackground || "N/A",
-        startTime: doctor.clinic.startTime || "N/A",
-        endTime: doctor.clinic.endTime || "N/A",
+        fullName: doctor.clinic?.fullName || "N/A",
+        image: doctor.clinic?.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available   data.clinic.image
+        description: doctor.clinic?.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
+        consultationFee: doctor.clinic?.consultationFee || 0, // Default fee if missing
+        city: doctor.clinic?.city || "N/A", // Handle missing city
+        country: doctor.clinic?.country || "N/A", // Handle missing country
+        specialisation: doctor.clinic?.specialisation || "N/A",
+        educationBackground: doctor.clinic?.educationBackground || "N/A",
+        startTime: doctor.clinic?.startTime || "N/A",
+        endTime: doctor.clinic?.endTime || "N/A",
         appointments : doctor.availability || "N/A"
       }}
     />
@@ -304,7 +304,7 @@ fetchVerifiedDoctors();
 
 
 {activeTab === 'Booked Appointments' && (
-  <div className="space-y-4">
+  <div className="space-y-4 pt-12">
     {loadingAppointments ? (
       <p>Loading...</p>
     ) : bookedAppointments.length > 0 ? (

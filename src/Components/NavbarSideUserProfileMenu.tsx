@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '@/hooks/useLogoutUser';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
-import useUserDetails from '@/hooks/useUserDetails';
 
 
 interface ProfileMenuProps {

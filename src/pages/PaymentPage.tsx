@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import StripeWrapper from '../context/StripeProvider';
 import PaymentForm from '../Components/patient/PaymentComponent';
 
@@ -25,26 +25,14 @@ const BookAppointment = () => {
   const [selectedTime, setSelectedTime] = useState<any>('2:30 PM');
 
   // Mock function to change doctor selection
-  const handleDoctorChange = (doctor) => {
-    setSelectedDoctor(doctor);
-  };
 
-  // Mock function to change date
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  // Mock function to change time
-  const handleTimeChange = (time) => {
-    setSelectedTime(time);
-  };
 
   return (
     <div className="book-appointment-container max-w-6xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Book an Appointment</h1>
+      {/* <h1 className="text-2xl font-bold mb-6 text-gray-800">Book an Appointment</h1> */}
       
       {/* For testing purposes, we're displaying a simplified selection UI */}
-      <div className="mb-8 grid md:grid-cols-3 gap-6">
+      {/* <div className="mb-8 grid md:grid-cols-3 gap-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-2 text-gray-700">Selected Doctor</h2>
           <div className="flex items-center">
@@ -72,10 +60,10 @@ const BookAppointment = () => {
           <h2 className="font-semibold mb-2 text-gray-700">Selected Time</h2>
           <p>{selectedTime}</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Toggle buttons for testing */}
-      <div className="mb-8 flex flex-wrap gap-4">
+      {/* <div className="mb-8 flex flex-wrap gap-4">
         <button 
           onClick={() => setSelectedDoctor(prev => prev ? null : {
             _id: '680b787c567dd456b3d32734',
@@ -105,7 +93,7 @@ const BookAppointment = () => {
         >
           {selectedTime ? 'Clear Time' : 'Set Time'}
         </button>
-      </div>
+      </div> */}
 
       {/* Payment section with stripe wrapper */}
       <div className="mt-6">
