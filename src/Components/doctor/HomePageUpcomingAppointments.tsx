@@ -34,7 +34,9 @@ export const HomeUpcomingAppointments = () => {
         //const response = await fetch(`/api/doctor/appointments/upcoming?doctorId=${userId}`);
         
        //ahsan code url 
-        const response = await fetch(`http://localhost:8000/api/doctor/appointments/upcoming?doctorId=${userId}`);
+        const response = await fetch(`http://localhost:8000/api/doctor/appointments/upcoming?doctorId=${userId}`,{
+          credentials: 'include',
+        });
         console.log("Response status:", response.status);
         
         if (!response.ok) {
