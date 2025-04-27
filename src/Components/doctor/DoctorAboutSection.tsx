@@ -33,6 +33,7 @@ const DoctorAboutSection = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log("ABOUT ",data)
           setFormData((prev) => ({
             ...prev,
             ...data.clinic,
@@ -151,21 +152,21 @@ const DoctorAboutSection = () => {
         </div>
 
         <div className="relative w-full md:w-[23vw] h-[70vh] rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-          <img
-            src={isValidImageUrl(imagePreview) ? imagePreview : defaultImage}
-            alt="Clinic"
-            className="w-full h-full object-contain p-4"
-          />
+        <img
+              src={imagePreview}
+              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
+              alt="img"
+            />
           {isEditing && (
             <div className="absolute mt-4 flex flex-col gap-2">
               <label className="bg-blue-600 text-white text-center py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition">
                 Change Image
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
               </label>
               <span className="text-sm text-gray-500 text-center">
                 PNG, JPG up to 2MB

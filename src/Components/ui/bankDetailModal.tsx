@@ -7,7 +7,9 @@ const validationSchema = Yup.object({
   accountHolderName: Yup.string().required('Account Holder Name is required'),
   accountNumber: Yup.string().required('Account Number is required').matches(/^\d+$/, 'Account Number must be numeric'),
   bankName: Yup.string().required('Bank Name is required'),
-  branchCode: Yup.string().required('Branch Code is required'),
+  branchCode: Yup.string()
+    .required('Branch Code is required')
+    .matches(/^\d{4}$/, 'Branch Code must be exactly 4 digits'),
   iban: Yup.string().required('IBAN is required').matches(/^[A-Z0-9]+$/, 'IBAN must be alphanumeric'),
 });
 
@@ -86,6 +88,7 @@ export const BankDetailsModal = ({ isBankDetailsModalOpen, handleSaveBankDetails
                 placeholder="e.g. 0423"
                 onChange={formik.handleChange}
                 value={formik.values.branchCode}
+                maxLength={4}
                 className="mt-1 p-3 block w-full border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 rounded-xl"
               />
               {formik.errors.branchCode && formik.touched.branchCode && (

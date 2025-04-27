@@ -9,6 +9,7 @@ interface PhoneInputFieldProps {
   onChange: (value: string) => void;
   isValid: boolean;
   setIsValid: (valid: boolean) => void;
+  required:boolean
 }
 
 export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
@@ -16,11 +17,14 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   value,
   onChange,
   isValid,
-  setIsValid
+  setIsValid,
+  required=false
 }) => {
   return (
     <div className="flex flex-col items-start w-full">
-      <label className="block text-lg md:text-xl font-medium text-gray-700">{label}</label>
+      <label className="block text-lg md:text-xl font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
       <PhoneInput
         defaultCountry="IN"
         value={value}

@@ -125,6 +125,32 @@ const DetailForm: React.FC = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
+    console.log({
+      fullName,
+      isPhoneValid,
+      gender,
+      dateOfBirth,
+      city,
+      country,
+      imgUrl
+    });
+    if (
+      !fullName ||
+      !isPhoneValid ||
+      !gender ||
+      !dateOfBirth ||
+      !city ||
+      !country ||
+      !imgUrl
+    ) {
+      toast({
+        description: "Please fill all required fields before submitting.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
     const payload = {
       fullName,
       dateOfBirth,
@@ -220,7 +246,7 @@ const DetailForm: React.FC = () => {
           We ensure you that all your personal information is safe with us. Rest assured
         </p>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10 px-4 md:px-20">
-          <InputField label="Full Name" value={fullName} onChange={setFullName} />
+          <InputField label="Full Name" value={fullName} onChange={setFullName}  required={true} />
           <CountrySelect
             label="Country"
             value={country}
@@ -229,6 +255,7 @@ const DetailForm: React.FC = () => {
               setCountryCode(code);
               setCity(''); // reset city when country changes
             }}
+            required={true}
           />
 
           <CitySelect
@@ -236,11 +263,12 @@ const DetailForm: React.FC = () => {
             countryCode={countryCode}
             value={city}
             onChange={setCity}
+            required={true}
           />
           <div>
-            <label className="block text-lg md:text-xl font-medium text-gray-700">
-              Date of Birth
-            </label>
+          <label className="block text-lg md:text-xl font-medium text-gray-700">
+        Date Of Birth  <span className="text-red-500">*</span>
+      </label>
             <input
               type="date"
               value={dateOfBirth}
@@ -249,23 +277,32 @@ const DetailForm: React.FC = () => {
               className="mt-1 p-3 block w-full border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 rounded-xl"
             />
           </div>
-          <SelectField label="Gender" value={gender} options={Gender} onChange={(value) => setGender(value as Gender)} />
+          <SelectField 
+            label="Gender" 
+            value={gender} 
+            options={Gender} 
+            onChange={(value) => {
+              console.log("Selected Specialization: ", value); // Log selected value
+              setGender(value as any);
+            }}  
+            required={true} />
           <PhoneInputField
             label="Phone Number"
             value={phoneNo}
             onChange={setPhoneNo}
             isValid={isPhoneValid}
             setIsValid={setIsPhoneValid}
+            required={true}
           />
         </form>
-        <UploadImage label="Upload Image" text="Upload Image" onImageChange={handleImageChange} />
+        <UploadImage label="Upload Image" text="Upload Image" onImageChange={handleImageChange}  required={true} />
         {imgUrl && <img src={imgUrl} alt="Preview" className="mt-4 rounded-[15px] h-48 object-cover" />}
         
-        {message && (
+        {/* {message && (
           <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center">
             {message}
           </div>
-        )}
+        )} */}
         
         <div className="flex justify-center mt-10">
           <button
