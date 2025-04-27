@@ -10,6 +10,8 @@ import FavouritesBackButton from "./FavouritesBackButton";
 import { toast } from "@/hooks/use-toast";
 import { DeleteButton } from "./PostComponent";
 import { Badge } from "../ui/badge";
+import { FaPenAlt } from "react-icons/fa";
+import EditPostModal from "./EditPostModal"; // Import the EditPostModal component
 
 const FullPost = () => {
     const { postId } = useParams();
@@ -22,6 +24,8 @@ const FullPost = () => {
     const [loading, setLoading] = useState(true);
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [commentText, setCommentText] = useState("");
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Add state for edit modal
+    const [refresh, setRefresh] = useState(false); // Add refresh state
     const navigate = useNavigate();
 
     const location = useLocation();
@@ -29,7 +33,8 @@ const FullPost = () => {
     // Extract the first part of the pathname (i.e., "doctor" or "patient")
     const role = location.pathname.split("/")[1];
     const isAdmin = role === "admin"; // Check if current user role is admin
-
+    const authorImage = location.state?.authorImage;
+    
     // Fetch the full post data
     useEffect(() => {
         const fetchPost = async () => {
@@ -53,7 +58,7 @@ const FullPost = () => {
             }
         };
         if (postId) fetchPost();
-    }, [postId, commentText]);
+    }, [postId, commentText, refresh]); // Add refresh to the dependency array
 
     // Handle Like Action
     const handleLike = async () => {
@@ -158,6 +163,27 @@ const FullPost = () => {
         }
     }
 
+    // Function to handle edit button click
+    const handleEditClick = () => {
+        setIsEditModalOpen(true);
+    };
+
+    // Create post data object for edit modal
+    const postDataForEdit = post ? {
+        postId: post._id,
+        title: post.title || "",
+        description: post.description,
+        img: post.img || ""
+    } : null;
+
+    // Effect to refresh the component when post is updated
+    useEffect(() => {
+        if (refresh) {
+            // You could fetch updated post data here if needed
+            setRefresh(false);
+        }
+    }, [refresh]);
+
     const getTimeAgo = (dateString:any) => {
         const date = new Date(dateString);
         const now = new Date();
@@ -222,9 +248,20 @@ const FullPost = () => {
                                         {post.user?.title && <p className="text-sm text-teal-600">{'hhh' + post.user.title}</p>}
                                     </div>
 
-                                    {/* Show delete button if user is the author OR is an admin */}
+                                    {/* Show edit and delete buttons for author or admin */}
                                     {(post.user?._id === userId || isAdmin) ? (
-                                        <DeleteButton onClick={handlePostDelete} />
+                                        <div className="flex gap-3">
+                                            {post.user?._id === userId && (
+                                                <FaPenAlt
+                                                    className="w-5 h-5 text-gray-600 cursor-pointer hover:text-teal-600 transition-colors duration-200"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEditClick();
+                                                    }}
+                                                />
+                                            )}
+                                            <DeleteButton onClick={handlePostDelete} />
+                                        </div>
                                     ) : (
                                         <span className="text-sm text-gray-500">
                                             {getTimeAgo(post.createdAt)}
@@ -324,6 +361,16 @@ const FullPost = () => {
                     </div>
                 </Card>
             </div>
+
+            {/* Edit Post Modal */}
+            {isEditModalOpen && postDataForEdit && (
+                <EditPostModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    setRefresh={setRefresh}
+                    postData={postDataForEdit}
+                />
+            )}
         </div>
     );
 };

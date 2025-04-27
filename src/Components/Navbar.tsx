@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import NavbarSideUserProfileMenu from './NavbarSideUserProfileMenu';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import useUserDetails from '@/hooks/useUserDetails';
 
 export default function Navbar() {
 
@@ -12,7 +13,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const user = useRecoilValue(userAtom);
   console.log(user);
-  
+  const userId = user?._id;
+  const { user:userDetails } = useUserDetails(userId);
 
   const handleNavClick = (link: any) => {
     setActiveNav(link);
@@ -55,7 +57,7 @@ export default function Navbar() {
         </div>
 
         {/* User Profile Icon */}
-        <NavbarSideUserProfileMenu userName={user?.name} />
+        <NavbarSideUserProfileMenu userName={user?.name} profileImage={userDetails?.profilePicture}  />
       </nav>
 
       {/* Sidebar for Small Screens */}

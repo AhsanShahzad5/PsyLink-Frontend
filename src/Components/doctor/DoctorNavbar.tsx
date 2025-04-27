@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarSideUserProfileMenu from '../NavbarSideUserProfileMenu';
 import userAtom from '@/atoms/userAtom';
 import { RecoilState, useRecoilValue } from 'recoil';
+import useUserDetails from '@/hooks/useUserDetails';
 
 export default function Navbar() {
 
@@ -10,6 +11,10 @@ export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const user = useRecoilValue(userAtom);
+  const userId = user?._id;
+  const { user:userDetails } = useUserDetails(userId);
 
   useEffect(() => {
     const path = location.pathname.split("/")[2]; // Extract the last part of the URL
@@ -28,7 +33,6 @@ export default function Navbar() {
     navigate(`/doctor/${lowercaseLink}`);
   }
 
-  const user = useRecoilValue(userAtom);
 
   return (
     <div>
@@ -62,7 +66,7 @@ export default function Navbar() {
         </div>
 
         {/* User Profile Icon */}
-        <NavbarSideUserProfileMenu userName={user?.name} />
+        <NavbarSideUserProfileMenu userName={user?.name} profileImage={userDetails?.profilePicture} />
       </nav>
 
       {/* Sidebar for Small Screens */}

@@ -48,6 +48,7 @@ interface ApiUser {
   _id: string;
   name: string;
   email: string;
+  profilePicture?: string;
 }
 
 interface ApiSeriesItem {
@@ -108,7 +109,7 @@ const PsyncSeries = () => {
                 id: post._id , // Convert MongoDB ID to a number
                 authorName: item.createdBy.name,
                 authorRole: "patient", // Default role, adjust if needed
-                authorImage: "/api/placeholder/40/40", // Use post image or placeholder
+                authorImage: item.createdBy.profilePicture, // Use post image or placeholder
                 title: post.title,
                 content: post.description,
                 timeAgo: timeAgo,
@@ -264,7 +265,7 @@ const PsyncSeries = () => {
                               >
                                 <div className="flex items-center gap-2 mb-2">
                                   <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm">
-                                    {post.authorName[0]}
+                                    { post.authorName[0]}
                                   </div>
                                   <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
                                   {post.authorRole === "doctor" && (

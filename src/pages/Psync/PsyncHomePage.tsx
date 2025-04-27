@@ -79,7 +79,7 @@ const Psync = () => {
                   authorId={post.user?._id || "unknown"} // Use user ID or fallback
                   authorName={post.user?.name || "Unknown"} // Use user name or fallback
                   authoreRole={post.user?.role || "unknown"} // Use user role or fallback
-                  authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
+                  authorImage={ post.user?.profilePicture || ""} // Replace with dynamic image if available
                   content={post.description} // Post description
                   timeAgo={getTimeAgo(post.createdAt) || "7d ago"} // Placeholder for dynamic time
                   likes={post.likes?.length || 0} // Total likes

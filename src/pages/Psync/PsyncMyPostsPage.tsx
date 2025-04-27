@@ -4,6 +4,7 @@ import userAtom from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import FavouritesBackButton from "@/Components/psync/FavouritesBackButton";
 import { toast } from "@/hooks/use-toast";
+import useUserDetails from "@/hooks/useUserDetails";
 
 
 const Psync = () => {
@@ -15,7 +16,10 @@ const Psync = () => {
 const user = useRecoilValue(userAtom);
 const userId = user?._id;
 
-  useEffect(() => {
+const { user:userDetails } = useUserDetails(userId);
+console.log("User Details are:", userDetails); // Log the user details
+
+useEffect(() => {
     // Fetch posts from the backend
     const fetchPosts = async () => {
       try {
@@ -62,7 +66,7 @@ const userId = user?._id;
                     authoreRole={user?.role || "Unknown"} // Use user role or fallback
                     authorId={post?.userId || "unknown"} // Use user ID or fallback
                     authorName={user.name || "Unknown"} // Use user name or fallback
-                    authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
+                    authorImage={userDetails?.profilePicture || ""} // Replace with dynamic image if available
                     content={post.description} // Post description
                     timeAgo="7d ago" // Placeholder for dynamic time
                     likes={post.likes?.length || 0} // Total likes

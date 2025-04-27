@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '@/hooks/useLogoutUser';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import useUserDetails from '@/hooks/useUserDetails';
 
 
 interface ProfileMenuProps {
@@ -26,6 +27,7 @@ export default function Component({
   const user = useRecoilValue(userAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState<string | null>(null);
+
 
   const navigate = useNavigate();
   const logout = useLogout() ;
@@ -82,7 +84,7 @@ export default function Component({
       <SheetTrigger asChild>
         <div className="relative hidden md:block cursor-pointer">
           <img
-            src={profileImage}
+            src="/src/assets/patient/homepage/Vector.png"
             alt="User profile"
             className="h-11 w-11 rounded-full object-contain border-2 border-primary p-1"
           />
@@ -96,9 +98,14 @@ export default function Component({
       <SheetContent className="w-[300px] sm:w-[350px] border-l-4 border-primary">
         <SheetHeader className="pb-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-full bg-teal-500 p-2 w-12 h-12 flex items-center justify-center">
-              <User className="h-6 w-6 text-white" />
-            </div>
+            {/* <div className="rounded-full bg-teal-500 p-2 w-12 h-12 flex items-center justify-center"> */}
+              {/* <User className="h-6 w-6 text-white"  /> */}
+              {/* </div> */}
+              <img
+            src={profileImage}
+            alt="User profile"
+            className="h-11 w-11 rounded-full object-contain border-2 border-primary p-1"
+          />
             <SheetTitle className="text-2xl font-normal">{user.name || userName}</SheetTitle>
           </div>
         </SheetHeader>

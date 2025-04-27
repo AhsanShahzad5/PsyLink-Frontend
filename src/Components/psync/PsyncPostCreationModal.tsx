@@ -12,6 +12,7 @@ import { Input } from "@/Components/ui/input";
 import LoadingComponent from "../LoadingComponent";
 import { toast } from "@/hooks/use-toast";
 import { ChevronDown, Plus, X } from "lucide-react";
+import useUserDetails from "@/hooks/useUserDetails";
 
 interface Series {
   id: string;
@@ -37,6 +38,11 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preS
   const [newSeriesName, setNewSeriesName] = useState("");
   const [isLoadingSeries, setIsLoadingSeries] = useState(false);
   const [newSeriesCreated, setNewSeriesCreated] = useState<Series | null>(null);
+  interface UserDetails {
+    profilePicture?: string;
+    name?: string;
+  }
+  
 
   // Image Upload
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -100,6 +106,11 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preS
       setNewSeriesName("");
     }
   }, [isOpen, preSelectedSeries]);
+
+
+
+  const { user:userDetails } = useUserDetails(userId);
+
 
   const handlePostSubmit = async () => {
     if (!postData.title || !postData.description) {
@@ -291,7 +302,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preS
           <DialogTitle className="hidden"></DialogTitle>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-3">
-              <img src="/src/assets/shared/abbad.png" alt="User avatar" className="w-12 h-12 rounded-full" />
+              <img src={userDetails?.profilePicture || ""} alt="User avatar" className="w-12 h-12 rounded-full" />
               <span className="text-xl font-semibold">{user?.name}</span>
             </div>
             {/* Only show series selector if not pre-selected */}

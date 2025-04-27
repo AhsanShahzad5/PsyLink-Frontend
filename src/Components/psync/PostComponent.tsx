@@ -245,7 +245,11 @@ const Post = ({
           </div>
 
           {/* content div to open full post */}
-          <div onClick={() => navigate(`/${authoreRole}/psync/post/${postId}`)} className="w-full">
+          <div onClick={() => navigate(`/${authoreRole}/psync/post/${postId}` 
+            
+            )} 
+          
+          className="w-full">
             {title && <h1 className="text-gray-800 mb-2 sm:mb-4 font-bold text-lg sm:text-xl leading-tight">{title}</h1>}
             <p className="text-gray-800 w-full mb-4">
               {content}

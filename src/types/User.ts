@@ -3,6 +3,7 @@ export type UserCredentials = {
     email: string;
     password: string;
     role: 'doctor' | 'patient' | '';
+    profileImage?: string;
 }
 
 export type AdminCredentials = {

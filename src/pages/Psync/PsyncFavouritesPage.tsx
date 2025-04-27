@@ -60,6 +60,9 @@ const location = useLocation();
   }, [refresh]); 
   console.log("Posts:", posts); // Log the posts
   
+ 
+  
+
   return (
     <div className="flex justify-center mt-12 bg-secondary">
       <div className="w-[95%] p-6 rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
@@ -79,7 +82,7 @@ const location = useLocation();
                     authoreRole={role}
                     postId={post._id}
                     authorName={post.user?.name || "Unknown"} // Use user name or fallback
-                    authorImage="/src/assets/shared/abbad.png" // Replace with dynamic image if available
+                    authorImage={post.user?.profilePicture || ""} // Replace with dynamic image if available
                     content={post.description} // Post description
                     timeAgo="7d ago" // Placeholder for dynamic time
                     likes={post.likes?.length || 0} // Total likes

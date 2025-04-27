@@ -187,7 +187,7 @@ const LoginPage: React.FC = () => {
             <div className="flex mt-10 justify-center items-center">
               <div className="w-96">
                 <button
-                  className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+                  className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#02968A]"
                   onClick={handleLogin}
                 >
                   Login
@@ -199,7 +199,10 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex mt-10 justify-center items-center">
+
+{/* google login removed for now */}
+
+          {/* <div className="flex mt-10 justify-center items-center">
             <div className="w-96 flex items-center justify-center">
               <button className="w-full px-5 py-3 flex items-center justify-center gap-3 text-lg text-[#000] bg-[#fff] border border-gray-300 rounded-md hover:bg-[#02968A] focus:outline-none focus:ring-2 focus:ring-[#02968A]">
                 <img
@@ -212,7 +215,7 @@ const LoginPage: React.FC = () => {
                 </span>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="w-1/2 relative">
