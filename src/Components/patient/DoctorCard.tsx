@@ -1,6 +1,7 @@
 import { ArrowRight, Star } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import DefaultDoctorImage from '/src/assets/patient/doctor/doctor.png';
 
 interface DoctorCardProps {
   doctorCard: {
@@ -8,6 +9,7 @@ interface DoctorCardProps {
     fullName: string;
     image: string;
     consultationFee: number;
+    description: string
     city: string;
     country: string;
     specialisation: string;
@@ -26,6 +28,7 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
     consultationFee,
     city,
     country,
+    description,
     specialisation,
     educationBackground,
     startTime,
@@ -33,7 +36,13 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
     appointments
   } = doctorCard;
 
-//  console.log("Doctor Card 1 :", doctorCard);
+
+  console.log("Image",image);
+  console.log("Doctor Card 1 :", doctorCard);
+
+  const isValidImageUrl = (image: string) => {
+    return image.startsWith('http://') || image.startsWith('https://');
+  };
 
   const navigate = useNavigate();
 
@@ -41,11 +50,11 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
       <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
         {/* 1st Div: Image */}
         <div className="w-full sm:w-auto sm:flex-shrink-0">
-          <img
-            src="/src/assets/patient/doctor/doctor.png"
-            alt="Doctor"
-            className="w-full sm:w-40 h-auto sm:h-40 object-contain"
-          />
+        <img
+    src={image && isValidImageUrl(image) ? image : DefaultDoctorImage}
+    alt="Doctor"
+    className="w-full sm:w-40 h-auto sm:h-40 object-contain"
+  />
         </div>
       
         {/* 2nd Div: Doctor Info */}
@@ -61,11 +70,11 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
           <hr className="my-4 border-1 border-black mx-auto sm:mx-0 max-w-sm sm:w-auto" />
       
           {/* Reviews and Rating */}
-          <div className="flex justify-center sm:justify-start items-center text-gray-500">
-            <Star size={16} className="text-yellow-400 mr-1" />
+          {/* <div className="flex justify-center sm:justify-start items-center text-gray-500"> */}
+            {/* <Star size={16} className="text-yellow-400 mr-1" /> */}
             {/* <span className="text-sm">{doctorCard.rating} ({doctorCard.reviews} reviews)</span> */}
-            <span className="text-sm">4.5 (12 reviews)</span>
-          </div>
+            {/* <span className="text-sm">4.5 (12 reviews)</span> */}
+          {/* </div> */}
         </div>
       
         {/* 3rd Div: View Button */}
@@ -82,4 +91,4 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
       </div>
     )
   }
-  
+

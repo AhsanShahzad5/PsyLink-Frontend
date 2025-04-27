@@ -35,6 +35,7 @@ export interface PostProps {
   isFavorited?: boolean;
   authorId?: string;
   seriesTitle?: string;
+  roleOfLoggedInUser?: string;
 }
 
 const Post = ({
@@ -49,7 +50,8 @@ const Post = ({
   title,
   postId,
   authorId,
-  seriesTitle
+  seriesTitle,
+  roleOfLoggedInUser
 }: PostProps) => {
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
@@ -137,7 +139,7 @@ const Post = ({
   const handlePostDelete = async () => {
     try {
       // Check if current user is admin and include that in the request body
-      const isAdmin = authoreRole === "admin"; // Assuming you have access to userRole
+      const isAdmin = roleOfLoggedInUser === "admin"; // Assuming you have access to userRole
       
       const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
         method: "DELETE",
