@@ -8,6 +8,7 @@ import useLogout from '@/hooks/useLogoutUser';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 import useUserDetails from '@/hooks/useUserDetails';
+import { MessageCircleWarning } from 'lucide-react';
 
 
 interface ProfileMenuProps {
@@ -60,6 +61,14 @@ export default function Component({
       onClick: () => {
         console.log('My Posts clicked');
         navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync/myposts`);
+      }
+    },
+    {
+      label: 'Complaints',
+      icon: MessageCircleWarning,
+      onClick: () => {
+        console.log('Complaints clicked');
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/complaintslist`);
       }
     },
     ...(window.location.pathname.includes('/doctor') ? [{

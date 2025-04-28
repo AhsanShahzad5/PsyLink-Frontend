@@ -59,6 +59,8 @@ import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
 import PaymentCheck from './pages/PaymentCheck';
 import PrivateReviews from './pages/Doctor/PrivateReviews';
+import ComplaintList from './pages/ComplaintList';
+import Complaint from './pages/Complaint';
 
 
 
@@ -99,6 +101,26 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['patient']}>
                     <PatientLayout>
                         <HomePage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/complaintslist"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                    <ComplaintList />    
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/complaintslist/complaint"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                    <Complaint />    
                     </PatientLayout>
                 </ProtectedRoute>
             }
@@ -314,6 +336,26 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorLayout>
                         <DoctorHome />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+         <Route
+            path="/doctor/complaintslist"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <ComplaintList />    
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/complaintslist/complaint"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <Complaint />    
                     </DoctorLayout>
                 </ProtectedRoute>
             }
