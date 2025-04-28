@@ -5,6 +5,7 @@ interface InputFieldProps {
   placeholder?: string;
   readOnly?: boolean;
   onClick?: () => void;  // Add the onClick prop
+  required?: boolean;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -14,10 +15,13 @@ export const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   readOnly,
   onClick,
+  required = false,
 }) => {
   return (
     <div className="flex flex-col items-start">
-      <label className="block text-lg md:text-xl font-medium text-gray-700">{label}</label>
+      <label className="block text-lg md:text-xl font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
       <input
         type="text"
         value={value}

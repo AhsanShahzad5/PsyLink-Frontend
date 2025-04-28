@@ -30,6 +30,7 @@ const DoctorIntro = () => {
   
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setFormData(prev => ({
             ...prev,
             ...data.clinic,
@@ -136,8 +137,8 @@ const DoctorIntro = () => {
 
   return (
     <div className="bg-[#F5FAFE] border border-[#D6E4EF] shadow-md rounded-lg p-6">
-      <div className="flex justify-between mb-5">
-        <h2 className="text-[2rem] font-bold">Your personal details</h2>
+      <div className="flex justify-between mb-8">
+        <h2 className="text-[2.3rem] ml-4">Your personal details</h2>
         <FaPenAlt
           size={28}
           className="cursor-pointer text-gray-600 hover:text-primary transition-all"
@@ -151,7 +152,7 @@ const DoctorIntro = () => {
 <div className="sm:col-span-3 flex justify-center">
             <img
               src={imagePreview}
-              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
+              className="w-[200px] h-[280px] sm:w-[315px] sm:h-[385px] bg-gray-200 rounded-lg"
               alt="img"
             />
           </div>

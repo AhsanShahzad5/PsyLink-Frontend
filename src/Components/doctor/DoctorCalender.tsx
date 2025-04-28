@@ -287,28 +287,28 @@ const DoctorCalender = () => {
 
   return (
     <div className="bg-white rounded-lg p-6 my-4 border border-[#D9EAF3]">
-      <h2 className="text-lg font-bold mb-6">Your Calendar</h2>
+      <h2 className="text-[2.3rem] ml-4">Your Calendar</h2>
 
-      <div className="flex items-center justify-between sm:justify-start gap-4 mb-4">
-        <div className="flex items-center text-blue-600">
-          <FaInfoCircle className="text-lg mr-2" />
-          <span className="text-sm">Select slots to mark as available or busy</span>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors" 
-            onClick={handleMarkBusy}
-          >
-            Mark Busy
-          </button>
-          <button 
-            className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" 
-            onClick={handleSaveAvailability}
-          >
-            Mark Available
-          </button>
-        </div>
-      </div>
+      <div className="flex items-center justify-between w-full mb-4">
+  <div className="flex items-center text-blue-600">
+    <FaInfoCircle className="text-lg mr-2" />
+    <span className="text-sm">Select slots to mark as available or busy</span>
+  </div>
+  <div className="flex gap-2">
+    <button 
+      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors" 
+      onClick={handleMarkBusy}
+    >
+      Mark Busy
+    </button>
+    <button 
+      className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" 
+      onClick={handleSaveAvailability}
+    >
+      Mark Available
+    </button>
+  </div>
+</div>
 
       <div className="flex items-center justify-between border-b pb-4 mb-6">
         <button 

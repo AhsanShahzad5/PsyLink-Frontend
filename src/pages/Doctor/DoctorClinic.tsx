@@ -4,6 +4,16 @@ import DoctorCalender from "@/Components/doctor/DoctorCalender";
 import DoctorIntro from "@/Components/doctor/DoctorIntro";
 import DoctorStatsBar from "@/Components/doctor/DoctorStatsBar";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import userAtom from "@/atoms/userAtom";
+import DocReviews from "@/Components/doctor/DocReviews";
+
+
+
+  
+
+
+
 
 const DoctorClinic = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,6 +21,8 @@ const DoctorClinic = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [clinicDetails, setClinicDetails] = useState(null);
   const [availabilityDetails, setAvailabilityDetails] = useState(null);
+  const user = useRecoilValue(userAtom);
+  const doctorId = user._id;
 
   useEffect(() => {
     const fetchVerificationStatus = async () => {
@@ -69,17 +81,6 @@ const DoctorClinic = () => {
           <p className="text-gray-600 text-sm mt-2">
             The verification process usually takes 1 to 2 days. Please check back soon.
           </p>
-          <p className="text-gray-700 text-sm">
-            You can navigate to{" "}
-            <Link to={"/doctor/detailform"} className="text-blue-500 underline hover:text-blue-700">
-              Personal Detail Form
-            </Link>{" "}
-            or{" "}
-            <Link to={"/doctor/professionaldetailForm"} className="text-blue-500 underline hover:text-blue-700">
-              Professional Detail Form
-            </Link>{" "}
-            to update your details if needed.
-          </p>
         </div>
       </div>
     );
@@ -91,7 +92,7 @@ const DoctorClinic = () => {
         <DoctorIntro />
         <DoctorCalender />
         <DoctorAboutSection />
-        <DoctorStatsBar />
+        <DocReviews doctorId={doctorId}/>
       </div>
     </div>
   );

@@ -11,14 +11,17 @@ interface CountrySelectProps {
     label: string;
     value: string;
     onChange: (label: string, code: string) => void;
+    required?: boolean;
   }
 
-export const CountrySelect: React.FC<CountrySelectProps> = ({ label, value, onChange }) => {
+export const CountrySelect: React.FC<CountrySelectProps> = ({ label, value, onChange,  required = false }) => {
   const selectedOption = formattedCountries.find((c) => c.label === value);
 
   return (
     <div className="flex flex-col items-start w-full">
-      <label className="block text-lg md:text-xl font-medium text-gray-700">{label}</label>
+      <label className="block text-lg md:text-xl font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
       <Select
         options={formattedCountries}
         value={selectedOption}
