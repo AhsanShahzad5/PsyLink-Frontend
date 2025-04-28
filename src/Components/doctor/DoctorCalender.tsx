@@ -4,7 +4,7 @@ import { FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const generateDates = () => {
-  const dates = [];
+  const dates: string[] = [];
   const today = new Date();
   for (let i = 0; i < 30; i++) {
     const newDate = new Date();

@@ -13,41 +13,41 @@ import { useNavigate } from 'react-router-dom';
 
 
 interface Doctor {
-    id: number;
-    doctorName: string;
-    specialization: string;
-    availableTime: string;
-    rating: number;
-    reviews: number;
-    imageUrl: string;
-  }
-  
-  // Sample dynamic data for doctors
-  const exploreDoctors: Doctor[] = [
-    {
-      id: 1,
-      doctorName: "Dr. Fahad Tariq Aziz",
-      specialization: "Psychologist",
-      availableTime: "12:30pm - 8:00pm",
-      rating: 4.8,
-      reviews: 47,
-      imageUrl: "/src/assets/prescription/doctor1.png",
-    },
-    {
-      id: 2,
-      doctorName: "Dr. Fahad Tariq Aziz",
-      specialization: "Psychiatrist",
-      availableTime: "12:30pm - 8:00pm",
-      rating: 4.8,
-      reviews: 47,
-      imageUrl: "/src/assets/prescription/doctor2.png",
-    },
-  ];
-
-
-  interface BookedAppointment {
   id: number;
-  appointmentId:string;
+  doctorName: string;
+  specialization: string;
+  availableTime: string;
+  rating: number;
+  reviews: number;
+  imageUrl: string;
+}
+
+// Sample dynamic data for doctors
+const exploreDoctors: Doctor[] = [
+  {
+    id: 1,
+    doctorName: "Dr. Fahad Tariq Aziz",
+    specialization: "Psychologist",
+    availableTime: "12:30pm - 8:00pm",
+    rating: 4.8,
+    reviews: 47,
+    imageUrl: "/src/assets/prescription/doctor1.png",
+  },
+  {
+    id: 2,
+    doctorName: "Dr. Fahad Tariq Aziz",
+    specialization: "Psychiatrist",
+    availableTime: "12:30pm - 8:00pm",
+    rating: 4.8,
+    reviews: 47,
+    imageUrl: "/src/assets/prescription/doctor2.png",
+  },
+];
+
+
+interface BookedAppointment {
+  id: number;
+  appointmentId: string;
   doctorName: string;
   specialization: string;
   bookedTimeSlot: string; // E.g., "8:00 PM - 9:00 PM"
@@ -62,7 +62,7 @@ interface Doctor {
 
 interface HistoryAppointment {
   id: number;
-  appointmentId:string;
+  appointmentId: string;
   doctorName: string;
   specialization: string;
   appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
@@ -70,11 +70,11 @@ interface HistoryAppointment {
   rating: number;
   imageUrl: string;
 }
-  
+
 const HistoryAppointments: HistoryAppointment[] = [
   {
     id: 1,
-    appointmentId:"12345",
+    appointmentId: "12345",
     doctorName: "Dr. Fahad Tariq Aziz",
     specialization: "Psychologist",
     appointmentTime: "8:00 PM",
@@ -84,7 +84,7 @@ const HistoryAppointments: HistoryAppointment[] = [
   },
   {
     id: 2,
-    appointmentId:"12345",
+    appointmentId: "12345",
     doctorName: "Dr. Sarah Ahmed",
     specialization: "Psychiatrist",
     appointmentTime: "10:00 AM",
@@ -132,27 +132,27 @@ export default function Bookings(): JSX.Element {
 
   const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
 
-const moveToHistory = (appointment: BookedAppointment) => {
-  // Create a new history appointment object
-  const historyAppointment: HistoryAppointment = {
-    id: appointment.id,
-    doctorName: appointment.doctorName,
-    specialization: appointment.specialization,
-    appointmentTime: appointment.bookedTimeSlot,
-    date: appointment.date,
-    rating: 4, // For now, hardcode the rating or fetch it from your backend
-    imageUrl: appointment.imageUrl,
-    appointmentId: ''
+  const moveToHistory = (appointment: BookedAppointment) => {
+    // Create a new history appointment object
+    const historyAppointment: HistoryAppointment = {
+      id: appointment.id,
+      doctorName: appointment.doctorName,
+      specialization: appointment.specialization,
+      appointmentTime: appointment.bookedTimeSlot,
+      date: appointment.date,
+      rating: 4, // For now, hardcode the rating or fetch it from your backend
+      imageUrl: appointment.imageUrl,
+      appointmentId: ''
+    };
+
+    // Remove the appointment from the booked appointments
+    setBookedAppointments(prevAppointments =>
+      prevAppointments.filter(app => app.id !== appointment.id)
+    );
+
+    // Add the appointment to the history list
+    setHistoryAppointments(prevHistory => [...prevHistory, historyAppointment]);
   };
-
-  // Remove the appointment from the booked appointments
-  setBookedAppointments(prevAppointments =>
-    prevAppointments.filter(app => app.id !== appointment.id)
-  );
-
-  // Add the appointment to the history list
-  setHistoryAppointments(prevHistory => [...prevHistory, historyAppointment]);
-};
 
 
   const handleViewClick = () => {
@@ -163,40 +163,40 @@ const moveToHistory = (appointment: BookedAppointment) => {
     setModalOpen(false); // Close the modal
   };
 
-  const tabs = ['Explore Doctors', 'Booked Appointments','History'];
+  const tabs = ['Explore Doctors', 'Booked Appointments', 'History'];
 
   //CALLING API FOR GET VERIFIED DOCTORS
   useEffect(() => {
-      const fetchVerifiedDoctors = async () => {
-        try {
-          const response = await fetch("http://localhost:8000/api/patient/doctors", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          });
-  
-          if (response.ok) {
-            const data = await response.json();
-            setDoctors(data); 
-            console.log(data[0].clinic.fullName);
-            
+    const fetchVerifiedDoctors = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/patient/doctors", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setDoctors(data);
+          console.log(data[0].clinic.fullName);
+
         } else {
-            const errorData = await response.json();
-            setError(errorData.message || "Failed to fetch clinic details");
+          const errorData = await response.json();
+          setError(errorData.message || "Failed to fetch clinic details");
         }
-    } catch (err) {
+      } catch (err) {
         return "Error while getting clinic data"
-    } finally {
+      } finally {
         setLoading(false);
-    }
-};
+      }
+    };
 
-fetchVerifiedDoctors();
-}, []);
+    fetchVerifiedDoctors();
+  }, []);
 
-//CALLING API FOR BOOKED APPOINTMENTS
+  //CALLING API FOR BOOKED APPOINTMENTS
   useEffect(() => {
     const fetchBookedAppointments = async () => {
       try {
@@ -207,11 +207,11 @@ fetchVerifiedDoctors();
           },
           credentials: "include",
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           // Process the appointments and move completed ones to history
-          console.log("This is data coming from booked appointment api : ",data)
+          console.log("This is data coming from booked appointment api : ", data)
           const now = new Date();
           data.forEach((appointment: BookedAppointment) => {
             if (new Date(appointment.date) < now && appointment.status !== 'active') {
@@ -228,113 +228,115 @@ fetchVerifiedDoctors();
         setLoadingAppointments(false);
       }
     };
-  
+
     fetchBookedAppointments();
   }, []);
-  
 
+
+  console.log("This is booked appointments data : ", bookedAppointments);
 
   return (
-   <>
-    {/* <Navbar/>     */}
+    <>
+      {/* <Navbar/>     */}
 
-    
+
 
       {/* Main Content */}
-   <div className="bg-[#D3EDEB] min-h-screen w-full flex justify-center mt-32 ">
-       <div className="w-full max-w-screen-xl p-4 bg-[#D3EDEB] mt-10">
-     
-       <ActiveTab
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabClick={(tab) => setActiveTab(tab as 'Explore Doctors' | 'Booked Appointments' | 'History')}
-      />
+      <div className="bg-[#D3EDEB] min-h-screen w-full flex justify-center mt-32 ">
+        <div className="w-full max-w-screen-xl p-4 bg-[#D3EDEB] mt-10">
+
+          <ActiveTab
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabClick={(tab) => setActiveTab(tab as 'Explore Doctors' | 'Booked Appointments' | 'History')}
+          />
 
 
-        {activeTab === 'Explore Doctors' && (
-          <div className="bg-[#fff] rounded-xl shadow p-6 mb-6 ">
-          {/* Search Section */}
-          <SearchByNameAndLoc />
-        
-          {/* Doctor Cards */}
-          <div className="space-y-4">
-  {doctors.map((doctor: any) => (
-    <DoctorCard
-      key={doctor._id} // Use unique ID
-      doctorCard={{
-        id : doctor._id || "N/A",
-        fullName: doctor.clinic.fullName || "N/A",
-        image: doctor.clinic.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available   data.clinic.image
-        description: doctor.clinic.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
-        consultationFee: doctor.clinic.consultationFee || 0, // Default fee if missing
-        city: doctor.clinic.city || "N/A", // Handle missing city
-        country: doctor.clinic.country || "N/A", // Handle missing country
-        specialisation: doctor.clinic.specialisation || "N/A",
-        educationBackground: doctor.clinic.educationBackground || "N/A",
-        startTime: doctor.clinic.startTime || "N/A",
-        endTime: doctor.clinic.endTime || "N/A",
-        appointments : doctor.availability || "N/A"
-      }}
-    />
-  ))}
-</div>
+          {activeTab === 'Explore Doctors' && (
+            <div className="bg-[#fff] rounded-xl shadow p-6 mb-6 ">
+              {/* Search Section */}
+              <SearchByNameAndLoc />
+
+              {/* Doctor Cards */}
+              <div className="space-y-4">
+                {doctors?.map((doctor: any) => (
+                  <DoctorCard
+                    key={doctor._id} // Use unique ID
+                    doctorCard={{
+                      id: doctor._id || "N/A",
+                      userId : doctor.userId || "N/A",
+                      fullName: doctor.clinic?.fullName || "N/A",
+                      image: doctor.clinic?.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available   data.clinic.image
+                      description: doctor.clinic?.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
+                      consultationFee: doctor.clinic?.consultationFee || 0, // Default fee if missing
+                      city: doctor.clinic?.city || "N/A", // Handle missing city
+                      country: doctor.clinic?.country || "N/A", // Handle missing country
+                      specialisation: doctor.clinic?.specialisation || "N/A",
+                      educationBackground: doctor.clinic?.educationBackground || "N/A",
+                      startTime: doctor.clinic?.startTime || "N/A",
+                      endTime: doctor.clinic?.endTime || "N/A",
+                      appointments: doctor.availability || "N/A"
+                    }}
+                  />
+                ))}
+              </div>
 
 
+            </div>
+
+          )}
+
+          {/* Modal for Prescription */}
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto">
+              <div className="relative bg-transparent rounded-lg p-6 w-full max-w-[1000px] max-h-[500px] sm:w-[95%] sm:max-h-screen sm:overflow-y-scroll sm:[&::-webkit-scrollbar]:hidden sm:scrollbar-hide">
+                {/* Close Button */}
+                <button
+                  onClick={handleCloseModal}
+                  className="absolute top-6 right-4 text-black hover:text-black text-2xl z-50 transition-transform transform hover:scale-125"
+                >
+                  ✖
+                </button>
+                <PrescriptionPage />
+              </div>
+            </div>
+          )}
+
+
+
+
+          {activeTab === 'Booked Appointments' && (
+            <div className="space-y-4 pt-12">
+              {loadingAppointments ? (
+                <p>Loading...</p>
+              ) : bookedAppointments.length > 0 ? (
+                bookedAppointments
+                  .filter((appointment) => appointment.status === "active" || appointment.status === "upcoming" || appointment.status === "confirmed")
+                  .map((appointment) => (
+                    <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
+                  ))
+              ) : (
+                <p>No Booked Appointments</p>
+              )}
+            </div>
+          )}
+
+
+          {activeTab === 'History' && (
+            <div className="space-y-4">
+              {historyAppointments.length > 0 ? (
+                historyAppointments.map((history) => (
+                  <HistoryAppointmentCard key={history.id} historyCard={history} />
+                ))
+              ) : (
+                <p className="text-center text-xl text-gray-600 font-semibold mt-8">
+                  <span className="text-teal-600">No History Available</span>
+                </p>
+              )}
+            </div>
+          )}
         </div>
-        
-        )}
-
-    {/* Modal for Prescription */}
-{isModalOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto">
-    <div className="relative bg-transparent rounded-lg p-6 w-full max-w-[1000px] max-h-[500px] sm:w-[95%] sm:max-h-screen sm:overflow-y-scroll sm:[&::-webkit-scrollbar]:hidden sm:scrollbar-hide">
-      {/* Close Button */}
-      <button
-        onClick={handleCloseModal}
-        className="absolute top-6 right-4 text-black hover:text-black text-2xl z-50 transition-transform transform hover:scale-125"
-      >
-        ✖
-      </button>
-      <PrescriptionPage />
-    </div>
-  </div>
-)}
-
-
-
-
-{activeTab === 'Booked Appointments' && (
-  <div className="space-y-4">
-    {loadingAppointments ? (
-      <p>Loading...</p>
-    ) : bookedAppointments.length > 0 ? (
-      bookedAppointments
-        .filter((appointment) => appointment.status === "active" || appointment.status === "upcoming")
-        .map((appointment) => (
-          <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
-        ))
-    ) : (
-      <p>No Booked Appointments</p>
-    )}
-  </div>
-)}
-
-
-{activeTab === 'History' && (
-  <div className="space-y-4">
-    {historyAppointments.length > 0 ? (
-      historyAppointments.map((history) => (
-        <HistoryAppointmentCard key={history.id} historyCard={history} />
-      ))
-    ) : (
-      <p className="text-center text-xl text-gray-600 font-semibold mt-8">
-      <span className="text-teal-600">No History Available</span>
-    </p>
-    )}
-  </div>
-)}
       </div>
-    </div>
     </>
   )
 }

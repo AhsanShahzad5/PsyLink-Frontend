@@ -9,10 +9,26 @@ import {
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react"; import userAtom from "@/atoms/userAtom";
+
 
 type ChartDataType = {
     name: string;
     value: number;
+};
+
+type PaymentType = {
+    _id: string;
+    patientName: string;
+    amount: number;
+    createdAt: string;
+    patientData: {
+        personalInformation: {
+            fullName: string;
+            phoneNumber?: string;
+        };
+    };
 };
 
 // Mock data
@@ -24,8 +40,53 @@ const chartData: ChartDataType[] = [
     { name: "14", value: 30 },
 ];
 
-export const PaymentsReceivedAnaytics = () => {
+const PaymentsReceivedAnalytics = () => {
     const navigate = useNavigate();
+    const user = useRecoilValue(userAtom);
+    const [payments, setPayments] = useState<PaymentType[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchPayments = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch(`http://localhost:8000/api/payments/doctor`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch payment data');
+                }
+
+                const data = await response.json();
+                const data2 = data.data;
+                console.log(data2);
+                
+                // Sort payments by date (newest first) and take only the latest 5
+                const sortedPayments = data2?.sort((a: PaymentType, b: PaymentType) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ).slice(0, 5);
+
+                setPayments(sortedPayments);
+                setError(null);
+            } catch (err) {
+                setError('Error fetching payment data');
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (user && user._id) {
+            fetchPayments();
+        }
+    }, [user]);
+
     return (
         <div className="bg-white rounded-lg shadow-md p-6 h-fit w-full max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
@@ -72,26 +133,35 @@ export const PaymentsReceivedAnaytics = () => {
 
                     {/* Right Button */}
                     <button
-                        className="px-4 py-1 h-[3.5rem] w-full md:w-[10.5rem] text-white bg-primary rounded-full hover:bg-teal-700"
+                        className="px-4 py-1 h-14 w-full md:w-40 text-white bg-emerald-600 rounded-full hover:bg-teal-700"
                         onClick={() => navigate('/doctor/payment-analytics')}
                     >
                         View Details
                     </button>
                 </div>
+
                 <ul className="space-y-3">
-                    {Array(4)
-                        .fill(null)
-                        .map((_, index) => (
+                    {isLoading ? (
+                        <li className="text-gray-600">Loading payments...</li>
+                    ) : error ? (
+                        <li className="text-red-500">{error}</li>
+                    ) : payments.length === 0 ? (
+                        <li className="text-gray-600">No recent payments found</li>
+                    ) : (
+                        payments.map((payment) => (
                             <li
-                                key={index}
+                                key={payment._id}
                                 className="flex justify-between items-center text-gray-600"
                             >
-                                <span>Muhammad Shafaat Farooq</span>
-                                <span className="font-medium">Rs 1400</span>
+                                <span>{payment.patientData.personalInformation.fullName}</span>
+                                <span className="font-medium">Rs {payment.amount}</span>
                             </li>
-                        ))}
+                        ))
+                    )}
                 </ul>
             </div>
         </div>
     );
 };
+
+export default PaymentsReceivedAnalytics;

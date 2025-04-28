@@ -6,6 +6,7 @@ import DefaultDoctorImage from '/src/assets/patient/doctor/doctor.png';
 interface DoctorCardProps {
   doctorCard: {
     id: string,
+    userId: string;
     fullName: string;
     image: string;
     consultationFee: number;
@@ -23,6 +24,7 @@ interface DoctorCardProps {
 export default function DoctorCard({ doctorCard }: DoctorCardProps) {
   const {
     id,
+   userId,
     fullName,
     image,
     consultationFee,

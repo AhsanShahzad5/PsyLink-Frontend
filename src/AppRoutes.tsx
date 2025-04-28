@@ -57,7 +57,7 @@ import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
 import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
-import PaymentCheck from './pages/PaymentCheck';
+import PaymentPage from './pages/PaymentPage';
 import PrivateReviews from './pages/Doctor/PrivateReviews';
 import ComplaintList from './pages/ComplaintList';
 import Complaint from './pages/Complaint';
@@ -68,7 +68,7 @@ const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/test" element={<PaymentCheck />} />
+        {/* <Route path="/test" element={<PaymentCheck />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -327,6 +327,17 @@ const AppRoutes = () => (
         />
 
         <Route
+            path="/patient/payNow"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <PaymentPage />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+
+        <Route
             path="/doctor/login"
             element={<LoginPage />}
         />
@@ -424,13 +435,13 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
-         <Route
+        <Route
             path="/doctor/video-preview"
             element={
                 <SocketProvider>
-                <ProtectedRoute allowedRoles={['doctor']}>
-                    <VideoPreview />
-                </ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['doctor']}>
+                        <VideoPreview />
+                    </ProtectedRoute>
                 </SocketProvider>
             }
         />
@@ -438,9 +449,9 @@ const AppRoutes = () => (
             path="/video-consultation/:roomId"
             element={
                 <SocketProvider>
-                <ProtectedRoute allowedRoles={['doctor','patient']}>
-                    <VideoConsulation />
-                </ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['doctor', 'patient']}>
+                        <VideoConsulation />
+                    </ProtectedRoute>
                 </SocketProvider>
             }
         />

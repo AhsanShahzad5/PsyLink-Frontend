@@ -1,5 +1,5 @@
 import { PaymentsandReviewsChart } from "@/Components/doctor/PaymentsReviewsCharts";
-import { PaymentsReceivedAnaytics } from "@/Components/doctor/PaymentsReceivedAnalytics";
+import PaymentsReceivedAnaytics  from "@/Components/doctor/PaymentsReceivedAnalytics";
 import { HomeUpcomingAppointments } from "@/Components/doctor/HomePageUpcomingAppointments";
 
 const Home = () => {

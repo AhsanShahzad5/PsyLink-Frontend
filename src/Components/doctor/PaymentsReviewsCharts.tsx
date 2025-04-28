@@ -13,7 +13,7 @@ const pieData = [
 
 export const PaymentsandReviewsChart = () => {
     return (
-        <div className="col-span-2 bg-white rounded-lg shadow-md p-2 h-fit md:mt-[-265px] sm:[mt-0]">
+        <div className="col-span-2 bg-white rounded-lg shadow-md p-2 h-fit md:mt-[-300px] sm:[mt-0]">
             <div className="flex flex-col md:flex-row justify-center items-center">
                 <div className="relative h-50 m-4">
                     <h1 className="text-center">5 star reviews</h1>
