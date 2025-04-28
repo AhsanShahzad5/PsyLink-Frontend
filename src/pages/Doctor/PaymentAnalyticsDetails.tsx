@@ -7,14 +7,29 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import userAtom from '@/atoms/userAtom';
 
 const stripeIcon = "/stripe.png";
 
 type ChartDataType = {
   name: string;
   value: number;
+};
+
+type PaymentType = {
+  _id: string;
+  patientName: string;
+  amount: number;
+  createdAt: string;
+  patientData: {
+    personalInformation: {
+      fullName: string;
+      phoneNo?: string;
+    };
+  };
 };
 
 // Mock data
@@ -26,38 +41,71 @@ const chartData: ChartDataType[] = [
   { name: "14", value: 30 },
 ];
 
-const payments = [
-  {
-    name: "Muhammad Shafaat Farooq",
-    amountPaid: "Rs 1400",
-    paymentMethod: stripeIcon,
-    phoneNumber: "+926476477474",
-    date: "25th October, 2024",
-  },
-  {
-    name: "Muhammad Shafaat Farooq",
-    amountPaid: "Rs 1400",
-    paymentMethod: stripeIcon,
-    phoneNumber: "+926476477474",
-    date: "25th October, 2024",
-  },
-  {
-    name: "Muhammad Shafaat Farooq",
-    amountPaid: "Rs 1400",
-    paymentMethod: stripeIcon,
-    phoneNumber: "+926476477474",
-    date: "25th October, 2024",
-  },
-  {
-    name: "Muhammad Shafaat Farooq",
-    amountPaid: "Rs 1400",
-    paymentMethod: stripeIcon,
-    phoneNumber: "+926476477474",
-    date: "25th October, 2024",
-  },
-];
+const PaymentsReceivedAnalytics = () => {
+  const user = useRecoilValue(userAtom);
+  const [payments, setPayments] = useState<PaymentType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const PaymentsReceivedAnaytics = () => {
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`http://localhost:8000/api/payments/doctor`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+      });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch payment data');
+        }
+        
+        const pdata = await response.json();
+        const data = pdata.data;
+
+        // Sort payments by date (newest first) and take only the latest 5
+        const sortedPayments = data?.sort((a: PaymentType, b: PaymentType) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        
+        setPayments(sortedPayments);
+        setError(null);
+      } catch (err) {
+        setError('Error fetching payment data');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (user && user._id) {
+      fetchPayments();
+    }
+  }, [user]);
+
+  // Format date function
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear();
+    
+    // Add ordinal suffix to day
+    const getOrdinalSuffix = (day: number) => {
+      if (day > 3 && day < 21) return 'th';
+      switch (day % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    };
+    
+    return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit w-full">
@@ -103,23 +151,34 @@ const PaymentsReceivedAnaytics = () => {
           {/* Left Text */}
           <h2 className="text-lg font-bold text-black">Payments Received</h2>
         </div>
-        <ul className="space-y-3">
-          {payments.map((payment, index) => (
-            <li
-              key={index}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
-            >
-              <span>{payment.name}</span>
-              <img
-                src={payment.paymentMethod}
-                alt="Payment Method"
-                className="h-12 w-12 hidden sm:block"
-              />
-              <span className="font-medium">{payment.phoneNumber}</span>
-              <span className="font-medium">{payment.date}</span>
-            </li>
-          ))}
-        </ul>
+
+        {/* Payment List */}
+        {isLoading ? (
+          <div className="text-center py-4">Loading payments...</div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-4">{error}</div>
+        ) : payments.length === 0 ? (
+          <div className="text-center text-gray-600 py-4">No recent payments found</div>
+        ) : (
+          <ul className="space-y-3">
+            {payments.map((payment) => (
+              <li
+                key={payment._id}
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
+              >
+                <span>{payment.patientData?.personalInformation?.fullName || payment.patientName}</span>
+                <img
+                  src={stripeIcon}
+                  alt="Payment Method"
+                  className="h-12 w-12 hidden sm:block"
+                />
+                <span className="font-medium">{payment.patientData?.personalInformation?.phoneNo || "N/A"}</span>
+                <span className="font-medium">{payment.amount || "N/A"}</span>
+                <span className="font-medium">{formatDate(payment.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
@@ -156,7 +215,7 @@ const PaymentAnalyticsDetails = () => {
             Back
           </button>
         </div>
-        <PaymentsReceivedAnaytics />
+        <PaymentsReceivedAnalytics />
       </div>
     </div>
   )

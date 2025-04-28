@@ -57,7 +57,7 @@ import PsyncMyPostsPage from './pages/Psync/PsyncMyPostsPage';
 import PsyncSeries from './pages/Psync/PsyncSeriesMainPage';
 import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
-import PaymentCheck from './pages/PaymentPage';
+import PaymentPage from './pages/PaymentPage';
 
 
 
@@ -308,7 +308,7 @@ const AppRoutes = () => (
             element={
                 <ProtectedRoute allowedRoles={['patient']}>
                     <PatientLayout>
-                        <PaymentCheck />
+                        <PaymentPage />
                     </PatientLayout>
                 </ProtectedRoute>
             }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import userAtom from '@/atoms/userAtom';
 
@@ -25,44 +25,37 @@ const CARD_ELEMENT_OPTIONS = {
   hidePostalCode: true
 };
 
-/* userId : 675d6f48d591bb83cb996ffe 
-dcotid : 680b787c567dd456b3d32734
-selectedDate = new Date().toISOString().split('T')[0], 
-  selectedTime = '10:00 AM' 
-
-*/
-const PaymentForm = ({ 
-  doctor = { 
-    _id: '', 
-    personalDetails: { fullName: 'Dr. John Doe' }, 
-    professionalDetails: { specialisation: 'General Medicine', consultationFee: 50 } 
-  }, 
-  selectedDate = new Date().toISOString().split('T')[0], 
-  selectedTime = '10:00 AM' 
-}) => {
+const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get doctor and appointment data from location state
+  const { doctor, selectedDate, selectedTime } = location.state || {};
 
   const user = useRecoilValue(userAtom) || { 
     _id: '', 
     email: 'patient@example.com',
     personalInformation: { fullName: 'Patient Name' }
   };
+
+  console.log("data in payment is :"  , doctor.userId , user._id , selectedDate, selectedTime);
+  console.log("Doctor data in payment is :"  , doctor);
   
-  const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [clientSecret, setClientSecret] = useState('');
-  const [paymentIntentId, setPaymentIntentId] = useState('');
-  const [appointmentId, setAppointmentId] = useState('');
+  const [processing, setProcessing] = useState<any>(false);
+  const [error, setError] = useState<any>(null);
+  const [clientSecret, setClientSecret] = useState<any>('');
+  const [paymentIntentId, setPaymentIntentId] = useState<any>('');
+  const [appointmentId, setAppointmentId] = useState<any>('');
   
   // Calculate amount from doctor's consultation fee
-  const amount = doctor.professionalDetails?.consultationFee || 50; // Default to 50 if not set
+  const amount = doctor?.professionalDetails?.consultationFee || 50;
   
   useEffect(() => {
     // Create payment intent when component mounts
     const createPaymentIntent = async () => {
-      if (!doctor._id || !selectedDate || !selectedTime) {
+      if (!doctor?._id || !selectedDate || !selectedTime) {
         setError("Missing booking information. Please select date and time.");
         return;
       }
@@ -76,27 +69,14 @@ const PaymentForm = ({
           credentials: 'include',
           body: JSON.stringify({
             amount,
-            // patientId: user._id,
-            // doctorId: doctor._id,
-            // date: selectedDate,
-            // time: selectedTime
-            patientId: '680b75fef37c98c26bfc2019' ,
-            doctorId: '680b787c567dd456b3d32734' ,
+            patientId: user._id,
+            doctorId: doctor.userId,
             date: selectedDate,
             time: selectedTime
           })
         });
         
-
-/* userId : 675d6f48d591bb83cb996ffe 
-dcotid : 680b787c567dd456b3d32734
-selectedDate = new Date().toISOString().split('T')[0], 
-  selectedTime = '10:00 AM' 
-
-*/
-
         const data = await response.json();
-        
         if (data.success) {
           setClientSecret(data.clientSecret);
           setPaymentIntentId(data.paymentIntentId);
@@ -111,13 +91,12 @@ selectedDate = new Date().toISOString().split('T')[0],
     };
     
     createPaymentIntent();
-  }, [doctor._id, selectedDate, selectedTime, amount, user._id]);
+  }, [doctor?._id, selectedDate, selectedTime, amount, user._id]);
   
   const handleSubmit = async (event) => {
     event.preventDefault();
     
     if (!stripe || !elements) {
-      // Stripe.js hasn't loaded yet
       return;
     }
     
@@ -160,7 +139,7 @@ selectedDate = new Date().toISOString().split('T')[0],
           body: JSON.stringify({
             paymentIntentId,
             patientId: user._id,
-            doctorId: doctor._id,
+            doctorId: doctor.userId,
             appointmentId,
             date: selectedDate,
             time: selectedTime
@@ -171,7 +150,7 @@ selectedDate = new Date().toISOString().split('T')[0],
         
         if (confirmData.success) {
           // Payment successfully processed and appointment booked
-          navigate('/patient/appointments', { 
+          navigate('/patient/bookings', { 
             state: { 
               success: true, 
               message: 'Appointment successfully booked!',
@@ -204,11 +183,11 @@ selectedDate = new Date().toISOString().split('T')[0],
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Doctor:</span>
-              <span className="font-medium">{doctor.personalDetails?.fullName || 'Dr. John Doe'}</span>
+              <span className="font-medium">{doctor?.personalDetails?.fullName || 'Dr. John Doe'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Specialization:</span>
-              <span className="font-medium">{doctor.professionalDetails?.specialisation || 'General Medicine'}</span>
+              <span className="font-medium">{doctor?.professionalDetails?.specialisation || 'General Medicine'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Date:</span>
@@ -220,7 +199,7 @@ selectedDate = new Date().toISOString().split('T')[0],
             </div>
             <div className="flex justify-between border-t pt-2 mt-2">
               <span className="text-gray-800 font-medium">Total Amount:</span>
-              <span className="text-lg font-semibold text-blue-600">${amount}</span>
+              <span className="text-lg font-semibold text-blue-600">Rs. {amount}</span>
             </div>
           </div>
         </div>
@@ -265,7 +244,7 @@ selectedDate = new Date().toISOString().split('T')[0],
                 Processing...
               </span>
             ) : (
-              `Pay $${amount}`
+              `Pay Rs ${amount}`
             )}
           </button>
           
@@ -297,12 +276,12 @@ selectedDate = new Date().toISOString().split('T')[0],
             </div>
           </div>
           
-          <div className="flex items-center justify-center space-x-4 mt-6">
+          {/* <div className="flex items-center justify-center space-x-4 mt-6">
             <img src="/api/placeholder/40/25" alt="Visa" className="h-6" />
             <img src="/api/placeholder/40/25" alt="Mastercard" className="h-6" />
             <img src="/api/placeholder/40/25" alt="Amex" className="h-6" />
             <img src="/api/placeholder/40/25" alt="Discover" className="h-6" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

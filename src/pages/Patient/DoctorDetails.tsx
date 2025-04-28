@@ -30,8 +30,7 @@ const DoctorProfile: React.FC = () => {
 
   const [selectedDateIndex, setSelectedDateIndex] = useState<number | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [isAppointmentSuccess, setIsAppointmentSuccess] = useState(false);
-
+  console.table(doctorCard);
   const availableDates = appointments.map(
     (appointment: any) => appointment.date
   );
@@ -47,92 +46,77 @@ const DoctorProfile: React.FC = () => {
       ? appointments[selectedDateIndex].slots.map((slot: any) => slot.time)
       : [];
 
-      const formatDate = (dateString: string): string => {
-        if (!dateString) return ""; // Handle empty strings or null
-        
-        try {
-          const date = new Date(dateString);
-          // Check if the date is valid
-          if (isNaN(date.getTime())) {
-            return dateString; // Return original string if invalid date
-          }
-          
-          // Format as "Mon, 26 Apr" (Short day, day number, short month)
-          return date.toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            day: 'numeric', 
-            month: 'short' 
-          });
-        } catch (e) {
-          return dateString; // Return original string if there's an error
-        }
-      };
-
-      const formatTimeSlot = (timeSlot: string): string => {
-        if (!timeSlot) return "";
-        
-        // Handle both formats: "09:00am" and "09:00AM" into "9:00 AM"
-        const normalizedTime = timeSlot.toUpperCase();
-        
-        // Remove extra formats if needed
-        if (normalizedTime.includes("-")) {
-          return normalizedTime; // Return the full range if it's already in a range format
-        }
-        
-        // Try to format the time nicely
-        try {
-          const [hours, minutesWithPeriod] = normalizedTime.split(":");
-          if (!minutesWithPeriod) return normalizedTime;
-          
-          const minutes = minutesWithPeriod.slice(0, 2);
-          const period = minutesWithPeriod.slice(2);
-          
-          // Remove leading zero for hours
-          const formattedHour = hours.startsWith("0") ? hours.slice(1) : hours;
-          
-          return `${formattedHour}:${minutes} ${period}`;
-        } catch (e) {
-          return timeSlot; // Return original if parsing fails
-        }
-      };
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return "";
     
-    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+      
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        day: 'numeric', 
+        month: 'short' 
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-  const handleBookAppointment = async () => {
+  const formatTimeSlot = (timeSlot: string): string => {
+    if (!timeSlot) return "";
+    
+    const normalizedTime = timeSlot.toUpperCase();
+    
+    if (normalizedTime.includes("-")) {
+      return normalizedTime;
+    }
+    
+    try {
+      const [hours, minutesWithPeriod] = normalizedTime.split(":");
+      if (!minutesWithPeriod) return normalizedTime;
+      
+      const minutes = minutesWithPeriod.slice(0, 2);
+      const period = minutesWithPeriod.slice(2);
+      
+      const formattedHour = hours.startsWith("0") ? hours.slice(1) : hours;
+      
+      return `${formattedHour}:${minutes} ${period}`;
+    } catch (e) {
+      return timeSlot;
+    }
+  };
+
+  // Modified to navigate to payment page
+  const handleBookAppointment = () => {
     if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
       alert("Please select a date and time slot.");
       return;
     }
-    const payload = {
-      doctorId: doctorCard.id,
-      date: availableDates[selectedDateIndex],
-      time: selectedSlot,
-    };
-    try {
-      const response = await fetch(
-        "http://localhost:8000/api/patient/book/appointment",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+  
+    // Format the date properly for the backend
+    const selectedDateStr = availableDates[selectedDateIndex];
+    
+    // Navigate to payment page with doctor and appointment details
+    navigate('/patient/payNow', {
+      state: {
+        doctor: {
+          _id: doctorCard.id,
+          personalDetails: {
+            fullName: fullName
           },
-          credentials: "include",
-          body: JSON.stringify(payload),
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setIsAppointmentSuccess(true);
-        console.log("Response:", data);
-      } else {
-        const error = await response.json();
-        console.error("Error response:", error);
-        alert("Failed to book appointment. Please try again.");
+          userId: doctorCard.userId,
+          professionalDetails: {
+            specialisation: specialisation,
+            consultationFee: consultationFee
+          }
+        },
+        selectedDate: selectedDateStr,
+        selectedTime: selectedSlot
       }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      alert("An error occurred. Please try again later.");
-    }
+    });
   };
 
   const aboutText = [
@@ -144,16 +128,14 @@ const DoctorProfile: React.FC = () => {
     const [hoursStr, minutes] = time24.split(":");
     let hours = parseInt(hoursStr, 10);
     const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12; // 0 -> 12
+    hours = hours % 12 || 12;
     return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
   };
-  
 
   const isValidImageUrl = (image: string) => {
-    return image.startsWith('http://') || image.startsWith('https://');
+    return image && (image.startsWith('http://') || image.startsWith('https://'));
   };
 
-  
   return (
     <>
       <div className="mt-[100px] bg-white p-14 rounded-2xl shadow-lg max-w-[90rem] mx-auto">
@@ -185,9 +167,9 @@ const DoctorProfile: React.FC = () => {
           {/* Image Section */}
           <div className="sm:col-span-3 flex justify-center">
             <img
-              src={image}
-              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
-              alt="img"
+              src={image && isValidImageUrl(image) ? image : DefaultDoctorImage}
+              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg object-cover"
+              alt={fullName}
             />
           </div>
 
@@ -209,13 +191,12 @@ const DoctorProfile: React.FC = () => {
 
           {/* Timings and Fee */}
           <div className="sm:col-span-3 flex flex-col justify-center items-center gap-2 sm:gap-4">
-          <div className="flex items-center gap-2">
-  <FaClock className="text-primary" />
-  <p className="font-outfit text-[16px] sm:text-[18px] font-light leading-[20px] sm:leading-[22px] text-center">
-    {formatShowClinicTime(startTime)} - {formatShowClinicTime(endTime)}
-  </p>
-</div>
-
+            <div className="flex items-center gap-2">
+              <FaClock className="text-primary" />
+              <p className="font-outfit text-[16px] sm:text-[18px] font-light leading-[20px] sm:leading-[22px] text-center">
+                {formatShowClinicTime(startTime)} - {formatShowClinicTime(endTime)}
+              </p>
+            </div>
 
             <p className="font-outfit text-[16px] sm:text-[18px] font-light leading-[20px] sm:leading-[22px] text-center mt-2 sm:mt-4">
               Rs.{consultationFee}
@@ -270,53 +251,14 @@ const DoctorProfile: React.FC = () => {
             }`}
             disabled={!selectedSlot || selectedDateIndex === null}
           >
-            Book Online Appointment
+            Proceed to Payment
           </button>
         </div>
-
-        {/* Success Modal */}
-        {isAppointmentSuccess && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-              <div className="text-center">
-                <div className="text-4xl text-green-500 mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-16 h-16 mx-auto"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 12l2 2 4-4m0 0a9 9 0 11-6.75 3.75A9 9 0 0115 10z"
-                    />
-                  </svg>
-                </div>
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Appointment Booked Successfully!
-                </h2>
-                <p className="mt-4 text-gray-600">
-                  Your appointment has been scheduled. Thank you for choosing
-                  us.
-                </p>
-                <button
-                  onClick={() => setIsAppointmentSuccess(false)}
-                  className="mt-6 px-6 py-3 bg-[#02968A] text-white rounded-lg hover:bg-[#026F6A]"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         <hr className="border-gray-400 my-4 p-4" />
 
         {/* Header */}
-        <h2 className="font-outfit font-semibold text-[30px]  text-left p-4 sm:text-[30px] ">
+        <h2 className="font-outfit font-semibold text-[30px] text-left p-4 sm:text-[30px]">
           About Me
         </h2>
 
@@ -330,13 +272,11 @@ const DoctorProfile: React.FC = () => {
           {/* Image Section */}
           <div className="sm:col-span-5 flex justify-center items-start">
             <div className="w-full max-w-[579px] h-auto bg-gray-200 rounded-lg sm:w-[439px] sm:h-[500px]">
-              {/* Placeholder for image */}
               <img
-                   src={image && isValidImageUrl(image) ? image : DefaultDoctorImage}
-                   alt="Doctor"
-                    className="w-full h-full object-cover"
-                  />
-
+                src={image && isValidImageUrl(image) ? image : DefaultDoctorImage}
+                alt="Doctor"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
