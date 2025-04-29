@@ -61,6 +61,7 @@ import PaymentPage from './pages/PaymentPage';
 import PrivateReviews from './pages/Doctor/PrivateReviews';
 import ComplaintList from './pages/ComplaintList';
 import Complaint from './pages/Complaint';
+import PreviousProgramDetails from './pages/Patient/PreviousProgramDetails';
 
 
 
@@ -155,6 +156,17 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+         <Route 
+        path="/patient/previous-program-details/:programId" 
+        element={
+            <ProtectedRoute allowedRoles={['patient']}>
+            <PatientLayout>
+                <PreviousProgramDetails />
+            </PatientLayout>
+        </ProtectedRoute>
+        
+        } 
+      />
         <Route
             path="/patient/prescription"
             element={

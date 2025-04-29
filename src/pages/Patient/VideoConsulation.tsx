@@ -15,11 +15,68 @@ import userAtom from '@/atoms/userAtom';
 import PrescriptionPopUp from "../../Components/doctor/PrescriptionPopUpDoc";
 import ReviewModal from "../../Components/patient/reviewModal"; // Import the new ReviewModal component
 
+interface AppointmentData {
+  appointmentId: string | undefined;
+  date: string;
+  time: string;
+  patientName: string;
+  doctorName: string;
+  status: string;
+  rating?: number;
+  review?: string;
+  createdAt: string;
+}
+
 export default function VideoConsultation() {
   // Extract appointment ID from URL params
   const { roomId } = useParams<{ roomId: string }>();
   const appointmentId = roomId;
+  const [appointment, setAppointment] = useState<AppointmentData>({ 
+    appointmentId: '',
+    date: '',
+    time: '',
+    patientName: '',
+    doctorName: '',
+    status: '',
+    rating: 0,
+    review: '',
+    createdAt: ''
+  });
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const fetchAppointmentDetails = async () => {
+
+    setLoading(true);
+    
+    try {
+      const response = await fetch(`http://localhost:8000/api/appointments/${appointmentId}`);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        setError(result.message || 'Failed to fetch appointment details');
+        return;
+      }
+      
+      setAppointment(result.data);
+    } catch (error) {
+      setError('Error connecting to server. Please try again later.');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   
+  useEffect(() => {
+    
+    fetchAppointmentDetails()
+   
+    
+    
+  
+  }, [])
+  
+  console.log("this is appointmentDetails: ",appointment)
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showPrescriptionPopUp, setShowPrescriptionPopUp] = useState(false);
   const [prescriptionData, setPrescriptionData] = useState({
@@ -39,7 +96,7 @@ export default function VideoConsultation() {
   
   const doctorImage = "/src/assets/shared/UserPlaceholderDoc.jpg";
   const patientImage = "/src/assets/shared/UserPlaceholder.jpg";
-  const prescriptionImage = "/src/assets/shared/perscription.png";
+  // const prescriptionImage = "/src/assets/shared/perscription.png";
   const navigate = useNavigate();
   const socket = useSocket()
   const [remoteSocketId, setRemoteSocketId] = useState(null);
@@ -62,7 +119,7 @@ export default function VideoConsultation() {
       setPrescriptionData({
         doctorId: data.doctorInfo.doctorId || user?._id || "Unknown DoctorId",
         doctorName: data.doctorInfo.name || user?.name || "Doctor",
-        doctorSpeciality: data.doctorSpeciality || "Psychiatrist",
+        doctorSpeciality: data.doctorInfo.specialisation || "Psychiatrist",
         patientId: data.patientInfo.patientId || "Unknown PatientId",
         patientName: data.patientInfo.name || "User",
         patientGender: data.patientInfo.gender || "Male/Female",
@@ -184,10 +241,6 @@ export default function VideoConsultation() {
   
   // Function to end call - modified to check user role
   const endCall = useCallback(() => {
-    // Only show review modal if user is not a doctor
-    if (user?.role !== 'doctor') {
-      setShowReviewModal(true);
-    }
     
     // Stop all tracks
     if (myStream) {
@@ -202,6 +255,14 @@ export default function VideoConsultation() {
       peer.peer.close();
     }
     
+    
+    if (user?.role !== 'doctor') {
+      setShowReviewModal(true);
+    }
+
+    if (user?.role === 'doctor') {
+      window.location.href = '/doctor/appointments';
+    } 
     // Reset remote stream
     setRemoteStream(null);
     setRemoteSocketId(null);
@@ -404,16 +465,30 @@ export default function VideoConsultation() {
 
           {/* Profile Card */}
           <Card className="p-4 border-2 border-emerald-500">
+            
+          
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage src="/placeholder.svg" alt="Doctor" />
                 <AvatarFallback>DR</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-lg font-semibold">Dr Fahad Tariq Aziz</h2>
-                <p className="text-sm text-gray-500">Psychiatrist</p>
+                <h2 className="text-lg font-semibold">Dr {appointment.doctorName}</h2>
+                <p className="text-sm text-gray-500"></p>
               </div>
-            </div>
+            </div> 
+         
+              {/* <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src="/placeholder.svg" alt="Doctor" />
+                <AvatarFallback>DR</AvatarFallback>
+              </Avatar>
+              <div>
+                <h2 className="text-lg font-semibold">Waiting for Doctor</h2>
+                <p className="text-sm text-gray-500">Please be patient. Doctor will join soon...</p>
+              </div>
+            </div>  */}
+           
           </Card>
         </div>
 
@@ -434,7 +509,7 @@ export default function VideoConsultation() {
           
           <div className="flex-1 p-4 overflow-y-auto space-y-4">
             {/* Chat Messages */}
-            <div className="flex justify-end">
+            {/* <div className="flex justify-end">
               <div className="bg-emerald-100 rounded-lg p-3 max-w-[80%]">
                 <img
                   src={prescriptionImage}
@@ -443,16 +518,16 @@ export default function VideoConsultation() {
                 />
                 <p className="text-sm text-gray-600">Me</p>
               </div>
-            </div>
-            <div className="flex justify-start">
+            </div> */}
+            {/* <div className="flex justify-start">
               <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
                 <p className="text-sm">Dr Fahad Tariq Aziz</p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Chat Input */}
-          <div className="p-4 border-t">
+          {/* <div className="p-4 border-t">
             <div className="flex gap-2">
               <Button variant="outline" size="icon">
                 <FileText className="h-5 w-5" />
@@ -465,7 +540,7 @@ export default function VideoConsultation() {
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-          </div>
+          </div> */}
         </Card>
       </div>
     </div>

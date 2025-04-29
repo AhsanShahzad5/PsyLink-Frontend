@@ -165,9 +165,9 @@ const PrescriptionPopUp: React.FC<PrescriptionPopUpProps> = ({
             <h1 className="text-lg md:text-[24px] font-bold text-white ml-2">PsyLink</h1>
           </div>
           {/* Doctor Info */}
-          <div className="ml-auto text-right text-white">
-            <p className="text-xs md:text-[16px] font-medium text-black pr-2 md:pr-4">Date: {date}</p>
-            <p className="text-xs md:text-[16px] font-medium text-black pr-2 md:pr-4">ID: {appointmentId}</p>
+          <div className="ml-auto mb-5 text-right text-white">
+            <p className="text-xs md:text-[16px] font-medium text-white pr-2 md:pr-4">Date: {date}</p>
+            <p className="text-xs md:text-[16px] font-medium text-white pr-2 md:pr-4">ID: {appointmentId}</p>
           </div>
         </div>
 
@@ -180,14 +180,14 @@ const PrescriptionPopUp: React.FC<PrescriptionPopUpProps> = ({
           </div>
 
           {/* Patient Details */}
-          <div className="text-right pr-4 md:pr-20 mb-8 md:mb-16 mt-0 md:mt-[-60px]">
-            <p className="text-primary sm:text-xl md:text-[24px] font-medium">
+          <div className="text-right pr-4 md:pr-20 mb-8 md:mb-28 mt-0 md:mt-[-75px]">
+            <p className="text-primary sm:text-xl md:text-[20px] font-medium">
               Patient's Name: <span className="underline">{patientName}</span>
             </p>
-            <p className="text-primary  sm:text-xl md:text-[24px] font-medium">
+            <p className="text-primary  sm:text-xl md:text-[20px] font-medium">
               Sex: <span className="underline">{patientGender}</span>
             </p>
-            <p className="text-primary sm:text-xl md:text-[24px] font-medium">
+            <p className="text-primary sm:text-xl md:text-[20px] font-medium">
               Age: <span className="underline">{patientAge}</span>
             </p>
           </div>
