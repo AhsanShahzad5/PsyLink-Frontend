@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -32,20 +33,38 @@ type PaymentType = {
   };
 };
 
-// Mock data
-const chartData: ChartDataType[] = [
-  { name: "10", value: 45 },
-  { name: "11", value: 90 },
-  { name: "12", value: 65 },
-  { name: "13", value: 85 },
-  { name: "14", value: 30 },
-];
-
 const PaymentsReceivedAnalytics = () => {
   const user = useRecoilValue(userAtom);
   const [payments, setPayments] = useState<PaymentType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chartData, setChartData] = useState<ChartDataType[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [monthlyStats, setMonthlyStats] = useState({
+    today: 0,
+    best: 0,
+    average: 0,
+  });
+  const [filteredPayments, setFilteredPayments] = useState<PaymentType[]>([]);
+
+  // Function to format the month and year for display
+  const formatMonthYear = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  };
+
+  // Navigate to previous month
+  const goToPreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
+
+  // Navigate to next month
+  const goToNextMonth = () => {
+    const nextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+    // Don't allow navigating past the current month
+    if (nextMonth <= new Date()) {
+      setCurrentMonth(nextMonth);
+    }
+  };
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -54,24 +73,28 @@ const PaymentsReceivedAnalytics = () => {
         const response = await fetch(`http://localhost:8000/api/payments/doctor`, {
           method: 'GET',
           headers: {
-              'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
           },
           credentials: 'include',
-      });
+        });
         
         if (!response.ok) {
           throw new Error('Failed to fetch payment data');
         }
         
         const pdata = await response.json();
-        const data = pdata.data;
+        const allPayments = pdata.data;
 
-        // Sort payments by date (newest first) and take only the latest 5
-        const sortedPayments = data?.sort((a: PaymentType, b: PaymentType) => 
+        // Sort payments by date (newest first)
+        const sortedPayments = allPayments?.sort((a: PaymentType, b: PaymentType) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
+        );
         
-        setPayments(sortedPayments);
+        setPayments(sortedPayments || []);
+        
+        // Process payments for the current month
+        processMonthData(sortedPayments, currentMonth);
+        
         setError(null);
       } catch (err) {
         setError('Error fetching payment data');
@@ -85,6 +108,82 @@ const PaymentsReceivedAnalytics = () => {
       fetchPayments();
     }
   }, [user]);
+
+  // When the selected month changes, filter payments and update chart
+  useEffect(() => {
+    if (payments.length > 0) {
+      processMonthData(payments, currentMonth);
+    }
+  }, [currentMonth, payments]);
+
+  // Process payment data for a specific month
+  const processMonthData = (allPayments: PaymentType[], monthDate: Date) => {
+    if (!allPayments?.length) {
+      setChartData([]);
+      setFilteredPayments([]);
+      setMonthlyStats({ today: 0, best: 0, average: 0 });
+      return;
+    }
+
+    const year = monthDate.getFullYear();
+    const month = monthDate.getMonth();
+    const currentDate = new Date();
+    
+    // Filter payments for the selected month
+    const monthPayments = allPayments.filter(payment => {
+      const paymentDate = new Date(payment.createdAt);
+      return paymentDate.getMonth() === month && paymentDate.getFullYear() === year;
+    });
+
+    // Update the filtered payments list for display
+    setFilteredPayments(monthPayments);
+    
+    // Get days in month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Create a map to store daily totals
+    const dailyTotals: { [key: string]: number } = {};
+    
+    // Initialize all days with zero
+    for (let i = 1; i <= daysInMonth; i++) {
+      dailyTotals[i] = 0;
+    }
+    
+    // Fill in actual payment amounts by day
+    monthPayments.forEach(payment => {
+      const paymentDate = new Date(payment.createdAt);
+      const day = paymentDate.getDate();
+      dailyTotals[day] = (dailyTotals[day] || 0) + payment.amount;
+    });
+    
+    // Convert to chart data format
+    const newChartData: ChartDataType[] = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      newChartData.push({
+        name: i.toString(),
+        value: dailyTotals[i] || 0
+      });
+    }
+    
+    setChartData(newChartData);
+    
+    // Calculate statistics
+    const today = currentDate.getDate();
+    const isCurrentMonth = currentDate.getMonth() === month && currentDate.getFullYear() === year;
+    const todayTotal = isCurrentMonth ? (dailyTotals[today] || 0) : 0;
+    
+    const allDailyValues = Object.values(dailyTotals).filter(val => val > 0);
+    const bestDay = Math.max(...Object.values(dailyTotals), 0);
+    const averageDaily = allDailyValues.length > 0 
+      ? allDailyValues.reduce((sum, val) => sum + val, 0) / allDailyValues.length 
+      : 0;
+    
+    setMonthlyStats({
+      today: todayTotal,
+      best: bestDay,
+      average: Math.round(averageDaily * 100) / 100
+    });
+  };
 
   // Format date function
   const formatDate = (dateString: string) => {
@@ -110,42 +209,64 @@ const PaymentsReceivedAnalytics = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit w-full">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold text-gray-800">March 2023</h3>
+        <h3 className="text-xl font-semibold text-gray-800">{formatMonthYear(currentMonth)}</h3>
         <div className="flex gap-2">
-          <button className="p-1 rounded hover:bg-gray-100">
+          <button 
+            className="p-1 rounded hover:bg-gray-100"
+            onClick={goToPreviousMonth}
+          >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button className="p-1 rounded hover:bg-gray-100">
+          <button 
+            className="p-1 rounded hover:bg-gray-100"
+            onClick={goToNextMonth}
+            disabled={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1) > new Date()}
+          >
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>
 
       <div className="h-48 mb-6">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} barSize={12}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} />
-            <YAxis hide />
-            <Bar dataKey="value" fill="#059669" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <p>Loading chart data...</p>
+          </div>
+        ) : chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} barSize={12}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} />
+              <YAxis hide />
+              <Tooltip 
+                formatter={(value) => [`Rs ${value}`, 'Amount']}
+                labelFormatter={(label) => `Day ${label}`}
+              />
+              <Bar dataKey="value" fill="#059669" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-gray-500">No payment data available for this month</p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Today</span>
-          <span className="font-semibold">$45.00</span>
+          <span className="font-semibold">Rs {monthlyStats.today.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Best</span>
-          <span className="font-semibold">$90.00</span>
+          <span className="font-semibold">Rs {monthlyStats.best.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Average</span>
-          <span className="font-semibold">$65.00</span>
+          <span className="font-semibold">Rs {monthlyStats.average.toFixed(2)}</span>
         </div>
       </div>
+      
       <div className="mt-2 border-t pt-2">
         <div className="flex items-center justify-between p-4">
           {/* Left Text */}
@@ -157,11 +278,11 @@ const PaymentsReceivedAnalytics = () => {
           <div className="text-center py-4">Loading payments...</div>
         ) : error ? (
           <div className="text-center text-red-500 py-4">{error}</div>
-        ) : payments.length === 0 ? (
-          <div className="text-center text-gray-600 py-4">No recent payments found</div>
+        ) : filteredPayments.length === 0 ? (
+          <div className="text-center text-gray-600 py-4">No payments found for {formatMonthYear(currentMonth)}</div>
         ) : (
           <ul className="space-y-3">
-            {payments.map((payment) => (
+            {filteredPayments.map((payment) => (
               <li
                 key={payment._id}
                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
@@ -173,7 +294,7 @@ const PaymentsReceivedAnalytics = () => {
                   className="h-12 w-12 hidden sm:block"
                 />
                 <span className="font-medium">{payment.patientData?.personalInformation?.phoneNo || "N/A"}</span>
-                <span className="font-medium">{payment.amount || "N/A"}</span>
+                <span className="font-medium">Rs {payment.amount}</span>
                 <span className="font-medium">{formatDate(payment.createdAt)}</span>
               </li>
             ))}
