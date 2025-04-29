@@ -283,7 +283,7 @@ const ProfessionalDetailForm: React.FC = () => {
   }}
 
   required={true}
-  options={['Psychology', 'Psychiatrist']}
+  options={['Psychologist', 'Psychiatrist']}
 />
               <InputField
                 label="CNIC Number"
