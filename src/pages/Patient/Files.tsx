@@ -28,47 +28,63 @@ interface Prescription {
   updatedAt: string;
 }
 
-export default function Files() {
-  // Static files data for other file types
-  const staticFiles = [
-    {
-      id: 2,
-      type: "Mood Report",
-      title: "Monthly Mood Analysis - September 2024",
-      author: "System Generated",
-      dateUploaded: "4th September, 2024",
-      tags: ["Mental Health", "Mood"],
-      actions: ["View", "Download", "Add Notes"],
-    },
-    {
-      id: 3,
-      type: "Mood Report",
-      title: "Weekly Mood Tracker - Week 1",
-      author: "System Generated",
-      dateUploaded: "1st September, 2024",
-      tags: ["Mental Health", "Weekly Tracker"],
-      actions: ["View"],
-    },
-  ];
+// Interface for Mood Report
+interface MoodEntry {
+  date: string;
+  feeling: string;
+  _id: string;
+}
 
+interface MoodReport {
+  _id: string;
+  userId: string;
+  patientName: string;
+  patientSex: string;
+  patientAge: number;
+  daysWithMoodLogged: number;
+  totalDays: number;
+  prescribedMedicines: string;
+  moodAvgPercentage: number;
+  progressStatus: string;
+  moodData: MoodEntry[];
+  daysGoingWell: number;
+  daysGoingBad: number;
+  daysWithNoMood: number;
+  generatedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface ReportsResponse {
+  success: boolean;
+  message: string;
+  data: MoodReport[];
+  error?: string;
+}
+
+export default function Files() {
   const navigate = useNavigate();
   const user = useRecoilValue(userAtom);
   const patientId = user?._id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showReport, setShowReport] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
   const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
-  
-  // States for prescription data
+  const [selectedReport, setSelectedReport] = useState<MoodReport | null>(null);
+  const [patientData, setpatientData] = useState<any>();
+
+  // States for data
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [reports, setReports] = useState<MoodReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Combined files (prescriptions + static files)
+  // Combined files (prescriptions + reports)
   const [allFiles, setAllFiles] = useState<any[]>([]);
 
-  // Fetch prescriptions when component mounts
+  // Fetch prescriptions and reports when component mounts
   useEffect(() => {
     if (!patientId) {
       setError("User ID not found");
@@ -76,22 +92,42 @@ export default function Files() {
       return;
     }
     
-    const fetchPrescriptions = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/patient/prescription/${patientId}`);
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Fetch prescriptions
+        const prescriptionResponse = await fetch(`/api/patient/prescription/${patientId}`);
+        
+        if (!prescriptionResponse.ok) {
+          throw new Error(`HTTP error! status: ${prescriptionResponse.status}`);
         }
         
-        const data = await response.json();
+        const prescriptionData = await prescriptionResponse.json();
         
-        if (data.success) {
-          setPrescriptions(data.data);
+        // Fetch mood reports
+        const reportsResponse = await fetch('http://localhost:8000/api/patient/getPatientReports', {
+         method: 'GET',
+         
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include' // Important for sending cookies with the request
+        });
+        
+        if (!reportsResponse.ok) {
+          throw new Error(`HTTP error! status: ${reportsResponse.status}`);
+        }
+        
+        const reportsData: ReportsResponse = await reportsResponse.json();
+        setpatientData(reportsData);
+        // Process prescriptions
+        let prescriptionFiles: any[] = [];
+        if (prescriptionData.success) {
+          setPrescriptions(prescriptionData.data);
           
-          // Convert prescriptions to file format and combine with static files
-          const prescriptionFiles = data.data.map((prescription: Prescription, index: number) => ({
+          // Convert prescriptions to file format
+          prescriptionFiles = prescriptionData.data.map((prescription: Prescription, index: number) => ({
             id: `p-${prescription._id}`,
             type: "Prescription",
             title: `Prescription - ${formatDate(prescription.date)}`,
@@ -101,22 +137,42 @@ export default function Files() {
             actions: ["View", "Download"],
             prescriptionData: prescription // Store the full prescription data
           }));
-          
-          setAllFiles([...prescriptionFiles, ...staticFiles]);
-        } else {
-          setError(data.message || "Failed to fetch prescriptions");
-          setAllFiles([...staticFiles]);
         }
+        
+        // Process reports
+        let reportFiles: any[] = [];
+        if (reportsData.success) {
+          setReports(reportsData.data);
+          
+          // Convert reports to file format
+          reportFiles = reportsData.data.map((report: MoodReport) => ({
+            id: `r-${report._id}`,
+            type: "Mood Report",
+            title: `Progress Report`,
+            author: "System Generated",
+            dateUploaded: formatDate(report.createdAt),
+            tags: ["Mental Health", "Mood"],
+            actions: ["View", "Download"],
+            reportData: report // Store the full report data
+          }));
+        }
+        
+        // Combine all files and sort by date (newest first)
+        const combined = [...prescriptionFiles, ...reportFiles].sort((a, b) => {
+          return new Date(b.reportData?.createdAt || b.prescriptionData?.createdAt).getTime() - 
+                 new Date(a.reportData?.createdAt || a.prescriptionData?.createdAt).getTime();
+        });
+        
+        setAllFiles(combined);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unknown error occurred");
-        console.error("Error fetching prescriptions:", err);
-        setAllFiles([...staticFiles]);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchPrescriptions();
+    fetchData();
   }, [patientId]);
 
   // Format date from ISO to readable format
@@ -136,6 +192,7 @@ export default function Files() {
       setSelectedPrescription(file.prescriptionData);
       setIsModalOpen(true);
     } else if (file.type === "Mood Report") {
+      setSelectedReport(file.reportData);
       setShowReport(true);
     }
   };
@@ -145,6 +202,7 @@ export default function Files() {
     setShowReport(false);
     setSelectedFile(null);
     setSelectedPrescription(null);
+    setSelectedReport(null);
   };
 
   return (
@@ -177,6 +235,14 @@ export default function Files() {
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
         </div>
+      ) : error ? (
+        <div className="text-center py-8 text-red-500">
+          <p>{error}</p>
+        </div>
+      ) : allFiles.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <p className="text-lg">No files found</p>
+        </div>
       ) : (
         <div className="space-y-4">
           {allFiles.map((file) => (
@@ -187,6 +253,11 @@ export default function Files() {
               {/* File Type */}
               <div className="flex-1 text-left font-semibold text-gray-800 w-full sm:w-auto">
                 {file.type}
+              </div>
+
+              {/* Title */}
+              <div className="flex-1 text-left font-medium text-gray-800 w-full sm:w-auto">
+                {file.title}
               </div>
 
               {/* Author */}
@@ -231,11 +302,20 @@ export default function Files() {
       )}
 
       {/* Modal for Mood Report */}
-      {showReport && (
+      {showReport && selectedReport && (
         <GenerateReport
-          medicines={''}
-          moodData={[]}
+        NotfilesPage={true}
+        patientName={patientData.patientName}
+        patientAge={patientData.patientAge}
+        patientGender={patientData.patientGender}
+          medicines={selectedReport.prescribedMedicines || ''}
+          moodData={selectedReport.moodData || []}
           setShowReport={setShowReport}
+          summary={{
+            totalDays: selectedReport.totalDays || 0,
+            daysWithMoodLogged: selectedReport.daysWithMoodLogged || 0
+          
+          }}
         />
       )}
     </div>

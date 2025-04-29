@@ -22,27 +22,27 @@ interface Doctor {
   imageUrl: string;
 }
 
-// Sample dynamic data for doctors
-const exploreDoctors: Doctor[] = [
-  {
-    id: 1,
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychologist",
-    availableTime: "12:30pm - 8:00pm",
-    rating: 4.8,
-    reviews: 47,
-    imageUrl: "/src/assets/prescription/doctor1.png",
-  },
-  {
-    id: 2,
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychiatrist",
-    availableTime: "12:30pm - 8:00pm",
-    rating: 4.8,
-    reviews: 47,
-    imageUrl: "/src/assets/prescription/doctor2.png",
-  },
-];
+// // Sample dynamic data for doctors
+// const exploreDoctors: Doctor[] = [
+//   {
+//     id: 1,
+//     doctorName: "Dr. Fahad Tariq Aziz",
+//     specialization: "Psychologist",
+//     availableTime: "12:30pm - 8:00pm",
+//     rating: 4.8,
+//     reviews: 47,
+//     imageUrl: "/src/assets/prescription/doctor1.png",
+//   },
+//   {
+//     id: 2,
+//     doctorName: "Dr. Fahad Tariq Aziz",
+//     specialization: "Psychiatrist",
+//     availableTime: "12:30pm - 8:00pm",
+//     rating: 4.8,
+//     reviews: 47,
+//     imageUrl: "/src/assets/prescription/doctor2.png",
+//   },
+// ];
 
 
 interface BookedAppointment {
@@ -71,28 +71,28 @@ interface HistoryAppointment {
   imageUrl: string;
 }
 
-const HistoryAppointments: HistoryAppointment[] = [
-  {
-    id: 1,
-    appointmentId: "12345",
-    doctorName: "Dr. Fahad Tariq Aziz",
-    specialization: "Psychologist",
-    appointmentTime: "8:00 PM",
-    date: "2025-10-25",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor1.png",
-  },
-  {
-    id: 2,
-    appointmentId: "12345",
-    doctorName: "Dr. Sarah Ahmed",
-    specialization: "Psychiatrist",
-    appointmentTime: "10:00 AM",
-    date: "2025-10-28",
-    rating: 4.8,
-    imageUrl: "/src/assets/patient/doctor/doctor2.png",
-  },
-];
+// const HistoryAppointments: HistoryAppointment[] = [
+//   {
+//     id: 1,
+//     appointmentId: "12345",
+//     doctorName: "Dr. Fahad Tariq Aziz",
+//     specialization: "Psychologist",
+//     appointmentTime: "8:00 PM",
+//     date: "2025-10-25",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
+//   },
+//   {
+//     id: 2,
+//     appointmentId: "12345",
+//     doctorName: "Dr. Sarah Ahmed",
+//     specialization: "Psychiatrist",
+//     appointmentTime: "10:00 AM",
+//     date: "2025-10-28",
+//     rating: 4.8,
+//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
+//   },
+// ];
 // const HistoryAppointments: HistoryAppointment[] = [
 //   {
 //     id: 1,

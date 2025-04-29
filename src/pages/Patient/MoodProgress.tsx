@@ -1,33 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GenerateReport from '../../Components/patient/GenerateReport';
 
+interface MoodEntry {
+  date: string;
+  feeling: string;
+}
 
-const moodData = [
-  { date: '20/4/2024', feeling: 'Depressing', courseEnrolled: 'Breathing Exercises', sessionDay: '-' },
-  { date: '19/4/2024', feeling: 'Anxious', courseEnrolled: 'Mindfulness Meditation', sessionDay: '2' },
-  { date: '18/4/2024', feeling: 'Happy', courseEnrolled: 'Yoga', sessionDay: '5' },
-  { date: '17/4/2024', feeling: 'Sad', courseEnrolled: 'Breathing Exercises', sessionDay: '-' },
-  { date: '16/4/2024', feeling: 'Stressed', courseEnrolled: 'Progressive Relaxation', sessionDay: '1' },
-  { date: '18/4/2024', feeling: 'Happy', courseEnrolled: 'Yoga', sessionDay: '5' },
-  { date: '17/4/2024', feeling: 'Sad', courseEnrolled: 'Breathing Exercises', sessionDay: '-' },
-  { date: '16/4/2024', feeling: 'Stressed', courseEnrolled: 'Progressive Relaxation', sessionDay: '1' },
-];
-
-
+interface MoodHistoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    moodHistory: Array<{
+      date: string;
+      mood: string | null;
+    }>;
+    summary: {
+      totalDays: number;
+      daysWithMoodLogged: number;
+    };
+  };
+}
 
 const MoodTrackerPage = () => {
   const [medicines, setMedicines] = useState<string>('');
   const [showReport, setShowReport] = useState(false);
+  const [moodData, setMoodData] = useState<MoodEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [patientData, setpatientData] = useState<any>();
+  const [error, setError] = useState<string | null>(null);
+  const [summary, setSummary] = useState({
+    totalDays: 0,
+    daysWithMoodLogged: 0
+  });
+
+  useEffect(() => {
+    const fetchMoodHistory = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('http://localhost:8000/api/patient/getMoodHistory',
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Transform data to match the expected format
+          const transformedData = data.data.moodHistory
+          .map(item => ({
+            date: formatDate(item.date), // Format date from YYYY-MM-DD to DD/MM/YYYY
+            feeling: item.mood ? capitalizeFirstLetter(item.mood) : "-" // Show "-" for null moods
+          }));
+          
+          setMoodData(transformedData);
+          console.table(data);
+          setpatientData(data);
+          setSummary(data.data.summary);
+        } else {
+          setError('Failed to fetch mood data');
+        }
+      } catch (err) {
+        console.error('Error fetching mood history:', err);
+        setError('Failed to load mood data. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMoodHistory();
+  }, []);
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const capitalizeFirstLetter = (string: string): string => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   const handleGenerateReport = () => {
     setShowReport(true);
   };
 
-  const handleCloseReport = () => {
-    setShowReport(false);
-  };
+  // Filter entries with no mood logged
+const daysWithNoMood = moodData.filter(item => 
+  item.feeling === "-" || !item.feeling
+).length;
 
-  
+// Calculate good days based on your mood categories
+const daysGoingWell = moodData.filter(item => 
+  ["neutral", "happy", "joyful"].includes(item.feeling.toLowerCase())
+).length;
+
+// Calculate bad days based on your mood categories
+const daysGoingBad = moodData.filter(item => 
+  ["depressed", "sad"].includes(item.feeling.toLowerCase())
+).length;
+
+// Calculate mood average percentage (only considering days with mood logged)
+const daysWithMoodLogged = moodData.length - daysWithNoMood;
+const moodAvgPercentage = daysWithMoodLogged > 0 
+  ? Math.round((daysGoingWell / daysWithMoodLogged) * 100) 
+  : 0;
 
   return (
     <div className="bg-[#fff] flex justify-center py-10 min-h-screen">
@@ -37,67 +121,92 @@ const MoodTrackerPage = () => {
           Your Overall Mood has <br /> been better!
         </h1>
 
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 md:mb-10 space-y-4 md:space-y-0">
-          <div className="flex flex-col items-center md:items-start space-y-2">
-            <div className="flex justify-between w-60">
-              <p className="text-xl md:text-2xl font-semibold">Days Going Well</p>
-              <p className="text-xl md:text-2xl text-[#02968A] font-semibold">21</p>
-            </div>
-            <div className="flex justify-between w-60">
-              <p className="text-xl md:text-2xl font-semibold">Days Going Bad</p>
-              <p className="text-xl md:text-2xl text-[#02968A] font-semibold">7</p>
-            </div>
+        {isLoading ? (
+          <div className="text-center py-10">
+            <p className="text-xl">Loading mood data...</p>
           </div>
-          <div className="text-center">
-            <div className="relative w-32 h-32 md:w-[200px] md:h-[200px] rounded-full border-8 border-gray-300 flex items-center justify-center">
-              <p className="text-xl md:text-3xl font-semibold">70% Avg</p>
-            </div>
-            <button className="mt-4 md:mt-6 bg-gradient-to-r from-[#02968A] to-black text-white text-lg font-semibold rounded-lg px-6 py-2 md:px-8">
-              Keep Going!
-            </button>
+        ) : error ? (
+          <div className="text-center py-10 text-red-500">
+            <p className="text-xl">{error}</p>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 md:mb-10 space-y-4 md:space-y-0">
+              <div className="flex flex-col items-center md:items-start space-y-2">
+                <div className="flex justify-between w-60">
+                  <p className="text-xl md:text-2xl font-semibold">Days Going Well</p>
+                  <p className="text-xl md:text-2xl text-[#02968A] font-semibold">{daysGoingWell}</p>
+                </div>
+                <div className="flex justify-between w-60">
+                  <p className="text-xl md:text-2xl font-semibold">Days Going Bad</p>
+                  <p className="text-xl md:text-2xl text-[#02968A] font-semibold">{daysGoingBad}</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="relative w-32 h-32 md:w-[200px] md:h-[200px] rounded-full border-8 border-gray-300 flex items-center justify-center">
+                  <p className="text-xl md:text-3xl font-semibold">{moodAvgPercentage}% Avg</p>
+                </div>
+                <button className="mt-4 md:mt-6 bg-gradient-to-r from-[#02968A] to-black text-white text-lg font-semibold rounded-lg px-6 py-2 md:px-8">
+                  Keep Going!
+                </button>
+              </div>
+            </div>
 
-        <div className="flex flex-col md:flex-row items-center mt-6 md:mt-10 space-y-4 md:space-y-0">
-          <input
-            type="text"
-            placeholder="Enter Medicines if you take any"
-            value={medicines}
-            onChange={(e) => setMedicines(e.target.value)}
-            className="border border-black rounded-lg px-4 py-2 w-full md:w-3/5 text-lg"
-          />
-          <button onClick={handleGenerateReport} className="bg-[#02968A] text-white text-lg font-semibold rounded-lg px-8 py-2 mt-4 md:mt-0 md:ml-4 w-full md:w-auto">
-            Generate Report
-          </button>
-        </div>
+            <div className="flex flex-col md:flex-row items-center mt-6 md:mt-10 space-y-4 md:space-y-0">
+              <input
+                type="text"
+                placeholder="Enter Medicines if you take any"
+                value={medicines}
+                onChange={(e) => setMedicines(e.target.value)}
+                className="border border-black rounded-lg px-4 py-2 w-full md:w-3/5 text-lg"
+              />
+              <button 
+                onClick={handleGenerateReport} 
+                className="bg-[#02968A] text-white text-lg font-semibold rounded-lg px-8 py-2 mt-4 md:mt-0 md:ml-4 w-full md:w-auto"
+              >
+                Generate Report
+              </button>
+            </div>
 
-        <div className="mt-8 md:mt-10 overflow-auto custom-scrollbar max-h-60 md:max-h-96">
-          <table className="w-full border border-black text-left text-sm md:text-lg">
-            <thead className="bg-[#02968A] text-white">
-              <tr>
-                <th className="p-2 md:p-4">Date</th>
-                <th className="p-2 md:p-4">Feeling</th>
-                <th className="p-2 md:p-4">Course Enrolled</th>
-                <th className="p-2 md:p-4">Session Day</th>
-              </tr>
-            </thead>
-            <tbody>
-              {moodData.map((entry, index) => (
-                <tr key={index} className="border-b">
-                  <td className="p-2 md:p-4">{entry.date}</td>
-                  <td className="p-2 md:p-4">{entry.feeling}</td>
-                  <td className="p-2 md:p-4">{entry.courseEnrolled}</td>
-                  <td className="p-2 md:p-4">{entry.sessionDay}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            <div className="mt-8 md:mt-10 overflow-auto custom-scrollbar max-h-60 md:max-h-96">
+              {moodData.length > 0 ? (
+                <table className="w-full border border-black text-left text-sm md:text-lg">
+                  <thead className="bg-[#02968A] text-white">
+                    <tr>
+                      <th className="p-2 md:p-4">Date</th>
+                      <th className="p-2 md:p-4">Feeling</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {moodData.map((entry, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 md:p-4">{entry.date}</td>
+                        <td className="p-2 md:p-4">{entry.feeling}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-lg text-gray-500">No mood data logged yet</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
         {showReport && (
-            <GenerateReport medicines={medicines} moodData={moodData} setShowReport={setShowReport}  />
-)}
-
+          <GenerateReport 
+          NotfilesPage={false}
+          patientName={patientData.patientName}
+          patientAge={patientData.patientAge}
+          patientGender={patientData.patientGender}
+            medicines={medicines} 
+            moodData={moodData} 
+            setShowReport={setShowReport}
+           summary={summary}
+          />
+        )}
       </div>
     </div>
   );
