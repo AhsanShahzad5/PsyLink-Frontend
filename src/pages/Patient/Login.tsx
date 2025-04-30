@@ -18,6 +18,7 @@ const LoginPage: React.FC = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setUser1 = useSetRecoilState(userAtom);
 
   const onChangeFunction = (e: any) => {
@@ -37,44 +38,12 @@ const LoginPage: React.FC = () => {
     return true;
   };
 
-  // const handleLogin = async (e: any) => {
-  //   e.preventDefault();
-
-  //   if (!validateForm()) return;
-
-  //   try {
-  //     const res = await fetch('http://localhost:8000/api/user/login', {
-  //       method: "POST",
-  //       headers: {
-  //         'Content-Type': "application/json"
-  //       },
-  //       body: JSON.stringify(formData),
-  //       credentials: 'include',
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (data.error) {
-  //       setError("Incorrect email or password.");
-  //       console.error(data.error);
-  //       return;
-  //     } else {
-  //       navigate(`/${formData.role}/home`);
-  //     }
-
-  //     localStorage.setItem('psylink', JSON.stringify(data));
-  //     dispatch(setUser(data));
-  //     setUser1(data);
-
-  //   } catch (error) {
-  //     setError("An error occurred while logging in. Please try again.");
-  //     console.log("Error signing up:", error);
-  //   }
-  // };
-
   const handleLogin = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
+    
+    setIsLoading(true); // Set loading to true when login starts
+    
     try {
       const res = await fetch('http://localhost:8000/api/user/login', {
         method: "POST",
@@ -113,6 +82,8 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       setError("An error occurred while logging in. Please try again.");
       console.log("Error signing up:", error);
+    } finally {
+      setIsLoading(false); // Set loading to false when login completes or fails
     }
   };
 
@@ -187,10 +158,21 @@ const LoginPage: React.FC = () => {
             <div className="flex mt-10 justify-center items-center">
               <div className="w-96">
                 <button
-                  className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#02968A]"
+                  className="w-full px-5 py-3 text-lg text-[#000] bg-[#D9D9D9] rounded-md hover:bg-[#02968A] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#02968A] disabled:opacity-70 disabled:cursor-not-allowed"
                   onClick={handleLogin}
+                  disabled={isLoading}
                 >
-                  Login
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Logging in...
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
                 <p className="text-left">
                   Didn't have an account? <a className="text-blue-500 underline hover:text-blue-700" href="/sign-up">SignUp</a>

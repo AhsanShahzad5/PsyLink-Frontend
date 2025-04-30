@@ -93,7 +93,7 @@ export default function Component({
       <SheetTrigger asChild>
         <div className="relative hidden md:block cursor-pointer">
           <img
-            src="/src/assets/patient/homepage/Vector.png"
+            src={profileImage}
             alt="User profile"
             className="h-11 w-11 rounded-full object-contain border-2 border-primary p-1"
           />

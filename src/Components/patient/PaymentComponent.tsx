@@ -5,6 +5,8 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import userAtom from '@/atoms/userAtom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -149,23 +151,51 @@ const PaymentForm = () => {
         const confirmData = await confirmResponse.json();
         
         if (confirmData.success) {
-          // Payment successfully processed and appointment booked
-          navigate('/patient/bookings', { 
-            state: { 
-              success: true, 
-              message: 'Appointment successfully booked!',
-              appointmentId: appointmentId
-            } 
+          // Show success toast notification
+          toast.success('Payment successful! Booking your appointment...', {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
           });
+          
+          // Set timeout before navigating to bookings page
+          setTimeout(() => {
+            navigate('/patient/bookings', { 
+              state: { 
+                success: true, 
+                message: 'Appointment successfully booked!',
+                appointmentId: appointmentId
+              } 
+            });
+          }, 3000);
         } else {
           setError("Payment was processed but booking failed. Please contact support.");
+          toast.error("Payment was processed but booking failed. Please contact support.", {
+            position: "bottom-right",
+            autoClose: 5000,
+            theme: "colored",
+          });
         }
       } catch (err) {
         console.error("Error confirming payment with backend:", err);
         setError("Payment was processed but booking couldn't be confirmed. Please contact support.");
+        toast.error("Payment was processed but booking couldn't be confirmed.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          theme: "colored",
+        });
       }
     } else {
       setError("Payment failed. Please try again.");
+      toast.error("Payment failed. Please try again.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        theme: "colored",
+      });
     }
     
     setProcessing(false);
@@ -284,6 +314,20 @@ const PaymentForm = () => {
           </div> */}
         </div>
       </div>
+      
+      {/* Toast Container */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

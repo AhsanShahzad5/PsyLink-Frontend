@@ -7,6 +7,16 @@ import { Input } from '@/Components/ui/input';
 import { useNavigate } from 'react-router-dom';
 import userAtom from '../../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
 
 interface Note {
   _id: string;
@@ -22,9 +32,18 @@ export default function Component() {
   const navigate = useNavigate();
   const user = useRecoilValue(userAtom);
   const patientId = user._id;
+  
+  // Add loading states
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  
+  // Add delete confirmation state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
   // Fetch notes from the server
   const fetchNotes = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(`http://localhost:8000/api/patient/notes/getallnotes/${patientId}`);
       if (response.ok) {
@@ -33,6 +52,8 @@ export default function Component() {
       }
     } catch (error) {
       console.error('Error fetching notes:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,6 +63,7 @@ export default function Component() {
 
   // Handle saving a note (create or edit)
   const saveNote = async () => {
+    setIsSaving(true);
     if (selectedNote) {
       // Edit existing note
       try {
@@ -63,6 +85,8 @@ export default function Component() {
         }
       } catch (error) {
         console.error('Error editing note:', error);
+      } finally {
+        setIsSaving(false);
       }
     } else {
       // Create new note
@@ -80,11 +104,20 @@ export default function Component() {
         }
       } catch (error) {
         console.error('Error creating note:', error);
+      } finally {
+        setIsSaving(false);
       }
     }
   };
 
+  // Show delete confirmation dialog
+  const confirmDelete = (id: string) => {
+    setNoteToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
   const deleteNote = async (id: string) => {
+    setIsSaving(true);
     try {
       const response = await fetch('http://localhost:8000/api/patient/notes/deleteNotes', {
         method: 'DELETE',
@@ -104,6 +137,8 @@ export default function Component() {
       }
     } catch (error) {
       console.error('Error deleting note:', error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -129,22 +164,33 @@ export default function Component() {
               {selectedNote ? (
                 <>
                   <Button variant="ghost" size="icon" onClick={resetForm}>
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-5 w-5 text-primary" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={saveNote}>
-                    <Save className="h-5 w-5" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={saveNote} 
+                    disabled={isSaving}
+                  >
+                    <Save className="h-5 w-5 text-primary" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => selectedNote && deleteNote(selectedNote._id)}
+                    onClick={() => selectedNote && confirmDelete(selectedNote._id)}
+                    disabled={isSaving}
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-5 w-5 text-primary" />
                   </Button>
                 </>
               ) : (
-                <Button variant="ghost" size="icon" onClick={saveNote}>
-                  <Save className="h-5 w-5" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={saveNote}
+                  disabled={isSaving}
+                >
+                  <Save className="h-5 w-5 text-primary" />
                 </Button>
               )}
             </div>
@@ -160,6 +206,7 @@ export default function Component() {
                       setSelectedNote({ ...selectedNote, title: e.target.value })
                     }
                     className="text-xl font-medium bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    disabled={isSaving}
                   />
                   <Textarea
                     placeholder="Write your text here..."
@@ -168,6 +215,7 @@ export default function Component() {
                       setSelectedNote({ ...selectedNote, content: e.target.value })
                     }
                     className="min-h-[400px] text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    disabled={isSaving}
                   />
                 </div>
               ) : (
@@ -177,12 +225,14 @@ export default function Component() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="text-xl font-medium bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    disabled={isSaving}
                   />
                   <Textarea
                     placeholder="Write your text here..."
                     value={notesText}
                     onChange={(e) => setNotesText(e.target.value)}
                     className="min-h-[400px] text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    disabled={isSaving}
                   />
                 </div>
               )}
@@ -192,25 +242,66 @@ export default function Component() {
                 className="flex-1 p-4 overflow-y-auto"
                 style={{ maxHeight: '90vh' }}
               >
-                <div className="grid grid-cols-2 gap-4">
-                  {notes.map((note) => (
-                    <div
-                      key={note._id}
-                      onClick={() => setSelectedNote(note)}
-                      className={`p-4 rounded-lg border bg-[#F5F5F5] cursor-pointer hover:bg-accent ${
-                        selectedNote?._id === note._id ? 'bg-accent' : ''
-                      }`}
-                    >
-                      <h3 className="font-medium">{note.title}</h3>
-                      <p className="text-sm line-clamp-3">{note.content}</p>
-                    </div>
-                  ))}
-                </div>
+                {isLoading ? (
+                  <div className="flex justify-center items-center h-40">
+                    <p>Loading notes...</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    {notes.map((note) => (
+                      <div
+                        key={note._id}
+                        onClick={() => setSelectedNote(note)}
+                        className={`p-4 rounded-lg border bg-[#F5F5F5] cursor-pointer hover:bg-accent ${
+                          selectedNote?._id === note._id ? 'border-[#02968A] border-2' : ''
+                        }`}
+                      >
+                        <h3 className="font-medium">{note.title}</h3>
+                        <p className="text-sm line-clamp-3">{note.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </ScrollArea>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your note.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (noteToDelete) {
+                  deleteNote(noteToDelete);
+                  setDeleteDialogOpen(false);
+                  setNoteToDelete(null);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Global loading overlay for saving operations */}
+      {isSaving && (
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md shadow-md">
+            <p>Saving changes...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

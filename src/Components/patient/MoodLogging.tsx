@@ -37,14 +37,27 @@ const MoodLogging = () => {
     }
   };
 
-  const handleMoodSelection = async (mood: string) => {
+  const handleMoodSelection = (mood) => {
+    // Just update the selected mood without submitting
+    if (!todayMoodLogged) {
+      setSelectedMood(mood);
+    } else {
+      toast.error('You have already logged your mood for today. You can log again tomorrow.');
+    }
+  };
+
+  const handleSaveMood = async () => {
+    // Check if a mood is selected
+    if (!selectedMood) {
+      toast.error('Please select a mood before saving');
+      return;
+    }
+
     // If mood already logged today, don't allow changes
     if (todayMoodLogged) {
       toast.error('You have already logged your mood for today. You can log again tomorrow.');
       return;
     }
-
-    setSelectedMood(mood);
     
     // Submit mood to API
     setIsSubmitting(true);
@@ -55,7 +68,7 @@ const MoodLogging = () => {
           'Content-Type': 'application/json'
         },
         credentials: 'include', // Important for sending cookies with the request
-        body: JSON.stringify({ mood })
+        body: JSON.stringify({ mood: selectedMood })
       });
       
       const data = await response.json();
@@ -65,12 +78,10 @@ const MoodLogging = () => {
         setTodayMoodLogged(true);
       } else {
         toast.error(data.message || 'Failed to log mood');
-        setSelectedMood(""); // Reset selection if submission fails
       }
     } catch (error) {
       console.error('Error logging mood:', error);
       toast.error('Failed to log mood. Please try again.');
-      setSelectedMood(""); // Reset selection if submission fails
     } finally {
       setIsSubmitting(false);
     }
@@ -85,8 +96,26 @@ const MoodLogging = () => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 text-center lg:text-left">How Are You Feeling Today?</h2>
+    <div className="bg-white p-6 rounded-xl shadow-md relative">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-center lg:text-left">How Are You Feeling Today?</h2>
+        
+        {!todayMoodLogged && (
+          <button 
+            onClick={handleSaveMood}
+            disabled={isSubmitting || !selectedMood}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              isSubmitting 
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                : selectedMood 
+                  ? "bg-[#02968A] text-white hover:bg-teal-700" 
+                  : "bg-gray-200 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {isSubmitting ? "Saving..." : "Save Mood"}
+          </button>
+        )}
+      </div>
       
       {todayMoodLogged && (
         <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
@@ -105,7 +134,7 @@ const MoodLogging = () => {
                   ? "opacity-60 hover:opacity-80" 
                   : "hover:border-2 hover:border-gray-300 rounded-lg"
             }`}
-            onClick={() => !isSubmitting && handleMoodSelection(mood)}
+            onClick={() => handleMoodSelection(mood)}
             style={{ minWidth: '120px', maxWidth: '160px' }}
           >
             <div className="bg-[#fff] h-16 w-16 mt-4 rounded-full flex items-center justify-center text-white text-3xl">

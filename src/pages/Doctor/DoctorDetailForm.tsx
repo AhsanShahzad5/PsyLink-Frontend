@@ -25,7 +25,8 @@ export enum Disability {
 }
 
 const DetailForm: React.FC = () => {
-  const [fullName, setFullName] = useState('');
+  const user = useRecoilValue(userAtom);
+  const [fullName, setFullName] = useState(`${user.name}`);
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState<Gender | ''>('');
   const [phoneNo, setPhoneNo] = useState('');
@@ -40,7 +41,6 @@ const DetailForm: React.FC = () => {
 
   const user2 = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-  const user = useRecoilValue(userAtom);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<any>({

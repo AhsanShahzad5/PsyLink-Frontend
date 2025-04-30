@@ -259,7 +259,12 @@ export default function Bookings(): JSX.Element {
 
               {/* Doctor Cards */}
               <div className="space-y-4">
-                {doctors?.map((doctor: any) => (
+                {loading ? (
+                  <div
+                  className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                    <p>Loading....</p>
+                  </div>
+                ) : doctors?.map((doctor: any) => (
                   <DoctorCard
                     key={doctor._id} // Use unique ID
                     doctorCard={{
@@ -306,9 +311,12 @@ export default function Bookings(): JSX.Element {
 
 
           {activeTab === 'Booked Appointments' && (
-            <div className="space-y-4 pt-12">
+             <div className="bg-[#fff] rounded-xl shadow min-h-[80%] p-6 mb-6 ">
               {loadingAppointments ? (
-                <p>Loading...</p>
+                <div
+                className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                  <p>Loading....</p>
+                </div>
               ) : bookedAppointments.length > 0 ? (
                 bookedAppointments
                   .filter((appointment) => appointment.status === "active" || appointment.status === "upcoming" || appointment.status === "confirmed")
@@ -316,22 +324,26 @@ export default function Bookings(): JSX.Element {
                     <BookedAppointmentCard key={appointment.id} bookedAppointment={appointment} />
                   ))
               ) : (
-                <p>No Booked Appointments</p>
+                <div
+      className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+        <p>No Booked Appointments</p>
+      </div>
               )}
             </div>
           )}
 
 
           {activeTab === 'History' && (
-            <div className="space-y-4">
+            <div className="bg-[#fff] rounded-xl shadow min-h-[80%] p-6 mb-6 ">
               {historyAppointments.length > 0 ? (
                 historyAppointments.map((history) => (
                   <HistoryAppointmentCard key={history.id} historyCard={history} />
                 ))
               ) : (
-                <p className="text-center text-xl text-gray-600 font-semibold mt-8">
-                  <span className="text-teal-600">No History Available</span>
-                </p>
+                <div
+                className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                  <p>No History Appointments</p>
+                </div>
               )}
             </div>
           )}
@@ -340,4 +352,3 @@ export default function Bookings(): JSX.Element {
     </>
   )
 }
-
