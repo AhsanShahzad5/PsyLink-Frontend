@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
@@ -6,16 +5,24 @@ import { toast, ToastContainer } from "react-toastify";
 const generateDates = () => {
   const dates: string[] = [];
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to beginning of day
+  
   for (let i = 0; i < 30; i++) {
-    const newDate = new Date();
+    const newDate = new Date(today);
     newDate.setDate(today.getDate() + i);
-    const formattedDate = newDate.toISOString().split("T")[0];
+    
+    // Format the date manually to avoid timezone issues
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    const day = String(newDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    
     dates.push(formattedDate);
   }
   return dates;
 };
 
-const timeSlots = [
+const baseTimeSlots = [
   "9:00am-10:00am",
   "10:00am-11:00am",
   "11:00am-12:00am",
@@ -44,11 +51,48 @@ const DoctorCalender = () => {
   const [availabilityMap, setAvailabilityMap] = useState<Record<string, SlotStatus>>({});
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [timeSlots, setTimeSlots] = useState<string[]>([]);
 
   useEffect(() => {
     setDates(generateDates());
     fetchAvailability();
   }, []);
+
+  // Add useEffect to filter time slots based on current date and time
+  useEffect(() => {
+    if (dates.length === 0) return;
+
+    const today = new Date();
+    const currentDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const selectedDate = dates[selectedDateIndex];
+
+    // Only filter time slots if the selected date is today
+    if (selectedDate === currentDate) {
+      const currentHour = today.getHours();
+      const currentMinute = today.getMinutes();
+      
+      // Filter time slots based on current time
+      const filteredSlots = baseTimeSlots.filter(slot => {
+        const [startTime, ] = slot.split('-');
+        const [hourStr, minuteStr] = startTime.slice(0, 5).split(':');
+        let hour = parseInt(hourStr);
+        const minute = parseInt(minuteStr);
+        const isPM = startTime.toLowerCase().includes('pm');
+        
+        // Convert to 24-hour format for comparison
+        if (isPM && hour < 12) hour += 12;
+        if (!isPM && hour === 12) hour = 0;
+        
+        // Compare with current time
+        return hour > currentHour || (hour === currentHour && minute > currentMinute);
+      });
+      
+      setTimeSlots(filteredSlots);
+    } else {
+      // If not today, show all time slots
+      setTimeSlots(baseTimeSlots);
+    }
+  }, [dates, selectedDateIndex]);
 
   const fetchAvailability = async () => {
     setLoading(true);
@@ -377,4 +421,3 @@ const DoctorCalender = () => {
 };
 
 export default DoctorCalender;
-
