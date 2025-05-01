@@ -16,6 +16,9 @@ const DoctorsDetails: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   if (!doctor) {
     return (
@@ -70,9 +73,46 @@ const DoctorsDetails: React.FC = () => {
     }
   };
   
-  const handleDeleteUser = () => {
-    console.log(`Delete user with ID: ${doctor.id}`);
-    // API call will be added later
+  const openRejectModal = () => {
+    setShowRejectModal(true);
+  };
+
+  const closeRejectModal = () => {
+    setShowRejectModal(false);
+    setRejectionReason("");
+  };
+
+  const handleRemoveDoctor = async () => {
+    setIsRemoving(true);
+    
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/admin/doctors/reject/${doctor.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reason: rejectionReason }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove doctor");
+      }
+
+      toast.success("Doctor removed successfully!");
+      
+      // Close the modal and navigate back to the doctors list after a short delay
+      closeRejectModal();
+      setTimeout(() => navigate("/admin/doctors"), 2000);
+      
+    } catch (err: any) {
+      setError(err.message || "An error occurred while removing the doctor.");
+      toast.error(err.message || "An error occurred while removing the doctor.");
+    } finally {
+      setIsRemoving(false);
+    }
   };
 
   return (
@@ -90,7 +130,7 @@ const DoctorsDetails: React.FC = () => {
             {doctor.status === "approved" ? (
               <button 
                 className="px-4 w-[140px] py-2 rounded-xl bg-red-500 text-white shadow hover:bg-red-600"
-                onClick={handleDeleteUser}
+                onClick={openRejectModal}
               >
                 Delete User
               </button>
@@ -106,14 +146,18 @@ const DoctorsDetails: React.FC = () => {
                       <AiOutlineLoading3Quarters className="animate-spin mr-1" />
                       <span>Approving...</span>
                     </>
-                  ) : success?( <>
-                    <span>Approved</span>
-                  </>) : (
+                  ) : success ? (
+                    <>
+                      <span>Approved</span>
+                    </>
+                  ) : (
                     "Approve"
                   )}
-                 
                 </button>
-                <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
+                <button 
+                  className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600"
+                  onClick={openRejectModal}
+                >
                   Remove
                 </button>
               </>
@@ -294,6 +338,52 @@ const DoctorsDetails: React.FC = () => {
         </div>
       </div>
       </div>
+
+      {/* Rejection Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">
+              {doctor.status === "approved" ? "Delete User" : "Remove Doctor"}
+            </h2>
+            <p className="mb-4">
+              Are you sure you want to {doctor.status === "approved" ? "delete" : "remove"} <span className="font-semibold">{doctor.name}</span>?
+            </p>
+            
+            <div className="mb-4">
+              <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">
+                Reason (optional):
+              </label>
+              <textarea
+                id="reason"
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Enter reason..."
+              />
+            </div>
+            
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                onClick={closeRejectModal}
+                disabled={isRemoving}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={handleRemoveDoctor}
+                disabled={isRemoving}
+              >
+                {isRemoving ? "Processing..." : doctor.status === "approved" ? "Delete" : "Remove"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer
         position="bottom-right"
         autoClose={3000}

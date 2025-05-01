@@ -10,6 +10,7 @@ const Psync = () => {
    // Extract the first part of the pathname (i.e., "doctor" or "patient")
    const location = useLocation();
    const roleOfLoggedInUser = location.pathname.split("/")[1];
+   console.log("Role of logged-in user:", roleOfLoggedInUser); // Log the role of the logged-in user
   //const [posts, setPosts] = useRecoilState(postsAtom);
   useEffect(() => {
     // Fetch posts from the backend
@@ -71,7 +72,7 @@ const Psync = () => {
             ) : posts.length === 0 ? (
               <p className="text-center text-gray-600 py-8">No posts available</p>
             ) : (
-              posts.map((post) => (
+              posts?.map((post) => (
                 <Post
                   key={post._id} // Use unique key for each post
                   postId={post._id}
@@ -79,6 +80,7 @@ const Psync = () => {
                   authorId={post.user?._id || "unknown"} // Use user ID or fallback
                   authorName={post.user?.name || "Unknown"} // Use user name or fallback
                   authoreRole={post.user?.role || "unknown"} // Use user role or fallback
+                  // DoctorVerified={post.user?.status === 'verified' || false} // Doctor verification status
                   authorImage={ post.user?.profilePicture || ""} // Replace with dynamic image if available
                   content={post.description} // Post description
                   timeAgo={getTimeAgo(post.createdAt) || "7d ago"} // Placeholder for dynamic time

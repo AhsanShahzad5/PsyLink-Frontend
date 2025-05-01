@@ -36,6 +36,7 @@ export interface PostProps {
   authorId?: string;
   seriesTitle?: string;
   roleOfLoggedInUser?: string;
+  DoctorVerified?: boolean;
 }
 
 const Post = ({
@@ -51,19 +52,60 @@ const Post = ({
   postId,
   authorId,
   seriesTitle,
-  roleOfLoggedInUser
+  roleOfLoggedInUser,
+  DoctorVerified,
+  isFavorited: initialIsFavorited = false,
 }: PostProps) => {
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
   const [likeCount, setLikeCount] = useState(likes);
   const [commentCount, setCommentCount] = useState(comments);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
+  const [isLiked, setIsLiked] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const isAdmin = roleOfLoggedInUser === "admin"; // Assuming you have access to userRole
+
+  // Fetch initial liked and favorited status when component mounts
+  useEffect(() => {
+    const fetchLikeAndFavoriteStatus = async () => {
+      if (!userId) return;
+      
+      try {
+        // Fetch post liked status
+        const likeResponse = await fetch(`http://localhost:8000/api/psync/checkLikeStatus/${postId}?userId=${userId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (likeResponse.ok) {
+          const likeData = await likeResponse.json();
+          setIsLiked(likeData.isLiked);
+        }
+        
+        // Fetch post favorited status
+        const favResponse = await fetch(`http://localhost:8000/api/psync/checkFavoriteStatus/${postId}?userId=${userId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (favResponse.ok) {
+          const favData = await favResponse.json();
+          setIsFavorited(favData.isFavorited);
+        }
+      } catch (error) {
+        console.error("Error fetching post status:", error);
+      }
+    };
+    
+    fetchLikeAndFavoriteStatus();
+  }, [postId, userId]);
 
   const handleLike = async () => {
+    if (isAdmin) return; // Prevent admin from liking
+
     try {
       const response = await fetch(`http://localhost:8000/api/psync/likeUnlikePost/${postId}`, {
         method: "POST",
@@ -73,7 +115,10 @@ const Post = ({
 
       const result = await response.json();
       if (response.ok) {
-        setLikeCount(result.message === "Post unliked successfully" ? likeCount - 1 : likeCount + 1);
+        // Toggle the liked state and update count accordingly
+        const newLikedState = !isLiked;
+        setIsLiked(newLikedState);
+        setLikeCount(newLikedState ? likeCount + 1 : likeCount - 1);
       } else {
         console.error(result.error);
       }
@@ -83,6 +128,8 @@ const Post = ({
   };
 
   const handleFavorite = async () => {
+    if (isAdmin) return; // Prevent admin from favoriting
+
     try {
       const response = await fetch(`http://localhost:8000/api/psync/addToFavourites/${postId}`, {
         method: "POST",
@@ -92,9 +139,12 @@ const Post = ({
 
       const result = await response.json();
       if (response.ok) {
-        setIsFavorited(true);
+        // Toggle the favorited state
+        const newFavoritedState = !isFavorited;
+        setIsFavorited(newFavoritedState);
+        
         toast({
-          description: "Post added to favorites!",
+          description: newFavoritedState ? "Post added to favorites!" : "Post removed from favorites!",
           variant: "default",
           duration: 1000,
         });
@@ -102,7 +152,7 @@ const Post = ({
         console.error(result.error);
       }
     } catch (error) {
-      console.error("Error adding post to favorites:", error);
+      console.error("Error managing favorites:", error);
     }
   };
 
@@ -139,7 +189,6 @@ const Post = ({
   const handlePostDelete = async () => {
     try {
       // Check if current user is admin and include that in the request body
-      const isAdmin = roleOfLoggedInUser === "admin"; // Assuming you have access to userRole
       
       const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
         method: "DELETE",
@@ -198,6 +247,22 @@ const Post = ({
     }
   }, [refresh]);
 
+  // Define button styles based on states
+  const getButtonStyle = () => {
+    return isAdmin
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-teal-600 hover:bg-teal-700';
+  };
+  
+  // Define heart and bookmark icon styles
+  const getHeartIconStyle = () => {
+    return isLiked ? 'text-red-500' : 'text-white';
+  };
+  
+  const getBookmarkIconStyle = () => {
+    return isFavorited ? 'text-yellow-500' : 'text-white';
+  };
+
   return (
     <>
       <Card className="mt-[25px] bg-white rounded-[10px] overflow-hidden shadow-sm">
@@ -214,7 +279,7 @@ const Post = ({
                     <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate">{authorName}</h3>
                     {authoreRole === "doctor" &&
                       <Badge className="bg-transparent border-teal-300 text-primary pointer-events-none text-xs">
-                        {authoreRole}
+                      {authoreRole}
                       </Badge>
                     }
                   </div>
@@ -222,7 +287,7 @@ const Post = ({
                 </div>
                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
 
-                  {(authorId === userId || authoreRole === 'admin') ? (
+                  {(authorId === userId || roleOfLoggedInUser === 'admin') ? (
                     <div className="flex gap-3">
                       {authorId === userId && (
                         <FaPenAlt
@@ -245,11 +310,7 @@ const Post = ({
           </div>
 
           {/* content div to open full post */}
-          <div onClick={() => navigate(`/${authoreRole}/psync/post/${postId}` 
-            
-            )} 
-          
-          className="w-full">
+          <div onClick={() => navigate(`/${roleOfLoggedInUser}/psync/post/${postId}`)} className="w-full">
             {title && <h1 className="text-gray-800 mb-2 sm:mb-4 font-bold text-lg sm:text-xl leading-tight">{title}</h1>}
             <p className="text-gray-800 w-full mb-4">
               {content}
@@ -270,26 +331,20 @@ const Post = ({
           <div className="flex flex-row w-full gap-1 sm:gap-2">
 
             <button
-              onClick={authoreRole === 'admin' ? undefined : handleLike}
-              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-teal-600 hover:bg-teal-700'
-                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
-              disabled={authoreRole === 'admin'}
+              onClick={roleOfLoggedInUser === 'admin' ? undefined : handleLike}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${getButtonStyle()} text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={isAdmin}
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 sm:w-5 sm:h-5 ${getHeartIconStyle()} transition-colors`}>
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Like'}</span>
+              <span className="hidden xs:inline">{roleOfLoggedInUser === 'admin' ? 'View Only' : isLiked ? 'Liked' : 'Like'}</span>
             </button>
 
             <button
-              onClick={authoreRole === 'admin' ? undefined : () => setShowCommentBox(!showCommentBox)}
-              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-teal-600 hover:bg-teal-700'
-                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
-              disabled={authoreRole === 'admin'}
+              onClick={roleOfLoggedInUser === 'admin' ? undefined : () => setShowCommentBox(!showCommentBox)}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${getButtonStyle()} text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={isAdmin}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path
@@ -299,23 +354,19 @@ const Post = ({
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Comment'}</span>
+              <span className="hidden xs:inline">{isAdmin ? 'View Only' : 'Comment'}</span>
             </button>
 
             <button
-              onClick={authoreRole === 'admin' ? undefined : handleFavorite}
-              className={`flex items-center justify-center gap-1 sm:gap-2 ${authoreRole === 'admin'
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-teal-600 hover:bg-teal-700'
-                } text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
-              disabled={authoreRole === 'admin'}
+              onClick={roleOfLoggedInUser === 'admin' ? undefined : handleFavorite}
+              className={`flex items-center justify-center gap-1 sm:gap-2 ${getButtonStyle()} text-white px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-full transition-colors flex-1 text-xs sm:text-base`}
+              disabled={isAdmin}
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 sm:w-5 sm:h-5 ${getBookmarkIconStyle()} transition-colors`}>
                 <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
               </svg>
-              <span className="hidden xs:inline">{authoreRole === 'admin' ? 'View Only' : 'Favorite'}</span>
+              <span className="hidden xs:inline">{roleOfLoggedInUser === 'admin' ? 'View Only' : isFavorited ? 'Favorited' : 'Favorite'}</span>
             </button>
-
 
           </div>
         </CardFooter>

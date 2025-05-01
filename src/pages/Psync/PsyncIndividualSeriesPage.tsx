@@ -7,9 +7,11 @@ import PostModal from "../../Components/psync/PsyncPostCreationModal";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRecoilValue } from "recoil";
 import userAtom from "@/atoms/userAtom";
+import useUserDetails from "@/hooks/useUserDetails";
 
 // Define interfaces for our data types
 interface PostItem {
+  user: any;
   _id: string;
   title: string;
   description: string;
@@ -50,6 +52,10 @@ const SeriesPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useRecoilValue(userAtom);
+
+  const userId = user?._id;
+  const { user:userDetails } = useUserDetails(userId);
+
 
   // Extract the first part of the pathname (i.e., "doctor" or "patient")
   const role = location.pathname.split("/")[1];
@@ -237,7 +243,7 @@ const SeriesPage = () => {
                   postId={post._id}
                   authoreRole={role}
                   authorName={series.createdBy?.name || "Unknown"}
-                  authorImage={"/api/placeholder/40/40"}
+                  authorImage={userDetails?.profilePicture || ""} // Replace with dynamic image if available
                   content={post.description}
                   timeAgo={getTimeAgo(post.createdAt)}
                   likes={post.likes.length}

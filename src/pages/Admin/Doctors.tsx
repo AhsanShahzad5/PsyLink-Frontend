@@ -24,100 +24,156 @@ export interface Doctor {
   posts: { postId: string; postedOn: string }[];
   status?: "pending" | "approved";
 }
+
 const Doctors: React.FC = () => {
   const navigate = useNavigate();
   const [doctorData, setDoctorData] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
-    const fetchAllDoctors = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch pending doctors
-        const pendingResponse = await fetch(
-          "http://localhost:8000/api/admin/doctors/pending",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        
-        if (!pendingResponse.ok) {
-          throw new Error("Failed to fetch pending doctor data");
-        }
-        
-        const pendingData = await pendingResponse.json();
-        console.log("Pending DATA", pendingData);
-        
-        // Fetch approved doctors
-        const approvedResponse = await fetch(
-          "http://localhost:8000/api/admin/doctors/verified",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        
-        if (!approvedResponse.ok) {
-          throw new Error("Failed to fetch approved doctor data");
-        }
-        
-        const approvedData = await approvedResponse.json();
-
-        
-        // Map API data to Doctor structure with status
-        const mapDoctorData = (data: any[], status: "pending" | "approved"): Doctor[] => {
-          console.log("doctor personal", data);
-          return data.map((doctor: any) => ({
-            id: doctor?._id || "N/A",
-            name: doctor?.clinic?.fullName || doctor?.personalDetails?.fullName || "N/A",
-            email: doctor?.email || "N/A", // Add actual field if available in API
-            dateOfBirth: doctor?.personalDetails?.dateOfBirth || "N/A",
-            gender: doctor?.personalDetails?.gender || "N/A",
-            profilePicture: doctor?.personalDetails?.image || "N/A",
-            country: doctor?.personalDetails?.country || "N/A",
-            city: doctor?.personalDetails?.city || "N/A",
-            phone: doctor?.personalDetails?.phoneNo || "N/A",
-            specialization: doctor?.clinic?.specialisation || doctor?.professionalDetails?.specialisation || "N/A",
-            pmdcNumber: doctor?.professionalDetails?.pmdcNumber || "N/A",
-            education: [doctor?.professionalDetails?.educationalBackground || "N/A"],
-            licenseCertification: doctor?.professionalDetails?.licenseImage || "N/A",
-            cnicNumber: doctor?.professionalDetails?.cnicNumber || "N/A",
-            availability: doctor?.professionalDetails?.availableHours || "N/A", // Add actual field if available in API
-            feeRate: doctor?.professionalDetails?.consultationFee?.toString() || "N/A",
-            bankAccountNumber: doctor?.professionalDetails?.bankDetails?.accountNumber || "N/A",
-            appointments: doctor?.appointments || [],
-            posts: [], // Add actual field if available in API
-            status: status
-          }));
-        };
-
-        const pendingDoctors = mapDoctorData(pendingData, "pending");
-        const approvedDoctors = mapDoctorData(approvedData, "approved");
-        
-        // Combine both sets of doctors
-        const allDoctors = [...pendingDoctors, ...approvedDoctors];
-        setDoctorData(allDoctors);
-        setError(null);
-      } catch (err) {
-        setError("Failed to fetch doctor data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAllDoctors();
   }, []);
 
+  const fetchAllDoctors = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch pending doctors
+      const pendingResponse = await fetch(
+        "http://localhost:8000/api/admin/doctors/pending",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      if (!pendingResponse.ok) {
+        throw new Error("Failed to fetch pending doctor data");
+      }
+      
+      const pendingData = await pendingResponse.json();
+      console.log("Pending DATA", pendingData);
+      
+      // Fetch approved doctors
+      const approvedResponse = await fetch(
+        "http://localhost:8000/api/admin/doctors/verified",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      if (!approvedResponse.ok) {
+        throw new Error("Failed to fetch approved doctor data");
+      }
+      
+      const approvedData = await approvedResponse.json();
+
+      
+      // Map API data to Doctor structure with status
+      const mapDoctorData = (data: any[], status: "pending" | "approved"): Doctor[] => {
+        console.log("doctor personal", data);
+        return data.map((doctor: any) => ({
+          id: doctor?._id || "N/A",
+          name: doctor?.clinic?.fullName || doctor?.personalDetails?.fullName || "N/A",
+          email: doctor?.email || "N/A", // Add actual field if available in API
+          dateOfBirth: doctor?.personalDetails?.dateOfBirth || "N/A",
+          gender: doctor?.personalDetails?.gender || "N/A",
+          profilePicture: doctor?.personalDetails?.image || "N/A",
+          country: doctor?.personalDetails?.country || "N/A",
+          city: doctor?.personalDetails?.city || "N/A",
+          phone: doctor?.personalDetails?.phoneNo || "N/A",
+          specialization: doctor?.clinic?.specialisation || doctor?.professionalDetails?.specialisation || "N/A",
+          pmdcNumber: doctor?.professionalDetails?.pmdcNumber || "N/A",
+          education: [doctor?.professionalDetails?.educationalBackground || "N/A"],
+          licenseCertification: doctor?.professionalDetails?.licenseImage || "N/A",
+          cnicNumber: doctor?.professionalDetails?.cnicNumber || "N/A",
+          availability: doctor?.professionalDetails?.availableHours || "N/A", // Add actual field if available in API
+          feeRate: doctor?.professionalDetails?.consultationFee?.toString() || "N/A",
+          bankAccountNumber: doctor?.professionalDetails?.bankDetails?.accountNumber || "N/A",
+          appointments: doctor?.appointments || [],
+          posts: [], // Add actual field if available in API
+          status: status
+        }));
+      };
+
+      const pendingDoctors = mapDoctorData(pendingData, "pending");
+      const approvedDoctors = mapDoctorData(approvedData, "approved");
+      
+      // Combine both sets of doctors
+      const allDoctors = [...pendingDoctors, ...approvedDoctors];
+      setDoctorData(allDoctors);
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch doctor data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDetails = (doctor: Doctor) => {
     navigate("/admin/doctors/doctor-details", { state: { doctor } });
+  };
+
+  const openRejectModal = (doctor: Doctor) => {
+    setSelectedDoctor(doctor);
+    setShowRejectModal(true);
+  };
+
+  const closeRejectModal = () => {
+    setSelectedDoctor(null);
+    setShowRejectModal(false);
+    setRejectionReason("");
+  };
+
+  const handleRemoveDoctor = async () => {
+    if (!selectedDoctor) return;
+    
+    try {
+      setIsRemoving(true);
+      
+      const response = await fetch(
+        `http://localhost:8000/api/admin/doctors/reject/${selectedDoctor.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reason: rejectionReason }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove doctor");
+      }
+
+      // Remove the doctor from the local state
+      setDoctorData(prevData => 
+        prevData.filter(doctor => doctor.id !== selectedDoctor.id)
+      );
+      
+      // Close the modal
+      closeRejectModal();
+      
+      // Show success message (you could implement a toast notification here)
+      console.log("Doctor removed successfully");
+      
+    } catch (err) {
+      setError("Failed to remove doctor. Please try again later.");
+      console.error("Error removing doctor:", err);
+    } finally {
+      setIsRemoving(false);
+    }
   };
 
   const filteredDoctors = doctorData.filter(doctor => 
@@ -158,7 +214,10 @@ const Doctors: React.FC = () => {
                   <FaRegStickyNote className="w-4 h-7 mr-2" />
                   Details
                 </button>
-                <button className="px-4 py-2 flex bg-[#F0F0F0] font-light border border-gray-300 text-primary rounded-lg shadow hover:bg-primary hover:text-white">
+                <button 
+                  className="px-4 py-2 flex bg-[#F0F0F0] font-light border border-gray-300 text-primary rounded-lg shadow hover:bg-red-500 hover:text-white"
+                  onClick={() => openRejectModal(doctor)}
+                >
                   <FaTrash className="w-4 h-7 mr-2" />
                   Remove
                 </button>
@@ -206,6 +265,47 @@ const Doctors: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Rejection Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Remove Doctor</h2>
+            <p className="mb-4">Are you sure you want to remove <span className="font-semibold">{selectedDoctor?.name}</span>?</p>
+            
+            <div className="mb-4">
+              <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">
+                Reason for removal (optional):
+              </label>
+              <textarea
+                id="reason"
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Enter reason for removal..."
+              />
+            </div>
+            
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                onClick={closeRejectModal}
+                disabled={isRemoving}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={handleRemoveDoctor}
+                disabled={isRemoving}
+              >
+                {isRemoving ? "Removing..." : "Remove"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

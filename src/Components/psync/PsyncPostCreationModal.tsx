@@ -23,10 +23,19 @@ interface PostModalProps {
   isOpen: boolean;
   onClose: () => void;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-  preSelectedSeries?: Series; // New prop for pre-selected series
+  preSelectedSeries?: Series; // Pre-selected series
+  Series?: string;
+  autoCreateSeries?: boolean; // New prop to automatically open series creation
 }
 
-const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preSelectedSeries }) => {
+const PostModal: React.FC<PostModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  setRefresh, 
+  preSelectedSeries, 
+  Series = "post",
+  autoCreateSeries = false // Default to false to maintain backward compatibility
+}) => {
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
   const [postData, setPostData] = useState({ title: "", description: "", img: "" });
@@ -60,6 +69,13 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preS
       setSelectedSeries(preSelectedSeries);
     }
   }, [isOpen, preSelectedSeries]);
+
+  // Auto open series creation box when autoCreateSeries is true
+  useEffect(() => {
+    if (isOpen && autoCreateSeries && !preSelectedSeries) {
+      setIsCreatingNewSeries(true);
+    }
+  }, [isOpen, autoCreateSeries, preSelectedSeries]);
 
   // Fetch user's series when modal opens (only if no preSelectedSeries)
   useEffect(() => {
@@ -204,7 +220,7 @@ const PostModal: React.FC<PostModalProps> = ({ isOpen, onClose, setRefresh, preS
 
       if (response.ok) {
         toast({
-          description: "Post created successfully!",
+          description: `${Series} created successfully!`,
           variant: "default"
         });
         setPostData({ title: "", description: "", img: "" });

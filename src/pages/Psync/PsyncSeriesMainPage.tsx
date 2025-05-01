@@ -5,7 +5,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
 import { useRecoilValue } from "recoil";
-import  userAtom  from "../../atoms/userAtom"; // Adjust the import path if needed
+import userAtom from "../../atoms/userAtom"; // Adjust the import path if needed
+import CreateSeriesButton from "@/Components/psync/CreateSeriesButton";
+import useUserDetails from "@/hooks/useUserDetails";
+import { LoadingSpinner } from "@/Components/LoadingSpinner";
+// import { Spinner } from "@/Components/ui/spinner"; // Make sure you have this component
 
 // Define the interfaces for the data structures
 interface Post {
@@ -66,37 +70,46 @@ const PsyncSeries = () => {
   const [series, setSeries] = useState<SeriesItem[]>([]);
   const [hoveredPost, setHoveredPost] = useState<number | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Add refresh trigger
   const hoverTimeoutRef = useRef<number | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const postRefs = useRef<{ [key: number]: HTMLElement }>({});
-  
+
   // Get user ID from Recoil state
   const user = useRecoilValue(userAtom);
   const userId = user?._id;
   const location = useLocation();
+  const { user: userDetails } = useUserDetails(userId);
 
   // Extract the first part of the pathname (i.e., "doctor" or "patient")
   const role = location.pathname.split("/")[1];
-  
+
+  // Function to handle refresh when new series or post is created
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1); // Increment to trigger useEffect
+  };
+
   // Fetch data from API
   useEffect(() => {
     const fetchSeries = async () => {
       if (!userId) return;
-      
+
+      setIsLoading(true); // Start loading
+
       try {
         const response = await fetch(`http://localhost:8000/api/psync/series/user/${userId}`);
-        
+
         if (!response.ok) {
           throw new Error(`API request failed with status ${response.status}`);
         }
-        
+
         const apiData: ApiSeriesItem[] = await response.json();
-        
+
         // Transform API data to match our component's data structure
         const transformedSeries: any = apiData.map(item => {
           return {
-            //id: parseInt(item._id.substring(0, 8), 16), // Convert MongoDB ID to a number for our interface
-            id: item._id ,
+            id: item._id,
             title: item.title,
             posts: item.posts.map(post => {
               // Calculate time ago
@@ -104,9 +117,9 @@ const PsyncSeries = () => {
               const now = new Date();
               const diffInDays = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
               const timeAgo = diffInDays <= 0 ? "Today" : diffInDays === 1 ? "Yesterday" : `${diffInDays} days ago`;
-              
+
               return {
-                id: post._id , // Convert MongoDB ID to a number
+                id: post._id,
                 authorName: item.createdBy.name,
                 authorRole: "patient", // Default role, adjust if needed
                 authorImage: item.createdBy.profilePicture, // Use post image or placeholder
@@ -115,28 +128,27 @@ const PsyncSeries = () => {
                 timeAgo: timeAgo,
                 likeCount: post.likes?.length || 0, // Use the actual likes array length
                 commentCount: post.comments?.length || 0, // Use the actual comments array length
-                img: post.img || "" ,
+                img: post.img || "",
               };
             })
           };
         });
-        
+
         setSeries(transformedSeries);
       } catch (error) {
         console.error("Error fetching series data:", error);
         // You might want to set an error state here
+      } finally {
+        setIsLoading(false); // End loading regardless of outcome
       }
     };
 
     fetchSeries();
-  }, [userId]);
+  }, [userId, refreshTrigger]); // Add refreshTrigger as dependency
 
   const handlePostClick = (postId: any) => {
     navigate(`/${role}/psync/post/${postId}`);
   };
-
-
- 
 
   // Setup click outside listener to close the hover preview
   useEffect(() => {
@@ -145,29 +157,29 @@ const PsyncSeries = () => {
         setHoveredPost(null);
       }
     }
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
   const handleMouseEnter = (postId: number, event: React.MouseEvent<HTMLDivElement>) => {
     // Clear any existing timeout to prevent flickering
     if (hoverTimeoutRef.current !== null) {
       window.clearTimeout(hoverTimeoutRef.current);
     }
-    
+
     // Store reference to the current target element
     if (event && event.currentTarget) {
       postRefs.current[postId] = event.currentTarget;
     }
-    
+
     // Set a small delay before showing preview to prevent accidental triggers
     hoverTimeoutRef.current = window.setTimeout(() => {
       // Use the stored reference instead of event.currentTarget
       const element = postRefs.current[postId];
-      
+
       if (element) {
         const rect = element.getBoundingClientRect();
         setHoverPosition({
@@ -184,7 +196,7 @@ const PsyncSeries = () => {
     if (hoverTimeoutRef.current !== null) {
       window.clearTimeout(hoverTimeoutRef.current);
     }
-    
+
     // Set a small delay before hiding to prevent flickering when moving between post and preview
     hoverTimeoutRef.current = window.setTimeout(() => {
       setHoveredPost(null);
@@ -194,11 +206,11 @@ const PsyncSeries = () => {
   // Find the hovered post data
   const getHoveredPostData = (): HoveredPostData | null => {
     if (!hoveredPost) return null;
-    
+
     for (const seriesItem of series) {
       for (const post of seriesItem.posts) {
         if (post.id === hoveredPost) {
-          return { post, seriesTitle: seriesItem.title  };
+          return { post, seriesTitle: seriesItem.title };
         }
       }
     }
@@ -220,13 +232,19 @@ const PsyncSeries = () => {
     navigate(`/${role}/psync/myseries/${seriesId}`);
   };
 
+  // Loading spinner component
+ 
+
   return (
     <div className="flex justify-center mt-12 bg-secondary">
-      <div className="w-full max-w-7xl p-6 rounded-lg shadow-lg  h-screen">
+      <div className="w-full max-w-7xl p-6 rounded-lg shadow-lg h-screen">
         <div className="pt-3 max-w-7xl w-full mx-auto">
           <FavouritesBackButton text="My Series" />
-          
-          {series.length === 0 ? (
+          <CreateSeriesButton setRefresh={handleRefresh} />
+
+          {isLoading ? (
+            <LoadingSpinner text={'Loading series...'} />
+          ) : series.length === 0 ? (
             <div className="mt-8 flex justify-center items-center h-64">
               <p className="text-gray-500 text-lg">No series found. Create a new series to get started.</p>
             </div>
@@ -237,14 +255,14 @@ const PsyncSeries = () => {
                   <div className="flex flex-col md:flex-row">
                     {/* Series Title */}
                     <div className="md:w-1/4 bg-gray-50 p-6 flex items-center justify-center border-r border-gray-200">
-                      <h2 
-                        className="text-2xl font-bold text-gray-800 hover:cursor-pointer hover:underline" 
+                      <h2
+                        className="text-2xl font-bold text-gray-800 hover:cursor-pointer hover:underline"
                         onClick={() => hoverToIndividualSeriesPage(seriesItem.id)}
                       >
                         {seriesItem.title}
                       </h2>
                     </div>
-                    
+
                     {/* Posts Preview */}
                     <div className="md:w-3/4 p-6">
                       {seriesItem.posts.length === 0 ? (
@@ -252,20 +270,20 @@ const PsyncSeries = () => {
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {seriesItem.posts.map((post) => (
-                            <div 
-                              key={post.id} 
+                            <div
+                              key={post.id}
                               className="relative group"
                               onMouseEnter={(e) => handleMouseEnter(post.id, e)}
                               onMouseLeave={handleMouseLeave}
                             >
-                              <div 
+                              <div
                                 className="bg-teal-50 border border-teal-200 rounded-lg p-4 h-40 cursor-pointer 
                                 transition-all duration-200 group-hover:shadow-lg group-hover:border-teal-300"
                                 onClick={() => handlePostClick(post.id)}
                               >
                                 <div className="flex items-center gap-2 mb-2">
                                   <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm">
-                                    { post.authorName[0]}
+                                    {post.authorName[0]}
                                   </div>
                                   <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
                                   {post.authorRole === "doctor" && (
@@ -289,10 +307,10 @@ const PsyncSeries = () => {
           )}
         </div>
       </div>
-      
+
       {/* Fixed position preview that appears to emerge from the post box */}
       {hoveredPost !== null && hoveredPostData && (
-        <div 
+        <div
           ref={previewRef}
           className="fixed z-50 transition-opacity duration-300 opacity-100"
           style={{
@@ -327,34 +345,30 @@ const PsyncSeries = () => {
                   <p className="text-xs text-gray-500">{hoveredPostData.post.timeAgo}</p>
                 </div>
               </div>
-              
+
               <h1 className="text-xl font-bold text-gray-800 mb-3">{hoveredPostData.post.title}</h1>
               <div className="max-h-60 overflow-y-auto pr-2 mb-4">
-                {console.log(hoveredPostData) as any}
                 <p className="text-gray-700">{hoveredPostData.post.content}</p>
               </div>
-              
+
               <div className="text-sm text-gray-500 mt-2 mb-4">
                 {hoveredPostData.post.likeCount || 0} Likes • {hoveredPostData.post.commentCount || 0} Comments
               </div>
-              
-             {/* a small preview div to show post.img if it exisits */}
 
-                {hoveredPostData.post.img && (
+              {/* a small preview div to show post.img if it exists */}
+              {hoveredPostData.post.img && (
                 <div className="relative mb-4">
-                  <img 
-                  src={hoveredPostData.post.img} 
-                  alt="Post Preview" 
-                  className="w-full h-20 object-cover rounded-lg opacity-80"
+                  <img
+                    src={hoveredPostData.post.img}
+                    alt="Post Preview"
+                    className="w-full h-20 object-cover rounded-lg opacity-80"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
                 </div>
-                )}
-              
-              {/* Button to view full post */}
+              )}
 
-              
-              <button 
+              {/* Button to view full post */}
+              <button
                 className="w-full mt-4 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors"
                 onClick={() => handlePostClick(hoveredPostData.post.id)}
               >
@@ -362,9 +376,9 @@ const PsyncSeries = () => {
               </button>
             </CardContent>
           </Card>
-          
+
           {/* Triangle pointer that visually connects preview to original post */}
-          <div 
+          <div
             className="absolute w-4 h-4 bg-white rotate-45 border-t border-l border-gray-200"
             style={{
               top: '15px',

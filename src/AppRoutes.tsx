@@ -62,6 +62,7 @@ import PrivateReviews from './pages/Doctor/PrivateReviews';
 import ComplaintList from './pages/ComplaintList';
 import Complaint from './pages/Complaint';
 import PreviousProgramDetails from './pages/Patient/PreviousProgramDetails';
+import CreateSeriesButton from './Components/psync/CreateSeriesButton';
 
 
 
@@ -69,7 +70,7 @@ const AppRoutes = () => (
     <Routes>
         {/* General Routes */}
         <Route path="/" element={<LandingPage />} />
-        {/* <Route path="/test" element={<PaymentCheck />} /> */}
+        <Route path="/test" element={<CreateSeriesButton/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
