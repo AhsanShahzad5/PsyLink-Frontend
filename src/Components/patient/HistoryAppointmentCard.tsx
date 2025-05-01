@@ -3,14 +3,16 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 interface HistoryAppointment {
-    id: number;
-    doctorName: string;
-    specialization: string;
-    appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
-    date: string; // E.g., "2025-10-25"
-    rating: number;
-    imageUrl: string;
-  }
+  id: number | string;
+  appointmentId: string;
+  doctorName: string;
+  specialization: string;
+  appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
+  date: string; // E.g., "2025-10-25"
+  rating?: number;
+  review?: string;
+  imageUrl: string;
+}
 
 interface HistoryCardProps {
     historyCard: HistoryAppointment; // Define the expected prop type
@@ -51,16 +53,18 @@ interface HistoryCardProps {
           <hr className="my-4 border-1 border-black mx-auto sm:mx-0 max-w-sm sm:w-auto" />
       
           {/* Reviews and Rating */}
-          <div className="flex justify-center sm:justify-start items-center text-gray-500">
+          {/* <div className="flex justify-center sm:justify-start items-center text-gray-500">
             <Star size={16} className="text-yellow-400 mr-1" />
             <span className="text-sm">Rated {historyCard.rating}</span>
-          </div>
+          </div> */}
         </div>
       
         {/* 3rd Div: View Button */}
         <div className="w-full sm:w-auto mt-2">
         <button className="w-full sm:w-auto flex items-center justify-center px-10 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
-            onClick={()=> navigate('/patient/doctor-review')}
+            onClick={() => navigate('/patient/doctor-review', { 
+              state: { appointmentData: historyCard } 
+            })}
         >
           <span className="flex items-center">
             View <ArrowRight size={16} className="ml-2" />
@@ -70,4 +74,3 @@ interface HistoryCardProps {
       </div>
     )
   }
-  

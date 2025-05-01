@@ -22,29 +22,6 @@ interface Doctor {
   imageUrl: string;
 }
 
-// // Sample dynamic data for doctors
-// const exploreDoctors: Doctor[] = [
-//   {
-//     id: 1,
-//     doctorName: "Dr. Fahad Tariq Aziz",
-//     specialization: "Psychologist",
-//     availableTime: "12:30pm - 8:00pm",
-//     rating: 4.8,
-//     reviews: 47,
-//     imageUrl: "/src/assets/prescription/doctor1.png",
-//   },
-//   {
-//     id: 2,
-//     doctorName: "Dr. Fahad Tariq Aziz",
-//     specialization: "Psychiatrist",
-//     availableTime: "12:30pm - 8:00pm",
-//     rating: 4.8,
-//     reviews: 47,
-//     imageUrl: "/src/assets/prescription/doctor2.png",
-//   },
-// ];
-
-
 interface BookedAppointment {
   id: number;
   appointmentId: string;
@@ -61,99 +38,30 @@ interface BookedAppointment {
 
 
 interface HistoryAppointment {
-  id: number;
+  id: number | string;
   appointmentId: string;
   doctorName: string;
   specialization: string;
   appointmentTime: string; // E.g., "8:00 PM - 9:00 PM"
   date: string; // E.g., "2025-10-25"
-  rating: number;
+  rating?: number;
+  review?: string;
   imageUrl: string;
 }
 
-// const HistoryAppointments: HistoryAppointment[] = [
-//   {
-//     id: 1,
-//     appointmentId: "12345",
-//     doctorName: "Dr. Fahad Tariq Aziz",
-//     specialization: "Psychologist",
-//     appointmentTime: "8:00 PM",
-//     date: "2025-10-25",
-//     rating: 4.8,
-//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
-//   },
-//   {
-//     id: 2,
-//     appointmentId: "12345",
-//     doctorName: "Dr. Sarah Ahmed",
-//     specialization: "Psychiatrist",
-//     appointmentTime: "10:00 AM",
-//     date: "2025-10-28",
-//     rating: 4.8,
-//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
-//   },
-// ];
-// const HistoryAppointments: HistoryAppointment[] = [
-//   {
-//     id: 1,
-//     doctorName: "Dr. Fahad Tariq Aziz",
-//     specialization: "Psychologist",
-//     appointmentTime: "8:00 PM",
-//     date: "2025-10-25",
-//     rating: 4.8,
-//     imageUrl: "/src/assets/patient/doctor/doctor1.png",
-//   },
-//   {
-//     id: 2,
-//     doctorName: "Dr. Sarah Ahmed",
-//     specialization: "Psychiatrist",
-//     appointmentTime: "10:00 AM",
-//     date: "2025-10-28",
-//     rating: 4.8,
-//     imageUrl: "/src/assets/patient/doctor/doctor2.png",
-//   },
-// ];
-
-
 export default function Bookings(): JSX.Element {
-
-  // Explore Doctor
-
 
   const [activeTab, setActiveTab] = useState<'Explore Doctors' | 'Booked Appointments' | 'History'>('Explore Doctors')
   const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
   const [doctors, setDoctors] = useState([]);
   const [bookedAppointments, setBookedAppointments] = useState<BookedAppointment[]>([]);
+  const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log("added a console for checking push in master")
+  
   const navigate = useNavigate();
-
-  const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
-
-  const moveToHistory = (appointment: BookedAppointment) => {
-    // Create a new history appointment object
-    const historyAppointment: HistoryAppointment = {
-      id: appointment.id,
-      doctorName: appointment.doctorName,
-      specialization: appointment.specialization,
-      appointmentTime: appointment.bookedTimeSlot,
-      date: appointment.date,
-      rating: 4, // For now, hardcode the rating or fetch it from your backend
-      imageUrl: appointment.imageUrl,
-      appointmentId: ''
-    };
-
-    // Remove the appointment from the booked appointments
-    setBookedAppointments(prevAppointments =>
-      prevAppointments.filter(app => app.id !== appointment.id)
-    );
-
-    // Add the appointment to the history list
-    setHistoryAppointments(prevHistory => [...prevHistory, historyAppointment]);
-  };
-
 
   const handleViewClick = () => {
     setModalOpen(true); // Open the modal when "View" is clicked
@@ -210,14 +118,7 @@ export default function Bookings(): JSX.Element {
 
         if (response.ok) {
           const data = await response.json();
-          // Process the appointments and move completed ones to history
-          console.log("This is data coming from booked appointment api : ", data)
-          const now = new Date();
-          data.forEach((appointment: BookedAppointment) => {
-            if (new Date(appointment.date) < now && appointment.status !== 'active') {
-              moveToHistory(appointment);
-            }
-          });
+          console.log("This is data coming from booked appointment api : ", data);
           setBookedAppointments(data);
         } else {
           console.error("Failed to fetch booked appointments");
@@ -232,14 +133,41 @@ export default function Bookings(): JSX.Element {
     fetchBookedAppointments();
   }, []);
 
+  // CALLING API FOR HISTORY APPOINTMENTS
+  useEffect(() => {
+    const fetchHistoryAppointments = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/patient/history/appointment", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("This is data coming from history appointment api : ", data);
+          setHistoryAppointments(data);
+        } else {
+          console.error("Failed to fetch history appointments");
+        }
+      } catch (err) {
+        console.error("Error while fetching history appointments:", err);
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
+    fetchHistoryAppointments();
+  }, []);
 
   console.log("This is booked appointments data : ", bookedAppointments);
+  console.log("This is history appointments data : ", historyAppointments);
 
   return (
     <>
       {/* <Navbar/>     */}
-
-
 
       {/* Main Content */}
       <div className="bg-[#D3EDEB] min-h-screen w-full flex justify-center mt-32 ">
@@ -280,7 +208,8 @@ export default function Bookings(): JSX.Element {
                       educationBackground: doctor.clinic?.educationBackground || "N/A",
                       startTime: doctor.clinic?.startTime || "N/A",
                       endTime: doctor.clinic?.endTime || "N/A",
-                      appointments: doctor.availability || "N/A"
+                      appointments: doctor.availability || "N/A",
+                      avgRating: doctor.avgRating || "0.0" // Add the avgRating to doctorCard props
                     }}
                   />
                 ))}
@@ -307,9 +236,6 @@ export default function Bookings(): JSX.Element {
             </div>
           )}
 
-
-
-
           {activeTab === 'Booked Appointments' && (
              <div className="bg-[#fff] rounded-xl shadow min-h-[80%] p-6 mb-6 ">
               {loadingAppointments ? (
@@ -325,17 +251,21 @@ export default function Bookings(): JSX.Element {
                   ))
               ) : (
                 <div
-      className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
-        <p>No Booked Appointments</p>
-      </div>
+                className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                  <p>No Booked Appointments</p>
+                </div>
               )}
             </div>
           )}
 
-
           {activeTab === 'History' && (
             <div className="bg-[#fff] rounded-xl shadow min-h-[80%] p-6 mb-6 ">
-              {historyAppointments.length > 0 ? (
+              {loadingHistory ? (
+                <div
+                className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                  <p>Loading....</p>
+                </div>
+              ) : historyAppointments.length > 0 ? (
                 historyAppointments.map((history) => (
                   <HistoryAppointmentCard key={history.id} historyCard={history} />
                 ))

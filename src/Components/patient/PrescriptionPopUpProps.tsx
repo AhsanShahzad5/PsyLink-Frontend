@@ -61,8 +61,8 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
         </div>
         {/* Prescription Info */}
         <div className="ml-auto text-right text-white">
-          <p className="text-xs md:text-[16px] font-medium text-black pr-2 md:pr-4">Date: {formatDate(prescription.date)}</p>
-          <p className="text-xs md:text-[16px] font-medium text-black pr-2 md:pr-4">ID: {prescription.prescriptionId}</p>
+          <p className="text-xs md:text-[16px] font-medium text-white pr-2 md:pr-4">Date: {formatDate(prescription.date)}</p>
+          <p className="text-xs md:text-[16px] font-medium text-white pr-2 md:pr-4">ID: {prescription.prescriptionId}</p>
         </div>
       </div>
 
@@ -88,11 +88,11 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
         </div>
 
         {/* Prescription Content */}
-        <div className="flex flex-col relative mb-8">
+        <div className="flex flex-col relative mt-36 mb-8">
           {/* Headers */}
           <div className="flex flex-col sm:flex-row justify-between mb-4">
             <h3 className="text-lg md:text-[22px] font-bold text-[#02968A] w-full sm:w-1/2 pr-0 sm:pr-4 mb-2 sm:mb-0">
-              Medicine
+              Management Plan
             </h3>
             <h3 className="text-lg md:text-[22px] font-bold text-[#02968A] w-full sm:w-1/2 pl-0 sm:pl-4">
               Instructions
