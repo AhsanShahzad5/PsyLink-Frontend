@@ -26,7 +26,8 @@ export enum Disability {
 }
 
 const PatientDetailForm: React.FC = () => {
-  const [fullName, setFullName] = useState('');
+  const user = useRecoilValue(userAtom);
+  const [fullName, setFullName] = useState(`${user.name}`);
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<Gender | ''>('');
   const [disability, setDisability] = useState<Disability | ''>('');
@@ -42,7 +43,6 @@ const PatientDetailForm: React.FC = () => {
 
   const user2 = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-  const user = useRecoilValue(userAtom);
   const navigate = useNavigate();
 
   // Fetch existing patient details on component mount

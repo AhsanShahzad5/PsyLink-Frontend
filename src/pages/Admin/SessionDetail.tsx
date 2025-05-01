@@ -227,14 +227,14 @@ const SessionDetail: React.FC = () => {
           </div>
           
           {/* Actions Section */}
-          <div className="mt-8 flex justify-end space-x-4">
+          {/* <div className="mt-8 flex justify-end space-x-4">
             <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
               Print Details
             </button>
             <button className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 transition">
               Edit Session
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

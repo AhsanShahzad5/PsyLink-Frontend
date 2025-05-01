@@ -59,6 +59,9 @@ import PsyncIndividualSeriesPage from './pages/Psync/PsyncIndividualSeriesPage';
 import SearchResults from './Components/psync/SearchResults';
 import PaymentPage from './pages/PaymentPage';
 import PrivateReviews from './pages/Doctor/PrivateReviews';
+import ComplaintList from './pages/ComplaintList';
+import Complaint from './pages/Complaint';
+import PreviousProgramDetails from './pages/Patient/PreviousProgramDetails';
 
 
 
@@ -104,6 +107,26 @@ const AppRoutes = () => (
             }
         />
         <Route
+            path="/patient/complaintslist"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                    <ComplaintList />    
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/complaintslist/complaint"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                    <Complaint />    
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
             path="/patient/notes"
             element={
                 <ProtectedRoute allowedRoles={['patient']}>
@@ -133,6 +156,17 @@ const AppRoutes = () => (
                 </ProtectedRoute>
             }
         />
+         <Route 
+        path="/patient/previous-program-details/:programId" 
+        element={
+            <ProtectedRoute allowedRoles={['patient']}>
+            <PatientLayout>
+                <PreviousProgramDetails />
+            </PatientLayout>
+        </ProtectedRoute>
+        
+        } 
+      />
         <Route
             path="/patient/prescription"
             element={
@@ -325,6 +359,26 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorLayout>
                         <DoctorHome />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+         <Route
+            path="/doctor/complaintslist"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <ComplaintList />    
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/doctor/complaintslist/complaint"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                    <Complaint />    
                     </DoctorLayout>
                 </ProtectedRoute>
             }

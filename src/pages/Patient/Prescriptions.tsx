@@ -264,7 +264,7 @@ export default function Prescription(): JSX.Element {
         )}
 
         {activeTab === 'Previous Programs' && (
-          <PreviousPrograms courses={courses}/>
+          <PreviousPrograms/>
         )}
       </div>
     </div>

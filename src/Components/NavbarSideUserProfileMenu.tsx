@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '@/hooks/useLogoutUser';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import useUserDetails from '@/hooks/useUserDetails';
+import { MessageCircleWarning } from 'lucide-react';
 
 
 interface ProfileMenuProps {
@@ -61,6 +63,14 @@ export default function Component({
         navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/psync/myposts`);
       }
     },
+    {
+      label: 'Complaints',
+      icon: MessageCircleWarning,
+      onClick: () => {
+        console.log('Complaints clicked');
+        navigate(`${window.location.pathname.includes('/doctor') ? '/doctor' : '/patient'}/complaintslist`);
+      }
+    },
     ...(window.location.pathname.includes('/doctor') ? [{
       label: 'Professional Settings',
       icon: Settings,
@@ -83,7 +93,7 @@ export default function Component({
       <SheetTrigger asChild>
         <div className="relative hidden md:block cursor-pointer">
           <img
-            src="/src/assets/patient/homepage/Vector.png"
+            src={profileImage}
             alt="User profile"
             className="h-11 w-11 rounded-full object-contain border-2 border-primary p-1"
           />

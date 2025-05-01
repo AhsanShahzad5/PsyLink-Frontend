@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { Doctor } from "./Doctors"; // Adjust the import path as necessary
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const DoctorsDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -57,9 +60,11 @@ const DoctorsDetails: React.FC = () => {
       }
    
       setSuccess("Doctor approved successfully!");
-      setTimeout(() => navigate("/admin/doctors"), 2000); // Navigate back after 2 seconds
+      toast.success("Doctor approved successfully!");
+      setTimeout(() => navigate("/admin/doctors"), 2500); // Navigate back after 2 seconds
     } catch (err: any) {
       setError(err.message || "An error occurred while approving the doctor.");
+      toast.error(err.message || "An error occurred while approving the doctor.");
     } finally {
       setLoading(false);
     }
@@ -92,11 +97,21 @@ const DoctorsDetails: React.FC = () => {
             ) : (
               <>
                 <button
-                  className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover disabled:opacity-50"
+                  className="px-4 w-[100px] py-2 rounded-xl bg-primary text-white shadow hover:bg-primaryHover disabled:opacity-50 flex items-center justify-center"
                   onClick={handleApprove}
                   disabled={loading}
                 >
-                  {loading ? "Approving..." : "Approve"}
+                  {loading ? (
+                    <>
+                      <AiOutlineLoading3Quarters className="animate-spin mr-1" />
+                      <span>Approving...</span>
+                    </>
+                  ) : success?( <>
+                    <span>Approved</span>
+                  </>) : (
+                    "Approve"
+                  )}
+                 
                 </button>
                 <button className="px-4 py-2 w-[100px] rounded-xl bg-red-500 text-white shadow hover:bg-red-600">
                   Remove
@@ -279,6 +294,18 @@ const DoctorsDetails: React.FC = () => {
         </div>
       </div>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/Components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function ReviewModal({ isOpen, onClose, appointmentId }: ReviewMo
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -55,7 +57,9 @@ export default function ReviewModal({ isOpen, onClose, appointmentId }: ReviewMo
       setSuccess(true);
       setTimeout(() => {
         onClose();
-      }, 1500);
+        window.location.href = '/patient/bookings'
+        
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit review');
     } finally {
