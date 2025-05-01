@@ -54,6 +54,8 @@ export default function Bookings(): JSX.Element {
   const [activeTab, setActiveTab] = useState<'Explore Doctors' | 'Booked Appointments' | 'History'>('Explore Doctors')
   const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
   const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [bookedAppointments, setBookedAppointments] = useState<BookedAppointment[]>([]);
   const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
@@ -73,6 +75,30 @@ export default function Bookings(): JSX.Element {
 
   const tabs = ['Explore Doctors', 'Booked Appointments', 'History'];
 
+  // Handle search functionality
+  const handleSearch = () => {
+    if (searchTerm.trim() === '') {
+      setFilteredDoctors(doctors);
+      return;
+    }
+
+    const filtered = doctors.filter((doctor: any) => {
+      const doctorName = doctor.clinic?.fullName || '';
+      return doctorName.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+    
+    setFilteredDoctors(filtered);
+  };
+
+  // Update filtered doctors when search term changes
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredDoctors(doctors);
+    } else {
+      handleSearch();
+    }
+  }, [searchTerm, doctors]);
+
   //CALLING API FOR GET VERIFIED DOCTORS
   useEffect(() => {
     const fetchVerifiedDoctors = async () => {
@@ -88,6 +114,7 @@ export default function Bookings(): JSX.Element {
         if (response.ok) {
           const data = await response.json();
           setDoctors(data);
+          setFilteredDoctors(data);
           console.log(data[0].clinic.fullName);
 
         } else {
@@ -183,7 +210,11 @@ export default function Bookings(): JSX.Element {
           {activeTab === 'Explore Doctors' && (
             <div className="bg-[#fff] rounded-xl shadow p-6 mb-6 ">
               {/* Search Section */}
-              <SearchByNameAndLoc />
+              <SearchByNameAndLoc 
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                handleSearch={handleSearch}
+              />
 
               {/* Doctor Cards */}
               <div className="space-y-4">
@@ -192,27 +223,34 @@ export default function Bookings(): JSX.Element {
                   className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
                     <p>Loading....</p>
                   </div>
-                ) : doctors?.map((doctor: any) => (
-                  <DoctorCard
-                    key={doctor._id} // Use unique ID
-                    doctorCard={{
-                      id: doctor._id || "N/A",
-                      userId : doctor.userId || "N/A",
-                      fullName: doctor.clinic?.fullName || "N/A",
-                      image: doctor.clinic?.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available   data.clinic.image
-                      description: doctor.clinic?.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
-                      consultationFee: doctor.clinic?.consultationFee || 0, // Default fee if missing
-                      city: doctor.clinic?.city || "N/A", // Handle missing city
-                      country: doctor.clinic?.country || "N/A", // Handle missing country
-                      specialisation: doctor.clinic?.specialisation || "N/A",
-                      educationBackground: doctor.clinic?.educationBackground || "N/A",
-                      startTime: doctor.clinic?.startTime || "N/A",
-                      endTime: doctor.clinic?.endTime || "N/A",
-                      appointments: doctor.availability || "N/A",
-                      avgRating: doctor.avgRating || "0.0" // Add the avgRating to doctorCard props
-                    }}
-                  />
-                ))}
+                ) : filteredDoctors.length > 0 ? (
+                  filteredDoctors.map((doctor: any) => (
+                    <DoctorCard
+                      key={doctor._id} // Use unique ID
+                      doctorCard={{
+                        id: doctor._id || "N/A",
+                        userId : doctor.userId || "N/A",
+                        fullName: doctor.clinic?.fullName || "N/A",
+                        image: doctor.clinic?.image || "/src/assets/patient/doctor/doctor.png", // Default image if not available
+                        description: doctor.clinic?.description || "Hi! I'm here to provide expert care and support for your mental wellness journey.",
+                        consultationFee: doctor.clinic?.consultationFee || 0, // Default fee if missing
+                        city: doctor.clinic?.city || "N/A", // Handle missing city
+                        country: doctor.clinic?.country || "N/A", // Handle missing country
+                        specialisation: doctor.clinic?.specialisation || "N/A",
+                        educationBackground: doctor.clinic?.educationBackground || "N/A",
+                        startTime: doctor.clinic?.startTime || "N/A",
+                        endTime: doctor.clinic?.endTime || "N/A",
+                        appointments: doctor.availability || "N/A",
+                        avgRating: doctor.avgRating || "0.0" // Add the avgRating to doctorCard props
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div
+                  className="flex flex-col sm:flex-row items-start min-h-56 justify-center  bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-screen mx-auto">
+                    <p>No doctors found matching your search criteria</p>
+                  </div>
+                )}
               </div>
 
 
