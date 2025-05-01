@@ -52,6 +52,8 @@ const DoctorCalender = () => {
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
+  const [savingAvailable, setSavingAvailable] = useState(false);
+  const [savingBusy, setSavingBusy] = useState(false);
 
   useEffect(() => {
     setDates(generateDates());
@@ -194,6 +196,8 @@ const DoctorCalender = () => {
       return;
     }
 
+    setSavingAvailable(true);
+
     const payload = {
       availability: [
         {
@@ -225,6 +229,8 @@ const DoctorCalender = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to save");
+    } finally {
+      setSavingAvailable(false);
     }
   };
 
@@ -233,6 +239,8 @@ const DoctorCalender = () => {
       toast.error("Select slots first!");
       return;
     }
+
+    setSavingBusy(true);
 
     const payload = {
       schedules: [
@@ -263,6 +271,8 @@ const DoctorCalender = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to mark busy");
+    } finally {
+      setSavingBusy(false);
     }
   };
 
@@ -340,16 +350,32 @@ const DoctorCalender = () => {
   </div>
   <div className="flex gap-2">
     <button 
-      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors" 
+      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors disabled:opacity-70 flex items-center justify-center" 
       onClick={handleMarkBusy}
+      disabled={savingBusy}
     >
-      Mark Busy
+      {savingBusy ? (
+        <>
+          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+          Marking...
+        </>
+      ) : (
+        "Mark Busy"
+      )}
     </button>
     <button 
-      className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" 
+      className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors disabled:opacity-70 flex items-center justify-center" 
       onClick={handleSaveAvailability}
+      disabled={savingAvailable}
     >
-      Mark Available
+      {savingAvailable ? (
+        <>
+          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+          Saving...
+        </>
+      ) : (
+        "Mark Available"
+      )}
     </button>
   </div>
 </div>

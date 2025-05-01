@@ -17,14 +17,15 @@ interface DoctorCardProps {
     educationBackground: string;
     startTime: string;
     endTime: string;
-    appointments : any
+    appointments: any;
+    avgRating?: string; // Added avgRating property
   };
 }
 
 export default function DoctorCard({ doctorCard }: DoctorCardProps) {
   const {
     id,
-   userId,
+    userId,
     fullName,
     image,
     consultationFee,
@@ -35,7 +36,8 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
     educationBackground,
     startTime,
     endTime,
-    appointments
+    appointments,
+    avgRating
   } = doctorCard;
 
 
@@ -71,12 +73,11 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
           {/* Separator */}
           <hr className="my-4 border-1 border-black mx-auto sm:mx-0 max-w-sm sm:w-auto" />
       
-          {/* Reviews and Rating */}
-          {/* <div className="flex justify-center sm:justify-start items-center text-gray-500"> */}
-            {/* <Star size={16} className="text-yellow-400 mr-1" /> */}
-            {/* <span className="text-sm">{doctorCard.rating} ({doctorCard.reviews} reviews)</span> */}
-            {/* <span className="text-sm">4.5 (12 reviews)</span> */}
-          {/* </div> */}
+          {/* Reviews and Rating - Now visible with actual rating data */}
+          <div className="flex justify-center sm:justify-start items-center text-gray-500">
+            <Star size={16} className="text-yellow-400 mr-1" />
+            <span className="text-sm">{avgRating || "0.0"}</span>
+          </div>
         </div>
       
         {/* 3rd Div: View Button */}
@@ -93,4 +94,3 @@ export default function DoctorCard({ doctorCard }: DoctorCardProps) {
       </div>
     )
   }
-
