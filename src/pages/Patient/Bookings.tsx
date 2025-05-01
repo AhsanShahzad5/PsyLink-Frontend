@@ -127,7 +127,7 @@ export default function Bookings(): JSX.Element {
   const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  console.log("added a console for checking push in master")
   const navigate = useNavigate();
 
   const [historyAppointments, setHistoryAppointments] = useState<HistoryAppointment[]>([]);
