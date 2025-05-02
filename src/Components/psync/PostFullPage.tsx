@@ -335,7 +335,7 @@ const FullPost = () => {
                                                 </Badge>
                                             }
                                         </div>
-                                        <p className="text-sm text-teal-600">{post.series[0]?.title || 'SERIES NAME'} </p>
+                                        <p className="text-sm text-teal-600">{post.series[0]?.title || 'No SERIES'} </p>
                                         {post.user?.title && <p className="text-sm text-teal-600">{post.user.title}</p>}
                                     </div>
 
