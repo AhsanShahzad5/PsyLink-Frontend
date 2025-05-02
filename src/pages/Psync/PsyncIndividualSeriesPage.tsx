@@ -59,7 +59,7 @@ const SeriesPage = () => {
 
   // Extract the first part of the pathname (i.e., "doctor" or "patient")
   const role = location.pathname.split("/")[1];
-
+  const roleOfLoggedInUser = location.pathname.split("/")[1];
   // Check if logged in user is the creator of the series
   const isCreator = user && series?.createdBy?._id === user._id;
 
@@ -251,7 +251,8 @@ const SeriesPage = () => {
                   title={post.title}
                   seriesTitle={series.title}
                   image={post.img || undefined} // Optional image field
-                />
+                roleOfLoggedInUser={roleOfLoggedInUser}
+               />
               </div>
             ))}
           </div>

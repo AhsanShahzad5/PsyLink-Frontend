@@ -18,6 +18,7 @@ const userId = user?._id;
 
 const { user:userDetails } = useUserDetails(userId);
 console.log("User Details are:", userDetails); // Log the user details
+const roleOfLoggedInUser = location.pathname.split("/")[1];
 
 useEffect(() => {
     // Fetch posts from the backend
@@ -73,6 +74,8 @@ useEffect(() => {
                     comments={post.comments?.length || 0} // Total comments
                     title={post.title} // Post title
                     image={post.img || undefined} // Optional image field
+                    roleOfLoggedInUser={roleOfLoggedInUser} // Role of the logged-in user
+
                     />
             ))
           )
