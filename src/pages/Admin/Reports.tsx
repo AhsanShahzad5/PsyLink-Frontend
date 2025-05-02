@@ -379,12 +379,12 @@ const Reports = () => {
                 weeklyData={weeklyData} 
               />
               <div className="flex justify-center">
-                <button 
+                {/* <button 
                   className="mt-2 px-3 py-1 bg-primary hover:bg-primaryHover text-white rounded-md w-1/2 text-sm"
                   onClick={() => handleGenerateReport('Users')}
                 >
                   Generate Report
-                </button>
+                </button> */}
               </div>
             </div>
             <div>
@@ -395,12 +395,12 @@ const Reports = () => {
                 averageTransactionsPerDay={stats.averageTransactionsPerDay}
               />
               <div className="flex justify-center">
-                <button 
+                {/* <button 
                   className="mt-2 px-3 py-1 bg-primary hover:bg-primaryHover text-white rounded-md w-1/2 text-sm"
                   onClick={() => handleGenerateReport('Transactions')}
                 >
                   Generate Report
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
