@@ -63,6 +63,7 @@ import ComplaintList from './pages/ComplaintList';
 import Complaint from './pages/Complaint';
 import PreviousProgramDetails from './pages/Patient/PreviousProgramDetails';
 import CreateSeriesButton from './Components/psync/CreateSeriesButton';
+import PreviousRecords from './pages/Doctor/PreviousRecords';
 
 
 
@@ -400,6 +401,16 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['doctor']}>
                     <DoctorLayout>
                         <DoctorAppointments />
+                    </DoctorLayout>
+                </ProtectedRoute>
+            }
+        />
+           <Route
+            path="/doctor/appointments/previous-records"
+            element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorLayout>
+                        <PreviousRecords />
                     </DoctorLayout>
                 </ProtectedRoute>
             }
