@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DefaultDoctorImage from '/src/assets/patient/doctor/doctor.png';
 import { FaClock } from "react-icons/fa";
+import DocReviews from "@/Components/doctor/DocReviews";
+import DoctorReviewPage from "./DoctorReview";
+
 
 const DoctorProfile: React.FC = () => {
   const location = useLocation();
@@ -13,6 +16,8 @@ const DoctorProfile: React.FC = () => {
       <div>No doctor data available. Please go back and select a doctor.</div>
     );
   }
+
+  console.log("this is doctorCard.id: ", doctorCard.id)
 
   const {
     fullName,
@@ -300,6 +305,7 @@ const DoctorProfile: React.FC = () => {
             </div>
           </div>
         </div>
+        <DocReviews doctorId={doctorCard.userId}/>
       </div>
     </>
   );

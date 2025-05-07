@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Star, Calendar, Clock, FileText, Award, ThumbsUp } from 'lucide-react';
+import { Star, Calendar, Clock, FileText, Award, ThumbsUp, FileX, Pill } from 'lucide-react';
+import PrescriptionDebugModal from './PrescriptionDebugModal'; // Import the updated component
 
 interface HistoryAppointment {
   id: number | string;
@@ -15,9 +16,36 @@ interface HistoryAppointment {
   recommendation?: string;
 }
 
+interface PrescriptionItem {
+  medicine: string;
+  instructions: string;
+  _id: string;
+}
+
+interface Prescription {
+  _id: string;
+  prescriptionId: string;
+  doctorId: string;
+  doctorName: string;
+  doctorSpecialisation: string;
+  patientId: string;
+  patientName: string;
+  patientGender: string;
+  patientAge: string;
+  date: string;
+  prescription: PrescriptionItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 const DoctorReviewPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [prescription, setPrescription] = useState<Prescription | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   
   // Get the appointment data from location state
   // If no data is passed, use default values
@@ -33,6 +61,56 @@ const DoctorReviewPage: React.FC = () => {
     imageUrl: "/src/assets/patient/doctor/doctor.png",
     recommendation: "Breathing Course"
   };
+
+  useEffect(() => {
+    const fetchPrescription = async () => {
+      if (!appointmentData.appointmentId) return;
+      console.log("this is appointmentId in the page: ", appointmentData.appointmentId)
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const response = await fetch(`http://localhost:8000/api/patient/prescription-appointment/${appointmentData.appointmentId}`, {
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          // Not throwing error for 404 as it's an expected case (no prescription)
+          if (response.status === 404) {
+            setPrescription(null);
+            setIsLoading(false);
+            return;
+          }
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log("if its success or not :" , data.success)
+        if (data.success) {
+          // Log the data structure to help with debugging
+          console.log("Prescription data received:", data.data);
+          
+          // Ensure the prescription field exists and is properly structured
+          const prescriptionData = {
+            ...data.data,
+            prescription: Array.isArray(data.data.prescription) ? data.data.prescription : []
+          };
+          
+          setPrescription(prescriptionData);
+        } else {
+          setError(data.message || 'Failed to fetch prescription');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        console.error('Failed to fetch prescription:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchPrescription();
+  }, [appointmentData.appointmentId]);
   
   // Format the date to be more readable
   const formattedDate = new Date(appointmentData.date).toLocaleDateString('en-US', {
@@ -84,6 +162,45 @@ const DoctorReviewPage: React.FC = () => {
     }
     
     return stars;
+  };
+
+  // Modal backdrop and close handling
+  const Modal: React.FC<{ isOpen: boolean; onClose: () => void; children: React.ReactNode }> = ({ 
+    isOpen, 
+    onClose, 
+    children 
+  }) => {
+    if (!isOpen) return null;
+    
+    // Handle background click to close the modal
+    const handleBackdropClick = (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    };
+    
+    return (
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 overflow-auto"
+        onClick={handleBackdropClick}
+      >
+        <div className="relative bg-white rounded-xl shadow-xl max-h-[90vh] overflow-y-auto w-full max-w-4xl">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              onClose();
+            }}
+            className="absolute top-4 right-4 z-50 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors shadow-md"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          {children}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -175,6 +292,33 @@ const DoctorReviewPage: React.FC = () => {
                       <span className="text-lg">{appointmentData.recommendation}</span>
                     </div>
                   )}
+                  
+                  {/* Prescription Status */}
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border-l-4 border-teal-500 shadow-sm">
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-teal-600"></div>
+                        <span className="text-lg font-medium">Checking for prescriptions...</span>
+                      </>
+                    ) : prescription ? (
+                      <>
+                        <Pill className="text-teal-600" size={20} />
+                        <span className="text-lg font-medium">Prescription:</span>
+                        <button 
+                          onClick={() => setModalOpen(true)}
+                          className="text-white bg-teal-600 hover:bg-teal-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                        >
+                          View Prescription
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <FileX className="text-gray-400" size={20} />
+                        <span className="text-lg font-medium">Prescription:</span>
+                        <span className="text-gray-500">No prescription available</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -223,6 +367,22 @@ const DoctorReviewPage: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Prescription Modal */}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        {prescription && (
+          <div className="relative">
+            <PrescriptionDebugModal 
+              prescription={{
+                ...prescription,
+                prescription: Array.isArray(prescription.prescription) 
+                  ? prescription.prescription 
+                  : []
+              }} 
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

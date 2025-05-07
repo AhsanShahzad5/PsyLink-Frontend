@@ -29,7 +29,7 @@ export default function BookedAppointmentCard({
       {/* Doctor Image */}
       <div className="w-full sm:w-auto sm:flex-shrink-0 mb-4 sm:mb-0">
         <img
-          src="/src/assets/patient/doctor/doctor.png"
+          src={bookedAppointment.imageUrl}
           alt={bookedAppointment.doctorName}
           className="w-full sm:w-40 h-auto sm:h-40 object-contain"
         />

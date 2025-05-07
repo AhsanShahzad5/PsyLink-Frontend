@@ -189,8 +189,8 @@ export default function Bookings(): JSX.Element {
     fetchHistoryAppointments();
   }, []);
 
-  console.log("This is booked appointments data : ", bookedAppointments);
-  console.log("This is history appointments data : ", historyAppointments);
+  // console.log("This is booked appointments data : ", bookedAppointments);
+  // console.log("This is history appointments data : ", historyAppointments);
 
   return (
     <>

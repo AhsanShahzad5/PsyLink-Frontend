@@ -83,6 +83,7 @@ const PrescriptionPopUp: React.FC<PrescriptionPopUpProps> = ({
       const prescriptionData = {
         doctorName,
         doctorId,
+        doctorSpecialisation: doctorSpeciality,
         patientId,
         patientName,
         patientGender,

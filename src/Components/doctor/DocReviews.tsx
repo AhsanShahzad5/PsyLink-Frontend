@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaSpinner, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from "recoil";
+import userAtom from "@/atoms/userAtom";
 
 interface Review {
   _id: string;
@@ -21,6 +23,7 @@ interface DocReviewsProps {
 }
 
 const DocReviews: React.FC<DocReviewsProps> = ({ doctorId }) => {
+  const user = useRecoilValue(userAtom);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +50,7 @@ const DocReviews: React.FC<DocReviewsProps> = ({ doctorId }) => {
         }
 
         const data = await response.json();
+        console.log("this is data got from reviews section: ", data)
         setReviews(data.reviews);
         setTotalPages(Math.ceil(data.total / reviewsPerPage));
         
@@ -100,12 +104,14 @@ const DocReviews: React.FC<DocReviewsProps> = ({ doctorId }) => {
     <div className='bg-white rounded-lg p-5 my-2'>
       <div className="flex justify-between items-center px-10">
         <h1 className="text-[2.5rem]">Your Stats</h1>
-        <button 
-          onClick={navigateToPrivateReviews}
-          className="bg-[#02968A] hover:bg-[#01857A] text-white py-2 px-4 rounded-md shadow-sm transition-all duration-300 flex items-center"
-        >
-          View Private Reviews
-        </button>
+        {user.role === "doctor" && (
+          <button 
+            onClick={navigateToPrivateReviews}
+            className="bg-[#02968A] hover:bg-[#01857A] text-white py-2 px-4 rounded-md shadow-sm transition-all duration-300 flex items-center"
+          >
+            View Private Reviews
+          </button>
+        )}
       </div>
             
       <div className="flex flex-wrap justify-center gap-8 mt-16"></div>  

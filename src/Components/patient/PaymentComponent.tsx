@@ -203,7 +203,7 @@ const PaymentForm = () => {
   
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 py-4 px-6">
+      <div className="bg-gradient-to-r from-primary to-primaryHover py-4 px-6">
         <h2 className="text-xl font-semibold text-white">Secure Payment</h2>
       </div>
       
@@ -229,7 +229,7 @@ const PaymentForm = () => {
             </div>
             <div className="flex justify-between border-t pt-2 mt-2">
               <span className="text-gray-800 font-medium">Total Amount:</span>
-              <span className="text-lg font-semibold text-blue-600">Rs. {amount}</span>
+              <span className="text-lg font-semibold text-primary">Rs. {amount}</span>
             </div>
           </div>
         </div>
@@ -239,7 +239,7 @@ const PaymentForm = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Card Information
             </label>
-            <div className="border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-colors bg-white">
+            <div className="border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-colors bg-white">
               <CardElement options={CARD_ELEMENT_OPTIONS} />
             </div>
             <p className="mt-1 text-xs text-gray-500">Secure payment powered by Stripe</p>
@@ -263,7 +263,7 @@ const PaymentForm = () => {
           <button
             type="submit"
             disabled={!stripe || processing || !clientSecret}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:bg-gray-800 disabled:cursor-not-allowed transition-colors"
           >
             {processing ? (
               <span className="flex items-center">

@@ -28,7 +28,7 @@ interface PrescriptionProps {
   };
 }
 
-const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
+const PrescriptionDebugModal: React.FC<PrescriptionProps> = ({ prescription }) => {
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -41,7 +41,7 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white rounded-[20px] shadow-lg overflow-hidden relative">
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-[20px] shadow-lg overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
       {/* Top Design */}
       <img
         src={TopDesign}
@@ -146,4 +146,4 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
   );
 };
 
-export default PrescriptionPage;
+export default PrescriptionDebugModal;
