@@ -14,6 +14,7 @@ import { useRecoilValue } from 'recoil';
 import userAtom from '@/atoms/userAtom';
 import PrescriptionPopUp from "../../Components/doctor/PrescriptionPopUpDoc";
 import ReviewModal from "../../Components/patient/reviewModal"; // Import the new ReviewModal component
+import ChatComponent from "../../Components/ChatComponent"; // Import the Chat component
 
 interface AppointmentData {
   appointmentId: string | undefined;
@@ -507,40 +508,8 @@ export default function VideoConsultation() {
             </div>
           )}
           
-          <div className="flex-1 p-4 overflow-y-auto space-y-4">
-            {/* Chat Messages */}
-            {/* <div className="flex justify-end">
-              <div className="bg-emerald-100 rounded-lg p-3 max-w-[80%]">
-                <img
-                  src={prescriptionImage}
-                  alt="Prescription"
-                  className="rounded-lg mb-2"
-                />
-                <p className="text-sm text-gray-600">Me</p>
-              </div>
-            </div> */}
-            {/* <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">Dr Fahad Tariq Aziz</p>
-              </div>
-            </div> */}
-          </div>
-
-          {/* Chat Input */}
-          {/* <div className="p-4 border-t">
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon">
-                <FileText className="h-5 w-5" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Image className="h-5 w-5" />
-              </Button>
-              <Input placeholder="Write here" className="flex-1 bg-white text-gray-800" />
-              <Button size="icon">
-                <Send className="h-5 w-5" />
-              </Button>
-            </div>
-          </div> */}
+          {/* Chat Component */}
+          <ChatComponent roomId={appointmentId} />
         </Card>
       </div>
     </div>
