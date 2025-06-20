@@ -49,9 +49,13 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'));
+          return;
+        }
         canvas.width = img.width;
         canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0);
         const dataURL = canvas.toDataURL('image/png');
         resolve(dataURL);
       };
@@ -60,106 +64,185 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
     });
   };
 
-  // PDF Download Function
-  const downloadPDF = async () => {
+  // Enhanced PDF Download Function with fixed styling
+const downloadPDF = async () => {
+  try {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    // Convert images to base64
+    let topDesignBase64: string;
+    let lowerLeftBgBase64: string;
+    let logoBase64: string;
+
     try {
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      // Add background gradient/color
-      pdf.setFillColor(248, 250, 252); // Light blue-gray background
-      pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-
-      // Header Section with colored background
-      pdf.setFillColor(2, 150, 138); // Teal color
-      pdf.rect(0, 0, pageWidth, 50, 'F');
-
-      // Add PsyLink Logo and Title (you may need to convert logo to base64)
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(24);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('PsyLink', 20, 25);
-
-      // Add Date and ID in header
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(`Date: ${formatDate(prescription.date)}`, pageWidth - 80, 20);
-      pdf.text(`ID: ${prescription.prescriptionId}`, pageWidth - 80, 30);
-
-      // Doctor Details
-      pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text(`Dr: ${prescription.doctorName}`, 20, 70);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(prescription.doctorSpecialisation, 20, 80);
-
-      // Patient Details
-      pdf.setTextColor(2, 150, 138);
-      pdf.setFontSize(14);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(`Patient's Name: ${prescription.patientName}`, pageWidth - 100, 70);
-      pdf.text(`Sex: ${prescription.patientGender}`, pageWidth - 100, 80);
-      pdf.text(`Age: ${prescription.patientAge}`, pageWidth - 100, 90);
-
-      // Management Plan Headers
-      pdf.setTextColor(2, 150, 138);
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Management Plan', 20, 120);
-      pdf.text('Instructions', pageWidth / 2 + 10, 120);
-
-      // Draw separator line
-      pdf.setDrawColor(0, 0, 0);
-      pdf.setLineWidth(0.5);
-      pdf.line(pageWidth / 2, 110, pageWidth / 2, 120 + (prescription.prescription.length * 25));
-
-      // Add prescription items
-      let yPosition = 140;
-      pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-
-      prescription.prescription.forEach((item, index) => {
-        // Medicine (left side)
-        const medicineLines = pdf.splitTextToSize(item.medicine, (pageWidth / 2) - 30);
-        pdf.text(medicineLines, 20, yPosition);
-
-        // Instructions (right side)
-        const instructionLines = pdf.splitTextToSize(item.instructions, (pageWidth / 2) - 30);
-        pdf.text(instructionLines, pageWidth / 2 + 10, yPosition);
-
-        // Add background rectangles for better readability
-        pdf.setFillColor(245, 245, 245);
-        pdf.rect(15, yPosition - 8, (pageWidth / 2) - 25, Math.max(medicineLines.length, instructionLines.length) * 5 + 6, 'F');
-        pdf.rect(pageWidth / 2 + 5, yPosition - 8, (pageWidth / 2) - 25, Math.max(medicineLines.length, instructionLines.length) * 5 + 6, 'F');
-
-        // Re-add text over rectangles
-        pdf.setTextColor(0, 0, 0);
-        pdf.text(medicineLines, 20, yPosition);
-        pdf.text(instructionLines, pageWidth / 2 + 10, yPosition);
-
-        yPosition += Math.max(medicineLines.length, instructionLines.length) * 5 + 15;
-      });
-
-      // Footer
-      pdf.setTextColor(2, 150, 138);
-      pdf.setFontSize(10);
-      pdf.text('Copyright © 2024 PsyLink | All Rights Reserved', pageWidth / 2, pageHeight - 20, { align: 'center' });
-
-      // Add decorative elements
-      pdf.setFillColor(2, 150, 138);
-      pdf.circle(15, pageHeight - 30, 8, 'F');
-      pdf.circle(pageWidth - 15, pageHeight - 30, 8, 'F');
-
-      // Save the PDF
-      pdf.save(`Prescription_${prescription.prescriptionId}_${prescription.patientName}.pdf`);
+      [topDesignBase64, lowerLeftBgBase64, logoBase64] = await Promise.all([
+        getImageBase64(TopDesign),
+        getImageBase64(LowerLeftBackground),
+        getImageBase64(PsyLinkLogo)
+      ]);
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
+      console.warn('Could not load images, proceeding without them:', error);
+      topDesignBase64 = '';
+      lowerLeftBgBase64 = '';
+      logoBase64 = '';
     }
-  };
+
+    // Add white background
+    pdf.setFillColor(255, 255, 255);
+    pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+    // Add top design background image
+    if (topDesignBase64) {
+      try {
+        // Scale the top design to cover the top portion similar to the page
+        const topImageHeight = 100; // Adjust based on your design
+        pdf.addImage(topDesignBase64, 'PNG', 0, 0, pageWidth, topImageHeight);
+      } catch (error) {
+        console.warn('Could not add top design image:', error);
+      }
+    } else {
+      // Fallback: Add a gradient-like background for the header
+      pdf.setFillColor(2, 150, 138);
+      pdf.rect(0, 0, pageWidth, 50, 'F');
+    }
+
+    // Header Section - Logo and Title
+    if (logoBase64) {
+      try {
+        pdf.addImage(logoBase64, 'PNG', 15, 15, 12, 15);
+      } catch (error) {
+        console.warn('Could not add logo:', error);
+      }
+    }
+
+    // PsyLink Title
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('PsyLink', 32, 27);
+
+    // Date and ID in header (top right)
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(`Date: ${formatDate(prescription.date)}`, pageWidth - 15, 20, { align: 'right' });
+    pdf.text(`ID: ${prescription.prescriptionId}`, pageWidth - 15, 28, { align: 'right' });
+
+    // Doctor Details (left side, below header) - Changed to WHITE
+    const doctorY = 60;
+    pdf.setTextColor(255, 255, 255); // Changed to white
+    pdf.setFontSize(18);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`Dr: ${prescription.doctorName}`, 20, doctorY);
+    
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(prescription.doctorSpecialisation, 20, doctorY + 8);
+
+    // Patient Details (right side, fixed positioning)
+    const patientY = 60;
+    pdf.setTextColor(2, 150, 138); // Primary color
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'normal');
+
+    // Fixed patient details positioning - moved labels to the left, answers to the right
+    const labelX = pageWidth - 80; // Position for labels
+    const answerX = pageWidth - 30; // Position for answers (shifted right)
+
+    // Patient Name
+    pdf.text(`Patient's Name:`, labelX, patientY, { align: 'left' });
+    pdf.text(prescription.patientName, answerX, patientY, { align: 'left' });
+    // Add underline for patient name
+    pdf.setDrawColor(2, 150, 138);
+    pdf.setLineWidth(0.5);
+    pdf.line(answerX, patientY + 1, answerX + pdf.getTextWidth(prescription.patientName), patientY + 1);
+
+    // Sex
+    pdf.text(`Sex:`, labelX, patientY + 8, { align: 'left' });
+    pdf.text(prescription.patientGender, answerX, patientY + 8, { align: 'left' });
+    // Add underline for sex
+    pdf.line(answerX, patientY + 9, answerX + pdf.getTextWidth(prescription.patientGender), patientY + 9);
+
+    // Age
+    pdf.text(`Age:`, labelX, patientY + 16, { align: 'left' });
+    pdf.text(prescription.patientAge, answerX, patientY + 16, { align: 'left' });
+    // Add underline for age
+    pdf.line(answerX, patientY + 17, answerX + pdf.getTextWidth(prescription.patientAge), patientY + 17);
+
+    // Management Plan and Instructions Headers
+    const headersY = 120;
+    pdf.setTextColor(2, 150, 138);
+    pdf.setFontSize(18);
+    pdf.setFont('helvetica', 'bold');
+    
+    pdf.text('Management Plan', 20, headersY);
+    pdf.text('Instructions', pageWidth / 2 + 10, headersY);
+
+    // Draw separator line (vertical line between columns)
+    pdf.setDrawColor(0, 0, 0);
+    pdf.setLineWidth(1);
+    pdf.line(pageWidth / 2, headersY + 5, pageWidth / 2, headersY + 25 + (prescription.prescription.length * 25));
+
+    // Add prescription items with styling similar to the page
+    let yPosition = headersY + 15;
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+
+    prescription.prescription.forEach((item, index) => {
+      const itemHeight = 20;
+      
+      // Background rectangles (like the gray boxes in the page)
+      pdf.setFillColor(248, 249, 250); // Light gray background
+      pdf.setDrawColor(229, 229, 229); // Gray border
+      pdf.setLineWidth(0.5);
+      
+      // Left box (Medicine)
+      pdf.rect(15, yPosition - 5, (pageWidth / 2) - 20, itemHeight, 'FD');
+      // Right box (Instructions)
+      pdf.rect(pageWidth / 2 + 5, yPosition - 5, (pageWidth / 2) - 20, itemHeight, 'FD');
+
+      // Medicine text (left side)
+      const medicineLines = pdf.splitTextToSize(item.medicine, (pageWidth / 2) - 30);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(medicineLines, 18, yPosition + 2);
+
+      // Instructions text (right side)
+      const instructionLines = pdf.splitTextToSize(item.instructions, (pageWidth / 2) - 30);
+      pdf.text(instructionLines, pageWidth / 2 + 8, yPosition + 2);
+
+      yPosition += Math.max(itemHeight, Math.max(medicineLines.length, instructionLines.length) * 5) + 5;
+    });
+
+    // Add lower left background image - ENLARGED
+    if (lowerLeftBgBase64) {
+      try {
+        const lowerBgWidth = 90; // Increased from 60
+        const lowerBgHeight = 120; // Increased from 60
+        pdf.addImage(lowerLeftBgBase64, 'PNG', 0, pageHeight - lowerBgHeight, lowerBgWidth, lowerBgHeight);
+      } catch (error) {
+        console.warn('Could not add lower background image:', error);
+      }
+    }
+
+    // Footer with styling (removed decorative circles)
+    const footerY = pageHeight - 15;
+    pdf.setTextColor(2, 150, 138);
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Copyright © 2024 PsyLink | All Rights Reserved', pageWidth / 2, footerY, { align: 'center' });
+
+    // Removed the decorative circles from footer
+
+    // Save the PDF with proper filename
+    pdf.save(`Prescription_${prescription.prescriptionId}_${prescription.patientName}.pdf`);
+    
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Error generating PDF. Please try again.');
+  }
+};
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white rounded-[20px] shadow-lg overflow-hidden relative">
