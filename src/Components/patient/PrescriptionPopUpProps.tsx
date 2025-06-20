@@ -1,4 +1,5 @@
 import React from 'react';
+import jsPDF from 'jspdf';
 import TopDesign from "./../../assets/patient/Prescription/TopDesign.png";
 import LowerLeftBackground from "./../../assets/patient/Prescription/LowerLeftBackground.png";
 import PsyLinkLogo from "./../../assets/patient/Prescription/PsylinkLogo.png";
@@ -38,6 +39,126 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
       day: 'numeric' 
     };
     return date.toLocaleDateString('en-US', options);
+  };
+
+  // Function to convert image to base64
+  const getImageBase64 = (imageSrc: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        resolve(dataURL);
+      };
+      img.onerror = reject;
+      img.src = imageSrc;
+    });
+  };
+
+  // PDF Download Function
+  const downloadPDF = async () => {
+    try {
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // Add background gradient/color
+      pdf.setFillColor(248, 250, 252); // Light blue-gray background
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+      // Header Section with colored background
+      pdf.setFillColor(2, 150, 138); // Teal color
+      pdf.rect(0, 0, pageWidth, 50, 'F');
+
+      // Add PsyLink Logo and Title (you may need to convert logo to base64)
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(24);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('PsyLink', 20, 25);
+
+      // Add Date and ID in header
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(`Date: ${formatDate(prescription.date)}`, pageWidth - 80, 20);
+      pdf.text(`ID: ${prescription.prescriptionId}`, pageWidth - 80, 30);
+
+      // Doctor Details
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(`Dr: ${prescription.doctorName}`, 20, 70);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(prescription.doctorSpecialisation, 20, 80);
+
+      // Patient Details
+      pdf.setTextColor(2, 150, 138);
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(`Patient's Name: ${prescription.patientName}`, pageWidth - 100, 70);
+      pdf.text(`Sex: ${prescription.patientGender}`, pageWidth - 100, 80);
+      pdf.text(`Age: ${prescription.patientAge}`, pageWidth - 100, 90);
+
+      // Management Plan Headers
+      pdf.setTextColor(2, 150, 138);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Management Plan', 20, 120);
+      pdf.text('Instructions', pageWidth / 2 + 10, 120);
+
+      // Draw separator line
+      pdf.setDrawColor(0, 0, 0);
+      pdf.setLineWidth(0.5);
+      pdf.line(pageWidth / 2, 110, pageWidth / 2, 120 + (prescription.prescription.length * 25));
+
+      // Add prescription items
+      let yPosition = 140;
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+
+      prescription.prescription.forEach((item, index) => {
+        // Medicine (left side)
+        const medicineLines = pdf.splitTextToSize(item.medicine, (pageWidth / 2) - 30);
+        pdf.text(medicineLines, 20, yPosition);
+
+        // Instructions (right side)
+        const instructionLines = pdf.splitTextToSize(item.instructions, (pageWidth / 2) - 30);
+        pdf.text(instructionLines, pageWidth / 2 + 10, yPosition);
+
+        // Add background rectangles for better readability
+        pdf.setFillColor(245, 245, 245);
+        pdf.rect(15, yPosition - 8, (pageWidth / 2) - 25, Math.max(medicineLines.length, instructionLines.length) * 5 + 6, 'F');
+        pdf.rect(pageWidth / 2 + 5, yPosition - 8, (pageWidth / 2) - 25, Math.max(medicineLines.length, instructionLines.length) * 5 + 6, 'F');
+
+        // Re-add text over rectangles
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(medicineLines, 20, yPosition);
+        pdf.text(instructionLines, pageWidth / 2 + 10, yPosition);
+
+        yPosition += Math.max(medicineLines.length, instructionLines.length) * 5 + 15;
+      });
+
+      // Footer
+      pdf.setTextColor(2, 150, 138);
+      pdf.setFontSize(10);
+      pdf.text('Copyright © 2024 PsyLink | All Rights Reserved', pageWidth / 2, pageHeight - 20, { align: 'center' });
+
+      // Add decorative elements
+      pdf.setFillColor(2, 150, 138);
+      pdf.circle(15, pageHeight - 30, 8, 'F');
+      pdf.circle(pageWidth - 15, pageHeight - 30, 8, 'F');
+
+      // Save the PDF
+      pdf.save(`Prescription_${prescription.prescriptionId}_${prescription.patientName}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    }
   };
 
   return (
@@ -134,13 +255,29 @@ const PrescriptionPage: React.FC<PrescriptionProps> = ({ prescription }) => {
       </div>
 
       {/* Footer Section */}
-      <div className="flex flex-col sm:flex-row justify-center items-center px-4 md:px-6 pb-4 pt-2 relative z-20 bg-white">
+      <div className="flex flex-col sm:flex-row justify-between items-center px-4 md:px-6 pb-4 pt-2 relative z-20 bg-white">
         <p className="text-[#02968A] text-xs md:text-sm mb-4 sm:mb-0">Copyright © 2024 PsyLink | All Rights Reserved</p>
-        {/* <div>
-          <button className="bg-[#02968A] text-white py-1 md:py-2 px-3 md:px-6 rounded-lg hover:bg-[#016d63] text-sm md:text-base">
+        <div>
+          <button 
+            onClick={downloadPDF}
+            className="bg-[#02968A] text-white py-2 px-6 rounded-lg hover:bg-[#016d63] transition-colors duration-200 text-sm md:text-base flex items-center gap-2"
+          >
+            <svg 
+              className="w-4 h-4" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+              />
+            </svg>
             Download PDF
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );

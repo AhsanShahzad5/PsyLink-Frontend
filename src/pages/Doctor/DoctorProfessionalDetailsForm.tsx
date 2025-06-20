@@ -16,8 +16,8 @@ const ProfessionalDetailForm: React.FC = () => {
   const [cnicNumber, setCnicNumber] = useState("");
   const [pmdcNumber, setPmdcNumber] = useState("");
   const [educationalBackground, setEducationalBackground] = useState("");
-  const [availabilityStart, setAvailabilityStart] = useState("");
-  const [availabilityEnd, setAvailabilityEnd] = useState("");
+  const [availabilityStart, setAvailabilityStart] = useState("09:00 am");
+  const [availabilityEnd, setAvailabilityEnd] = useState("09:00 pm");
   const [consultationFee, setConsultationFee] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [imgUrl, setImgUrl] = useState<string>("");
@@ -325,7 +325,7 @@ const ProfessionalDetailForm: React.FC = () => {
                 onChange={setEducationalBackground}
                 required={true}
               />
-              <div className="md:col-span-2 flex gap-4">
+              {/* <div className="md:col-span-2 flex gap-4">
                 <div className="flex-1">
                   <SelectField
                     label="Availability Hours (Start)"
@@ -344,7 +344,7 @@ const ProfessionalDetailForm: React.FC = () => {
                     required={true}
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex-1">
                 <InputField
@@ -369,6 +369,9 @@ const ProfessionalDetailForm: React.FC = () => {
                 required={true}
               />
             </form>
+            <div className="my-9">
+
+            </div>
             <UploadImage
               label="License/Certification Proof"
               text="Choose image"

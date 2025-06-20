@@ -137,7 +137,7 @@ const DoctorIntro = () => {
     if (!time24) return "";
     const [hoursStr, minutes] = time24.split(":");
     let hours = parseInt(hoursStr, 10);
-    const ampm = hours >= 12 ? "PM" : "AM";
+    const ampm = hours >= 12 ? "" : "";
     hours = hours % 12 || 12; // 0 -> 12
     return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
   };
@@ -261,11 +261,25 @@ const DoctorIntro = () => {
                 `${safeDisplay(formData.city, "City")} - ${safeDisplay(formData.country, "Country")}`
               )}
             </p>
+            <p className="text-[16px] sm:text-[18px] font-light text-[#222] mt-4">
+              {isEditing ? (
+                <input
+                  type="number"
+                  name="consultationFee"
+                  placeholder="Consultation Fee"
+                  value={formData.consultationFee}
+                  onChange={handleInputChange}
+                  className="border-b-2 outline-none"
+                />
+              ) : (
+                `Rs${safeDisplay(formData.consultationFee, "Fee not set")}`
+              )}
+            </p>
           </div>
 
           {/* Clinic Timing and Fee */}
           <div className="sm:col-span-3 text-center flex flex-col justify-center items-center gap-2">
-            <p className="text-[16px] sm:text-[18px] font-light text-[#222] flex items-center gap-2">
+            {/* <p className="text-[16px] sm:text-[18px] font-light text-[#222] flex items-center gap-2">
               <FaClock className="text-primary" />
               {isEditing ? (
                 <>
@@ -290,23 +304,10 @@ const DoctorIntro = () => {
                   {formatTime(formData.startTime)} - {formatTime(formData.endTime)}
                 </>
               )}
-            </p>
+            </p> */}
 
 
-            <p className="text-[16px] sm:text-[18px] font-light text-[#222] mt-4">
-              {isEditing ? (
-                <input
-                  type="number"
-                  name="consultationFee"
-                  placeholder="Consultation Fee"
-                  value={formData.consultationFee}
-                  onChange={handleInputChange}
-                  className="border-b-2 outline-none"
-                />
-              ) : (
-                `Rs${safeDisplay(formData.consultationFee, "Fee not set")}`
-              )}
-            </p>
+           
 
             {isEditing && (
               <button
