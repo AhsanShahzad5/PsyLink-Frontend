@@ -72,25 +72,25 @@ const Post = ({
   useEffect(() => {
     const fetchLikeAndFavoriteStatus = async () => {
       if (!userId) return;
-      
+
       try {
         // Fetch post liked status
         const likeResponse = await fetch(`http://localhost:8000/api/psync/checkLikeStatus/${postId}?userId=${userId}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        
+
         if (likeResponse.ok) {
           const likeData = await likeResponse.json();
           setIsLiked(likeData.isLiked);
         }
-        
+
         // Fetch post favorited status
         const favResponse = await fetch(`http://localhost:8000/api/psync/checkFavoriteStatus/${postId}?userId=${userId}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        
+
         if (favResponse.ok) {
           const favData = await favResponse.json();
           setIsFavorited(favData.isFavorited);
@@ -99,7 +99,7 @@ const Post = ({
         console.error("Error fetching post status:", error);
       }
     };
-    
+
     fetchLikeAndFavoriteStatus();
   }, [postId, userId]);
 
@@ -142,7 +142,7 @@ const Post = ({
         // Toggle the favorited state
         const newFavoritedState = !isFavorited;
         setIsFavorited(newFavoritedState);
-        
+
         toast({
           description: newFavoritedState ? "Post added to favorites!" : "Post removed from favorites!",
           variant: "default",
@@ -189,28 +189,28 @@ const Post = ({
   const handlePostDelete = async () => {
     try {
       // Check if current user is admin and include that in the request body
-      
+
       const response = await fetch(`http://localhost:8000/api/psync/deletePost/${postId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           userId,
           isAdmin // Send this flag to the backend
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
         toast({
           description: "Post deleted successfully!",
           variant: "default",
           duration: 1000,
         });
-  
+
         // 🔄 Refresh the page or remove post from UI (modify as needed)
         window.location.reload();
-  
+
       } else {
         toast({
           description: result.error || "Failed to delete post",
@@ -253,12 +253,12 @@ const Post = ({
       ? 'bg-gray-400 cursor-not-allowed'
       : 'bg-teal-600 hover:bg-teal-700';
   };
-  
+
   // Define heart and bookmark icon styles
   const getHeartIconStyle = () => {
     return isLiked ? 'text-red-500' : 'text-white';
   };
-  
+
   const getBookmarkIconStyle = () => {
     return isFavorited ? 'text-yellow-500' : 'text-white';
   };
@@ -279,7 +279,7 @@ const Post = ({
                     <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate">{authorName}</h3>
                     {authoreRole === "doctor" &&
                       <Badge className="bg-transparent border-teal-300 text-primary pointer-events-none text-xs">
-                      {authoreRole}
+                        {authoreRole}
                       </Badge>
                     }
                   </div>
@@ -316,9 +316,15 @@ const Post = ({
               {content}
             </p>
 
-            {image && (
+            {/* {image && (
               <div className="mb-3 sm:mb-4 rounded-lg sm:rounded-2xl overflow-hidden">
                 <img src={image} alt="Post content" className="w-full h-auto object-cover" />
+              </div>
+            )} */}
+
+            {image && (
+              <div className="mb-3 sm:mb-4 rounded-lg sm:rounded-2xl overflow-hidden h-56 sm:h-72">
+                <img src={image} alt="Post content" className="w-full h-full object-cover" />
               </div>
             )}
             <div className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-4">

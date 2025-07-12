@@ -113,7 +113,7 @@ export default function Navbar() {
   return (
     <div>
          {/* Navbar */}
-       <nav className="flex justify-between items-center w-full p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
+       <nav className="flex justify-between items-center w-full p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10 h-[4rem]">
         {/* Logo Section */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>navigate('/patient/home')}>
           <img src="/src/assets/patient/homepage/Logo.png" alt="Logo" className="h-12" />
@@ -134,9 +134,12 @@ export default function Navbar() {
                 key={link}
                 onClick={() => handleNavClick(link)}
                 className={`px-4 py-2 rounded-full ${
-                    activeNav === link ? "bg-[#02968A] text-white" : "text-black bg-transparent"
-                } ${link === "Allen" ? "bg-gradient-to-b from-[#9E00CA] to-[#4F0064] text-white" : ""}
-                transition-all duration-300 ease-in-out flex justify-center items-center min-w-[120px]`}
+                  activeNav === link 
+                      ? "bg-[#02968A] text-white" 
+                      : (link === "Allen" 
+                          ? "bg-gradient-to-b from-[#9E00CA] to-[#4F0064] text-white" 
+                          : "text-black bg-transparent")
+              } transition-all duration-300 ease-in-out flex justify-center items-center min-w-[120px]`}
                 >
                 {link}
                 </button>

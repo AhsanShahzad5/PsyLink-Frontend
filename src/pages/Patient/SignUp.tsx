@@ -113,7 +113,7 @@ const SignUp: React.FC = () => {
   const { name, email, password, role } = formData;
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-transparent my-10">
+    <div className="flex justify-center items-center min-h-screen bg-transparent">
       <div className="flex w-full max-w-7xl shadow-2xl rounded-lg overflow-hidden bg-white">
         <div className="flex flex-col w-1/2 p-12">
           <div className="flex flex-col items-center">

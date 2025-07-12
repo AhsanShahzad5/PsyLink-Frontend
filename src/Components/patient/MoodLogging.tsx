@@ -89,17 +89,24 @@ const MoodLogging = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white p-6 rounded-xl shadow-md flex justify-center items-center h-64">
+      <div className="bg-white p-6 rounded-xl shadow-md flex justify-center items-center h-[220px]">
         <div className="animate-pulse text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md relative">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-center lg:text-left">How Are You Feeling Today?</h2>
+    <div className="bg-white p-6 rounded-xl shadow-md relative h-[220px]">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-xl font-semibold text-center lg:text-left">How Are You Feeling Today?</h2>
         
+        {/* {!todayMoodLogged && (
+        <div className="mb-1 p-1 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
+         
+           </div>
+      )} */}
+
+
         {!todayMoodLogged && (
           <button 
             onClick={handleSaveMood}
@@ -118,7 +125,7 @@ const MoodLogging = () => {
       </div>
       
       {todayMoodLogged && (
-        <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
+        <div className="mb-1 p-1 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
           You've logged your mood for today as <strong>{selectedMood}</strong>. You can log again tomorrow.
         </div>
       )}
@@ -137,7 +144,7 @@ const MoodLogging = () => {
             onClick={() => handleMoodSelection(mood)}
             style={{ minWidth: '120px', maxWidth: '160px' }}
           >
-            <div className="bg-[#fff] h-16 w-16 mt-4 rounded-full flex items-center justify-center text-white text-3xl">
+            <div className="bg-[#fff] h-10 w-10 mt-3 rounded-full flex items-center justify-center text-white text-3xl">
               <img src={`/src/assets/patient/homepage/${mood}.png`} alt={mood} />
             </div>
             <span className="mt-2 text-lg font-medium">{mood}</span>

@@ -10,10 +10,6 @@ import DocReviews from "@/Components/doctor/DocReviews";
 
 
 
-  
-
-
-
 
 const DoctorClinic = () => {
   const [isLoading, setIsLoading] = useState(true);

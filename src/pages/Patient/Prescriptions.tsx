@@ -154,7 +154,7 @@ export default function Prescription(): JSX.Element {
    <>
       {/* Main Content */}
    <div className="bg-[#fffff] min-h-screen w-full flex justify-center mt-40 ">
-       <div className="w-full max-w-screen-xl p-4 bg-[#fff] mt-4">
+       <div className="w-full max-w-screen-xl p-4 bg-[#fff] mt-1">
      
       {/* Back button */}
      <div className="flex items-center mb-6">

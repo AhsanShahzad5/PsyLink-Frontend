@@ -271,7 +271,9 @@ const ExerciseDetailPage: React.FC = () => {
         </div>
 
         {/* (Optional) you could swap these images based on program._id or theme */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        {/* removed the dummy images  */}
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#fff] rounded-lg p-4">
             <img
               src="/src/assets/patient/Exercise/breathing1.png"
@@ -293,7 +295,7 @@ const ExerciseDetailPage: React.FC = () => {
               className="w-full h-48 object-cover rounded-lg"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Tasks Table */}
         <div className="overflow-y-auto max-h-96 border border-gray-200 rounded-xl custom-scrollbar">

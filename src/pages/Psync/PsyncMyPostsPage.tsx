@@ -50,7 +50,7 @@ useEffect(() => {
 
   return (
     <div className="flex justify-center mt-12 bg-secondary">
-      <div className="w-[95%] p-6 rounded-lg shadow-lg overflow-auto h-screen custom-scrollbar">
+      <div className="w-[95%] p-6 h-screen">
         <div className="pt-3 max-w-4xl w-full mx-auto">
         <FavouritesBackButton text="My Posts"/>
           {

@@ -149,8 +149,8 @@ export default function Component() {
   };
 
   return (
-    <div className="min-h-screen bg-[#D3EDEB] mx-10">
-      <div className="min-h-screen bg-[#fff] rounded-2xl mt-24">
+    <div className="h-[90vh] bg-[#D3EDEB] mx-10 border-2 ">
+      <div className="h-[calc(90vh-6rem)] bg-[#fff] rounded-2xl mt-24 border-2 ">
         <div className="flex flex-col h-full">
           <header className="flex items-center justify-between px-4 py-3 border-b">
             <button
@@ -198,7 +198,7 @@ export default function Component() {
           <div className="flex flex-1 flex-col md:flex-row">
             <main className="flex-1 p-4">
               {selectedNote ? (
-                <div className="space-y-4 bg-[#F5F5F5] rounded-xl p-4">
+                <div className="space-y-4 bg-[#F5F5F5] rounded-xl p-4 h-full flex flex-col">
                   <Input
                     placeholder="Enter Title..."
                     value={selectedNote.title}
@@ -214,12 +214,12 @@ export default function Component() {
                     onChange={(e) =>
                       setSelectedNote({ ...selectedNote, content: e.target.value })
                     }
-                    className="min-h-[400px] text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    className="flex-1 text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0 resize-none"
                     disabled={isSaving}
                   />
                 </div>
               ) : (
-                <div className="space-y-4 bg-[#F5F5F5] rounded-xl p-4">
+                <div className="space-y-4 bg-[#F5F5F5] rounded-xl p-4 h-full flex flex-col">
                   <Input
                     placeholder="Enter Title..."
                     value={title}
@@ -231,17 +231,14 @@ export default function Component() {
                     placeholder="Write your text here..."
                     value={notesText}
                     onChange={(e) => setNotesText(e.target.value)}
-                    className="min-h-[400px] text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0"
+                    className="flex-1 text-xl bg-[#F5F5F5] w-full border-0 focus-visible:ring-0 resize-none"
                     disabled={isSaving}
                   />
                 </div>
               )}
             </main>
             <div className="order-2 md:order-1 md:w-1/3 lg:w-1/4 flex flex-col border-t md:border-t-0 md:border-r">
-              <ScrollArea
-                className="flex-1 p-4 overflow-y-auto"
-                style={{ maxHeight: '90vh' }}
-              >
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 {isLoading ? (
                   <div className="flex justify-center items-center h-40">
                     <p>Loading notes...</p>

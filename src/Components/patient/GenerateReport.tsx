@@ -177,7 +177,7 @@ export default function GenerateReport({ medicines, moodData, setShowReport, sum
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-4xl h-[700px] p-6 border border-gray-300 rounded-lg shadow-lg z-50 overflow-y-auto">
+      <div className="bg-white w-full max-w-4xl h-[550px] p-6 border border-gray-300 rounded-lg shadow-lg z-50 overflow-y-auto">
         <button
           onClick={() => setShowReport(false)}
           className="text-gray-600 hover:text-gray-900 text-xl font-bold flex items-end"

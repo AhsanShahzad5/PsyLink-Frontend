@@ -8,7 +8,7 @@ interface ActiveTabProps {
 
 const ActiveTab: React.FC<ActiveTabProps> = ({ tabs, activeTab, onTabClick }) => {
   return (
-    <nav className="flex justify-between items-center w-full p-2 sm:p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10 mt-24">
+    <nav className="h-[4rem] flex justify-between items-center w-full p-1 sm:p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10 mt-20">
       {/* Tabs visible on small screens only */}
       <div className="flex-1 flex sm:hidden overflow-x-auto space-x-2 justify-center px-2">
         {tabs.map((tab) => (
