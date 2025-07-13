@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import { toast } from '@/hooks/use-toast';
 
 // Types
 export type PreviousRecordType = {
@@ -174,6 +175,84 @@ export const HomeUpcomingAppointments = () => {
     );
   }
 
+
+  // filter appointments for future
+  const now = new Date();
+  const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const currentHour = now.getHours();
+  const fiveHoursFromNow = currentHour + 5;
+  
+  // Helper function to convert appointment time to 24-hour format
+  const convertTo24Hour = (timeStr) => {
+   const [time, period] = timeStr.split(/(AM|PM)/);
+   let [hours] = time.split(':');
+   hours = parseInt(hours);
+   
+   if (period === 'AM' && hours === 12) hours = 0;
+   if (period === 'PM' && hours !== 12) hours += 12;
+   
+   return hours;
+  };
+  
+  
+  
+  // Filter for future appointments (later than 5 hours from now)
+  const futureAppointments = appointments.filter(appointment => {
+   if (appointment.date > currentDate) return true; // Future dates
+   if (appointment.date === currentDate) {
+     const appointmentHour = convertTo24Hour(appointment.time);
+     return appointmentHour >= fiveHoursFromNow;
+   }
+   return false;
+  });
+
+  // handleAppointmentCancelation
+  const handleAppointmentCancelation = async (appointment: any) => {
+    try {
+      // Show loading state
+      setIsLoading(true);
+      
+      // Call the reschedule API
+      const response = await fetch('http://localhost:8000/api/patient/reschedule-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          appointmentId: appointment.appointmentId,
+          patientId: appointment.patientId,
+          date: appointment.date,
+          time: appointment.time,
+          // patient: appointment.patient,
+          // patientEmail: appointment.patientEmail // Make sure this is available in your appointment object
+        })
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        toast({
+          description: "Appointment has been cancelled and rescheduling email sent to patient",
+          variant: "default", // Changed from destructive to default since it's a success
+          duration: 3000,
+        });
+      } else {
+        throw new Error(data.message || 'Failed to send rescheduling email');
+      }
+  
+    } catch (error) {
+      console.error('Error cancelling appointment:', error);
+      toast({
+        description: "Failed to cancel appointment and send rescheduling email",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+      // Refresh the appointments list
+      window.location.reload();
+    }
+  };
   // Show appointments
   return (
     <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
@@ -187,10 +266,11 @@ export const HomeUpcomingAppointments = () => {
             <th className="py-2">Time</th>
             <th className="py-2">Patient</th>
             <th className="py-2">Actions</th>
+            <th className="py-2">Cancel</th>
           </tr>
         </thead>
         <tbody className="divide-y">
-          {appointments.map((appointment, index) => (
+          {futureAppointments.map((appointment, index) => (
             <tr key={appointment.appointmentId || index}>
               <td className="py-3 text-gray-600">{appointment.date}</td>
               <td className="py-3 text-gray-600">{appointment.time}</td>
@@ -209,6 +289,16 @@ export const HomeUpcomingAppointments = () => {
                     ? 'No Records' 
                     : `View Records (${appointment.previousRecords.length})`}
                 </button>
+              </td>
+              <td className="py-3">
+              <button 
+                onClick={() => handleAppointmentCancelation(appointment)}
+                disabled={isLoading}
+                className="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primaryHover transition"
+
+              >
+                {isLoading ? 'Cancelling...' : 'Cancel Appointment'}
+              </button>
               </td>
             </tr>
           ))}

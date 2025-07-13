@@ -4,22 +4,144 @@ import DefaultDoctorImage from '/src/assets/patient/doctor/doctor.png';
 import { FaClock } from "react-icons/fa";
 import DocReviews from "@/Components/doctor/DocReviews";
 import DoctorReviewPage from "./DoctorReview";
+import { useSearchParams } from 'react-router-dom';
 
+// Define proper TypeScript interfaces
+interface Slot {
+  time: string;
+  status: 'available' | 'busy' | 'booked';
+  bookedBy?: string;
+}
 
-const DoctorProfile: React.FC = () => {
+interface Availability {
+  date: string;
+  slots: Slot[];
+}
+
+interface Rating {
+  TotalStars: number;
+  TotalReviews: number;
+}
+
+interface DoctorCard {
+  id: string;
+  userId: string;
+  fullName: string;
+  image: string;
+  consultationFee: number;
+  city: string;
+  country: string;
+  description: string;
+  specialisation: string;
+  educationBackground: string;
+  startTime: string;
+  endTime: string;
+  appointments: Availability[];
+  slots: Slot[];
+  rating: Rating;
+  status: 'pending' | 'verified';
+}
+
+const DoctorProfileRebooking: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const doctorCard = location.state?.doctorCard;
+  
+  // At the top of your rebooking component, get the parameters
+  const [searchParams] = useSearchParams();
+  const appointmentId = searchParams.get('appointmentId');
+  const patientId = searchParams.get('patientId');
+  const doctorId = searchParams.get('doctorId');
+  
+  // ALL HOOKS MUST BE DECLARED HERE - BEFORE ANY CONDITIONAL RETURNS
+  const [doctorCard, setDoctorCard] = useState<DoctorCard | null>(null);
+  const [selectedDateIndex, setSelectedDateIndex] = useState<number | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  if (!doctorCard) {
+  // Derived values that depend on doctorCard
+  const availableDates: string[] = doctorCard?.appointments?.map(
+    (appointment: Availability) => appointment.date
+  ) || [];
+
+
+  
+
+  const timeSlots: string[] =
+    selectedDateIndex !== null && doctorCard?.appointments?.[selectedDateIndex]?.slots
+      ? doctorCard.appointments[selectedDateIndex].slots.map((slot: Slot) => slot.time)
+      : [];
+
+  useEffect(() => {
+    const fetchDoctorDetails = async () => {
+      if (doctorId) {
+        try {
+          setIsLoading(true);
+          
+          const response = await fetch(`http://localhost:8000/api/doctor/details/${doctorId}` ,  {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: "include", // Include cookies for authentication
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          console.log("Doctor details fetched:", data);
+          
+          if (data.success && data.doctorCard) {
+            setDoctorCard(data.doctorCard);
+          }
+        } catch (error) {
+          console.error('Error fetching doctor details:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchDoctorDetails();
+  }, [doctorId]);
+
+  useEffect(() => {
+    if (availableDates.length > 0 && selectedDateIndex === null) {
+      setSelectedDateIndex(0);
+    }
+  }, [availableDates, selectedDateIndex]);
+
+  console.log(doctorId);
+
+  // NOW SAFE TO HAVE CONDITIONAL RETURNS AFTER ALL HOOKS ARE DECLARED
+  if (isLoading) {
     return (
-      <div>No doctor data available. Please go back and select a doctor.</div>
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#02968A]"></div>
+      </div>
     );
   }
 
-  console.log("this is doctorCard.id: ", doctorCard.id)
+  if (!doctorCard) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">No doctor data available</h2>
+          <p className="text-gray-600 mb-4">Please go back and select a doctor.</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="bg-[#02968A] text-white px-6 py-2 rounded-lg hover:bg-[#026F6A]"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const {
+    id,
     fullName,
     image,
     consultationFee,
@@ -31,27 +153,13 @@ const DoctorProfile: React.FC = () => {
     startTime,
     endTime,
     appointments = [],
+    slots = [],
+    rating,
+    status
   } = doctorCard;
 
-  console.log(image);
-
-  const [selectedDateIndex, setSelectedDateIndex] = useState<number | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  console.table(doctorCard);
-  const availableDates = appointments.map(
-    (appointment: any) => appointment.date
-  );
-
-  useEffect(() => {
-    if (availableDates.length > 0 && selectedDateIndex === null) {
-      setSelectedDateIndex(0);
-    }
-  }, [availableDates, selectedDateIndex]);
-
-  const timeSlots =
-    selectedDateIndex !== null && appointments[selectedDateIndex]?.slots
-      ? appointments[selectedDateIndex].slots.map((slot: any) => slot.time)
-      : [];
+  console.log("Doctor card data:", doctorCard);
+  console.log("Image URL:", image);
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return "";
@@ -96,55 +204,75 @@ const DoctorProfile: React.FC = () => {
     }
   };
 
-  // Modified to navigate to payment page
-  const handleBookAppointment = () => {
+  // Modified rebooking handler
+  const handleBookAppointment = async () => {
     if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
       alert("Please select a date and time slot.");
       return;
     }
 
-    // Format the date properly for the backend
-    const selectedDateStr = availableDates[selectedDateIndex];
+    try {
+      // Show loading state
+      setIsLoading(true);
 
-    // Navigate to payment page with doctor and appointment details
-    navigate('/patient/payNow', {
-      state: {
-        doctor: {
-          _id: doctorCard.id,
-          personalDetails: {
-            fullName: fullName
-          },
-          userId: doctorCard.userId,
-          professionalDetails: {
-            specialisation: specialisation,
-            consultationFee: consultationFee
-          }
+      // Format the date properly for the backend
+      const selectedDateStr = availableDates[selectedDateIndex];
+      
+      // Call the existing book appointment API
+      const response = await fetch('http://localhost:8000/api/patient/book/appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        selectedDate: selectedDateStr,
-        selectedTime: selectedSlot
+        credentials: "include",
+        body: JSON.stringify({
+          doctorId: doctorId, // This should be the doctor's _id from your database
+          date: selectedDateStr,
+          time: selectedSlot ,
+          patientId:patientId
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success - show success message
+        alert('Appointment rescheduled successfully!');
+        
+        // Optional: Log the original appointment info for reference
+        console.log('Original appointment ID:', appointmentId);
+        console.log('Patient ID:', patientId);
+        
+        // Redirect to patient dashboard or appointments page
+        navigate('/patient/home'); // or wherever you want to redirect
+      } else {
+        // Handle error
+        alert(data.message || 'Failed to reschedule appointment');
       }
-    });
+    } catch (error) {
+      console.error('Error rescheduling appointment:', error);
+      alert('An error occurred while rescheduling the appointment');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const aboutText = [
     "Welcome! I am a dedicated psychologist based in Pakistan, specializing in mental health and well-being. With a Master's degree in Clinical Psychology from Lahore University of Management Sciences (LUMS), I am committed to helping individuals navigate their mental health challenges and achieve a balanced and fulfilling life. With over 7 years of experience, I have worked with diverse populations, including children, adolescents, and adults, addressing issues such as anxiety, depression, stress, relationship difficulties, and trauma. My approach is rooted in evidence-based practices, combining Cognitive Behavioral Therapy (CBT), mindfulness techniques, and holistic methods to tailor treatment to each individual's unique needs. I believe in creating a safe and supportive environment where clients can openly express their thoughts and feelings. My goal is to empower individuals to understand their emotions, develop coping strategies, and foster resilience in the face of life's challenges. If you're seeking guidance and support, I invite you to reach out. Together, we can embark on a journey towards healing and personal growth.",
   ];
 
-  const formatShowClinicTime = (time24: string) => {
+  const formatShowClinicTime = (time24: string): string => {
     if (!time24) return "";
     const [hoursStr, minutes] = time24.split(":");
     let hours = parseInt(hoursStr, 10);
-    // const ampm = hours >= 12 ? "PM" : "AM";
-    const ampm = hours >= 12 ? "" : "";
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
     return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
   };
 
-  const isValidImageUrl = (image: string) => {
-    return image && (image.startsWith('http://') || image.startsWith('https://'));
+  const isValidImageUrl = (image: string): boolean => {
+    return typeof image === 'string' && (image.startsWith('http://') || image.startsWith('https://'));
   };
-
-
 
   const AboutSection = () => {
     return (
@@ -174,7 +302,6 @@ const DoctorProfile: React.FC = () => {
           </p>
         </div>
 
-
         {/* Timings and Fee */}
         <div className="sm:col-span-3 flex flex-col justify-center items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
@@ -189,8 +316,64 @@ const DoctorProfile: React.FC = () => {
           </p>
         </div>
       </div>
-    )
-  }
+    );
+  };
+
+  const SelectSlot2 = () => {
+    return (
+      <div className="bg-white pb-6">
+        <div className="mt-6 border-t pt-6">
+          <div className="flex gap-4 bg-[#fff] text-[#02968A] rounded-lg py-3 px-4 overflow-x-auto scrollbar-hidden border-y-2">
+            {availableDates.map((date: string, index: number) => (
+              <button
+                key={index}
+                className={`text-sm font-semibold px-12 py-2 rounded ${
+                  selectedDateIndex === index
+                    ? "border-2 border-[#02968A]"
+                    : "hover:border-2 hover:border-[#02968A]"
+                }`}
+                onClick={() => setSelectedDateIndex(index)}
+              >
+                {formatDate(date)}
+              </button>
+            ))}
+          </div>
+
+          {/* Time Slots */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+            {timeSlots.map((slot: string, index: number) => (
+              <div
+                key={index}
+                className={`bg-gray-100 rounded-lg text-center py-2 sm:py-4 cursor-pointer text-lg sm:text-2xl ${
+                  selectedSlot === slot
+                    ? "border-2 border-[#02968A]"
+                    : "hover:border-2 hover:border-[#02968A]"
+                }`}
+                onClick={() => setSelectedSlot(slot)}
+              >
+                <p className="font-outfit text-sm font-light">{formatTimeSlot(slot)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Book Appointment Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleBookAppointment}
+            className={`bg-[#02968A] text-white text-sm font-light py-4 px-8 sm:px-12 rounded-lg ${
+              selectedSlot && selectedDateIndex !== null && !isLoading
+                ? "hover:bg-[#026F6A]"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!selectedSlot || selectedDateIndex === null || isLoading}
+          >
+            {isLoading ? 'Processing...' : 'Reschedule Appointment'}
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const SelectSlot = () => {
     return (
@@ -228,7 +411,7 @@ const DoctorProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* Book Appointment Button */}
+        {/* Book Appointment Button
         <div className="flex justify-center mt-8">
           <button
             onClick={handleBookAppointment}
@@ -240,12 +423,26 @@ const DoctorProfile: React.FC = () => {
           >
             Proceed to Payment
           </button>
+        </div> */}
+
+        {/* Book Appointment Button */}
+               <div className="flex justify-center mt-8">
+          <button
+            onClick={handleBookAppointment}
+            className={`bg-[#02968A] text-white text-sm font-light py-4 px-8 sm:px-12 rounded-lg ${
+              selectedSlot && selectedDateIndex !== null && !isLoading
+                ? "hover:bg-[#026F6A]"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!selectedSlot || selectedDateIndex === null || isLoading}
+          >
+            {isLoading ? 'Processing...' : 'Reschedule Appointment'}
+          </button>
         </div>
 
       </div>
     )
   }
-
   const ProfileDetails = () => {
     return (
       <div className="bg-white mt-5 pb-4 mb-4 p-4">
@@ -253,14 +450,14 @@ const DoctorProfile: React.FC = () => {
         <h2 className="font-outfit font-semibold text-[20px] text-left p-3 sm:text-[22px] bg-white">
           About Me
         </h2>
-   
+
         {/* Content Section */}
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 p-3">
           {/* Text Section */}
           <div className="sm:col-span-7">
             {description}
           </div>
-   
+
           {/* Image Section */}
           <div className="sm:col-span-5 flex justify-end items-start">
             <div className="w-full max-w-[300px] h-auto bg-gray-200 rounded-lg sm:w-[280px] sm:h-[320px]">
@@ -272,7 +469,7 @@ const DoctorProfile: React.FC = () => {
             </div>
           </div>
         </div>
-   
+
         {/* Statistics Section */}
         <div className="flex flex-wrap justify-center gap-4 mt-8 px-4">
           {/* Patients Treated */}
@@ -284,7 +481,7 @@ const DoctorProfile: React.FC = () => {
           >
             <div className="flex items-center gap-2">
               <p className="font-outfit font-extrabold text-base sm:text-base md:text-lg">
-                0
+                {rating?.TotalReviews || 0}
               </p>
               <p className="font-outfit font-semibold text-base sm:text-sm md:text-base">
                 Patients Treated
@@ -293,8 +490,9 @@ const DoctorProfile: React.FC = () => {
           </div>
         </div>
       </div>
-    )
-   }
+    );
+  };
+
   return (
     <>
       <div className="mt-[35px] mx-5 p-12 max-w-[90rem]">
@@ -325,23 +523,17 @@ const DoctorProfile: React.FC = () => {
         {/* Section 1 : Doctor Profile Info */}
         <AboutSection />
 
-        {/*Section 2 : Date Selection Section */}
+        {/* Section 2 : Date Selection Section */}
         <SelectSlot />
 
-
         {/* Section 3 : About */}
-       <ProfileDetails/>
+        <ProfileDetails />
+
         {/* Section 4 : reviews */}
-        <DocReviews doctorId={doctorCard.userId} />
+        {/* <DocReviews doctorId={doctorCard.userId} /> */}
       </div>
     </>
   );
-
-
-
 };
 
-
-
-
-export default DoctorProfile;
+export default DoctorProfileRebooking;

@@ -64,6 +64,7 @@ import Complaint from './pages/Complaint';
 import PreviousProgramDetails from './pages/Patient/PreviousProgramDetails';
 import CreateSeriesButton from './Components/psync/CreateSeriesButton';
 import PreviousRecords from './pages/Doctor/PreviousRecords';
+import DoctorDetailsRebooking from './pages/Patient/DoctorDetailsRebooking';
 
 
 
@@ -223,6 +224,16 @@ const AppRoutes = () => (
                 <ProtectedRoute allowedRoles={['patient']}>
                     <PatientLayout>
                         <DoctorDetails />
+                    </PatientLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/patient/doctor-details-rebooking"
+            element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                    <PatientLayout>
+                        <DoctorDetailsRebooking />
                     </PatientLayout>
                 </ProtectedRoute>
             }
