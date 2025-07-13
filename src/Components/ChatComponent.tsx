@@ -189,7 +189,7 @@ const ChatComponent: React.FC<ChatProps> = ({ roomId }) => {
               </Avatar>
               
               <div className={`rounded-lg p-3 ${msg.senderId === user?._id ? 'bg-emerald-100' : 'bg-gray-100'}`}>
-                <div className="text-xs text-gray-500 mb-1">{msg.sender}</div>
+                {/* <div className="text-xs text-gray-500 mb-1">{msg.sender}</div> */}
                 {msg.isFile ? (
                   renderFilePreview(msg)
                 ) : (

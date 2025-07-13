@@ -10,8 +10,11 @@ const PaymentPage = () => {
   
   // Get data from navigation state
   // const { selectedDoctor, selectedDate, selectedTime } = location.state || {};
-  const { doctor: selectedDoctor, selectedDate, selectedTime } = location.state || {};
+  const { doctor: selectedDoctor, selectedDate, selectedTime, anonymousBooking } = location.state || {};
   // Redirect if no data
+
+  console.log('this is data in paymentPage : ', {doctor: selectedDoctor, selectedDate, selectedTime, anonymousBooking})
+
   useEffect(() => {
     if (!selectedDoctor || !selectedDate || !selectedTime) {
       navigate('/patient/bookings', { 
@@ -21,7 +24,7 @@ const PaymentPage = () => {
         }
       });
     }
-  }, [selectedDoctor, selectedDate, selectedTime, navigate]);
+  }, [selectedDoctor, selectedDate, selectedTime, anonymousBooking, navigate]);
 
   // If no data, show loading while redirection happens
   if (!selectedDoctor || !selectedDate || !selectedTime) {

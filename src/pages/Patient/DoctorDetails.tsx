@@ -96,6 +96,37 @@ const DoctorProfile: React.FC = () => {
     }
   };
 
+  const handleAnonymousBooking = ()=>{
+    if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
+      alert("Please select a date and time slot.");
+      return;
+    }
+
+    
+    const selectedDateStr = availableDates[selectedDateIndex];
+
+     // Navigate to payment page with doctor and appointment details
+     navigate('/patient/payNow', {
+      state: {
+        doctor: {
+          _id: doctorCard.id,
+          personalDetails: {
+            fullName: fullName
+          },
+          userId: doctorCard.userId,
+          professionalDetails: {
+            specialisation: specialisation,
+            consultationFee: consultationFee
+          }
+        },
+        selectedDate: selectedDateStr,
+        selectedTime: selectedSlot,
+        anonymousBooking : true,
+      }
+    });
+
+  }
+
   // Modified to navigate to payment page
   const handleBookAppointment = () => {
     if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
@@ -121,7 +152,8 @@ const DoctorProfile: React.FC = () => {
           }
         },
         selectedDate: selectedDateStr,
-        selectedTime: selectedSlot
+        selectedTime: selectedSlot,
+        anonymousBooking : false,
       }
     });
   };
@@ -238,7 +270,7 @@ const DoctorProfile: React.FC = () => {
               }`}
             disabled={!selectedSlot || selectedDateIndex === null}
           >
-            Proceed to Payment
+            Anonymous Booking
           </button>
         </div>
 
