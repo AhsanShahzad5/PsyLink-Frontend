@@ -341,7 +341,7 @@ const DoctorCalender = () => {
 
   return (
     <div className="bg-white rounded-lg p-6 my-4 border border-[#D9EAF3]">
-      <h2 className="text-[2.3rem] ml-4">Your Calendar</h2>
+      <h2 className="text-[1.8rem] ml-4">Your Calendar</h2>
 
       <div className="flex items-center justify-between w-full mb-4">
   <div className="flex items-center text-blue-600">

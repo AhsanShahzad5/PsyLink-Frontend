@@ -146,7 +146,7 @@ const DoctorIntro = () => {
   return (
     <div className="bg-[#F5FAFE] border border-[#D6E4EF] shadow-md rounded-lg p-6">
       <div className="flex justify-between mb-8">
-        <h2 className="text-[2.3rem] ml-4">Your personal details</h2>
+        <h2 className="text-[1.8rem] ml-4">Your personal details</h2>
         <FaPenAlt
           size={28}
           className="cursor-pointer text-gray-600 hover:text-primary transition-all"
@@ -165,7 +165,7 @@ const DoctorIntro = () => {
             <div className="sm:col-span-3 flex justify-center">
               <img
                 src={imagePreview}
-                className="w-[200px] h-[280px] sm:w-[315px] sm:h-[385px] bg-gray-200 rounded-lg"
+                className="w-[160px] h-[240px] sm:w-[285px] sm:h-[355px] bg-gray-200 rounded-lg object-cover"
                 alt="img"
               />
             </div>

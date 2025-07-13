@@ -83,7 +83,7 @@ const DoctorClinic = () => {
   }
 
   return (
-    <div className="pt-20 max-w-[89rem] mx-auto">
+    <div className="pt-20 max-w-[89rem] mx-auto p-8">
       <div className="flex flex-col">
         <DoctorIntro />
         <DoctorCalender />

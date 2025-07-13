@@ -131,19 +131,19 @@ export const PaymentsandReviewsChart: React.FC = () => {
   );
 
   return (
-    <div className="col-span-2 bg-white rounded-lg shadow-md p-2 h-fit md:mt-[-300px] sm:[mt-0]">
+    <div className="col-span-2 bg-white rounded-lg shadow-md p-2 h-[15rem] md:mt-[-265px]">
       <div className="flex flex-col md:flex-row justify-center items-center">
         {/* 5 Star Reviews Chart */}
-        <div className="relative h-50 m-4">
+        <div className="relative h-32 m-2">
           <h1 className="text-center">5 star reviews</h1>
           <div className="relative">
-            <PieChart width={160} height={160}>
+            <PieChart width={120} height={120}>
               <Pie
                 data={reviewPieData}
-                cx={80}
-                cy={80}
-                innerRadius={50}
-                outerRadius={70}
+                cx={60}
+                cy={60}
+                innerRadius={35}
+                outerRadius={50}
                 fill="#059669"
                 startAngle={90}
                 endAngle={-270}
@@ -164,7 +164,7 @@ export const PaymentsandReviewsChart: React.FC = () => {
                 <img
                   src="/src/assets/patient/homepage/Vector.png"
                   alt="User profile"
-                  className="h-9 w-7"
+                  className="h-7 w-5"
                 />
               </div>
             )}
@@ -185,16 +185,16 @@ export const PaymentsandReviewsChart: React.FC = () => {
         </div>
         
         {/* Appointments Scheduled Chart (based on payments) */}
-        <div className="relative h-50 m-4">
+        <div className="relative h-32 m-2">
           <h1 className="text-center">Appointments Scheduled</h1>
           <div className="relative">
-            <PieChart width={160} height={160}>
+            <PieChart width={120} height={120}>
               <Pie
                 data={appointmentsPieData}
-                cx={80}
-                cy={80}
-                innerRadius={50}
-                outerRadius={70}
+                cx={60}
+                cy={60}
+                innerRadius={35}
+                outerRadius={50}
                 fill="#059669"
                 startAngle={90}
                 endAngle={-270}
@@ -215,7 +215,7 @@ export const PaymentsandReviewsChart: React.FC = () => {
                 <img
                   src="/src/assets/patient/homepage/Vector.png"
                   alt="User profile"
-                  className="h-9 w-7"
+                  className="h-7 w-5  mr-8"
                 />
               </div>
             )}

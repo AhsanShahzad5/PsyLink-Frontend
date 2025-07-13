@@ -125,7 +125,7 @@ const DoctorAboutSection = () => {
   return (
     <div className="bg-white rounded-lg p-5 my-2">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[2.5rem] ml-10">About Your Clinic</h2>
+        <h2 className="text-[1.8rem] ml-10">About Your Clinic</h2>
         <FaPenAlt
           size={30}
           className="cursor-pointer text-gray-600 hover:text-black transition"
@@ -151,10 +151,10 @@ const DoctorAboutSection = () => {
           )}
         </div>
 
-        <div className="relative w-full md:w-[23vw] h-[70vh] rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+        <div className="relative  rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
         <img
               src={imagePreview}
-              className="w-[200px] h-[180px] sm:w-[315px] sm:h-[285px] bg-gray-200 rounded-lg"
+              className="w-[170px] h-[180px] sm:w-[260px] sm:h-[280px] bg-gray-200 rounded-lg object-cover"
               alt="img"
             />
           {isEditing && (

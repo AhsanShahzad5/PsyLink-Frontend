@@ -95,10 +95,10 @@ const MoodLogging = () => {
     );
   }
 
-  return (
-    <div className="bg-white p-6 rounded-xl shadow-md relative h-[220px]">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-xl font-semibold text-center lg:text-left">How Are You Feeling Today?</h2>
+return (
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md relative h-auto min-h-[220px]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-3 sm:gap-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-center sm:text-left w-full sm:w-auto">How Are You Feeling Today?</h2>
         
         {/* {!todayMoodLogged && (
         <div className="mb-1 p-1 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
@@ -111,7 +111,7 @@ const MoodLogging = () => {
           <button 
             onClick={handleSaveMood}
             disabled={isSubmitting || !selectedMood}
-            className={`px-4 py-2 rounded-lg font-medium ${
+            className={`px-4 py-2 rounded-lg font-medium w-full sm:w-auto ${
               isSubmitting 
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
                 : selectedMood 
@@ -130,11 +130,11 @@ const MoodLogging = () => {
         </div>
       )}
       
-      <div className="flex flex-wrap justify-center gap-4 lg:justify-around">
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 lg:justify-around">
         {["Depressed", "Sad", "Neutral", "Happy", "Joyful"].map((mood) => (
           <div
             key={mood}
-            className={`flex flex-col items-center cursor-pointer p-2 transition-all duration-300 ${
+            className={`flex flex-col items-center cursor-pointer p-1 sm:p-2 transition-all duration-300 ${
               selectedMood === mood 
                 ? "border-2 border-[#02968A] rounded-xl" 
                 : todayMoodLogged 
@@ -142,12 +142,12 @@ const MoodLogging = () => {
                   : "hover:border-2 hover:border-gray-300 rounded-lg"
             }`}
             onClick={() => handleMoodSelection(mood)}
-            style={{ minWidth: '120px', maxWidth: '160px' }}
+            style={{ minWidth: '80px', maxWidth: '120px' }}
           >
-            <div className="bg-[#fff] h-10 w-10 mt-3 rounded-full flex items-center justify-center text-white text-3xl">
+            <div className="bg-[#fff] h-8 w-8 sm:h-10 sm:w-10 mt-2 sm:mt-3 rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl">
               <img src={`/src/assets/patient/homepage/${mood}.png`} alt={mood} />
             </div>
-            <span className="mt-2 text-lg font-medium">{mood}</span>
+            <span className="mt-1 sm:mt-2 text-sm sm:text-lg font-medium text-center">{mood}</span>
           </div>
         ))}
       </div>

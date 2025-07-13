@@ -4,6 +4,7 @@ import NavbarSideUserProfileMenu from './NavbarSideUserProfileMenu';
 import userAtom from '@/atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 import useUserDetails from '@/hooks/useUserDetails';
+import useLogout from '@/hooks/useLogoutUser';
 
 export default function Navbar() {
   const [activeNav, setActiveNav] = useState("");
@@ -30,10 +31,24 @@ export default function Navbar() {
     }
   }, [location.pathname]);
 
+  const logout = useLogout() ;
+
+  const handleLogout = async () => {
+    console.log("logout clicked");
+    
+    await logout();
+  }
+
   const handleNavClick = (link) => {
+    if(link === 'logout'){
+      handleLogout();
+      return;
+          }
     setActiveNav(link);
     const lowercaseLink = link.charAt(0).toLowerCase() + link.slice(1);
     navigate(`/patient/${lowercaseLink}`);
+    
+
   };
 
   // return (
@@ -162,7 +177,7 @@ export default function Navbar() {
               ×
             </button>
             <div className="flex flex-col space-y-6 text-lg font-semibold">
-              {["Home", "Bookings", "Allen", "Psync", "Programs"].map((link) => (
+              {["Home", "Bookings", "Allen", "Psync", "Programs" , "Logout"].map((link) => (
                 <a
                   key={link}
                   href=''

@@ -125,11 +125,11 @@ export const HomeUpcomingAppointments = () => {
   // Show loading state
   if (isLoading && appointments.length === 0) {
     return (
-      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[22.5rem] overflow-auto custom-scrollbar">
+      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
         <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
           Upcoming Appointments
         </h3>
-        <div className="flex justify-center items-center h-64">
+        <div className="flex justify-center items-center h-60">
           {/* <p className="text-gray-500">Loading appointments... {user._id ? `(for user: ${user._id})` : '(no user ID found)'}</p> */}
           <p className="text-gray-500">Loading appointments...</p>
         </div>
@@ -140,11 +140,11 @@ export const HomeUpcomingAppointments = () => {
   // Show error state
   if (error && appointments.length === 0) {
     return (
-      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[22.5rem] overflow-auto custom-scrollbar">
+      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
         <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
           Upcoming Appointments
         </h3>
-        <div className="flex justify-center items-center h-64 text-center">
+        <div className="flex justify-center items-center h-60 text-center">
           <p className="text-red-500">
              {error}
             <br />
@@ -163,11 +163,11 @@ export const HomeUpcomingAppointments = () => {
   // Show empty state
   if (appointments.length === 0) {
     return (
-      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[22.5rem] overflow-auto custom-scrollbar">
+      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
         <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
           Upcoming Appointments
         </h3>
-        <div className="flex justify-center items-center h-64">
+        <div className="flex justify-center items-center h-60">
           <p className="text-gray-500">No upcoming appointments found.</p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export const HomeUpcomingAppointments = () => {
 
   // Show appointments
   return (
-    <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[22.5rem] overflow-auto custom-scrollbar">
+    <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
       <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
         Upcoming Appointments
       </h3>

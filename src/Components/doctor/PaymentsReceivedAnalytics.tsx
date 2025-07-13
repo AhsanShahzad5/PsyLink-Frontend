@@ -84,7 +84,7 @@ const PaymentsReceivedAnalytics = () => {
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
 
-                setPayments(sortedPayments?.slice(0, 5) || []);
+                setPayments(sortedPayments?.slice(0, 3) || []);
                 
                 // Process data for the current month's chart
                 processChartData(sortedPayments, currentMonth);
@@ -194,7 +194,7 @@ const PaymentsReceivedAnalytics = () => {
                 </div>
             </div>
 
-            <div className="h-48 mb-6">
+            <div className="h-48 mb-4">
                 {isLoading ? (
                     <div className="flex justify-center items-center h-full">
                         <p>Loading chart data...</p>
@@ -234,13 +234,13 @@ const PaymentsReceivedAnalytics = () => {
                 </div>
             </div>
             <div className="mt-2 border-t pt-2">
-                <div className="flex flex-col md:flex-row items-center justify-between p-4">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-2">
                     {/* Left Text */}
-                    <h2 className="text-lg font-bold text-black mb-4 md:mb-0">Payments Received</h2>
+                    <h2 className="text-base font-bold text-black mb-2 md:mb-0">Payments Received</h2>
 
                     {/* Right Button */}
                     <button
-                        className="px-4 py-1 h-14 w-full md:w-40 text-white bg-emerald-600 rounded-full hover:bg-teal-700"
+                        className="px-4 py-1 h-7 w-full md:w-40 text-white bg-emerald-600 rounded-full hover:bg-teal-700"
                         onClick={() => navigate('/doctor/payment-analytics')}
                     >
                         View Details
