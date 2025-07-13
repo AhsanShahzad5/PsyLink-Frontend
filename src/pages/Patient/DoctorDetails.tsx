@@ -260,7 +260,11 @@ const DoctorProfile: React.FC = () => {
           </div>
         </div>
 
+        <div className="flex justify-center gap-3">
+
         {/* Book Appointment Button */}
+
+        
         <div className="flex justify-center mt-8">
           <button
             onClick={handleBookAppointment}
@@ -270,10 +274,23 @@ const DoctorProfile: React.FC = () => {
               }`}
             disabled={!selectedSlot || selectedDateIndex === null}
           >
+            Proceed to payment
+          </button>
+        </div>
+        {/* Book Appointment Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleAnonymousBooking}
+            className={`bg-[#02968A] text-white text-sm font-light py-4 px-8 sm:px-12 rounded-lg ${selectedSlot && selectedDateIndex !== null
+              ? "hover:bg-[#026F6A]"
+              : "opacity-50 cursor-not-allowed"
+              }`}
+            disabled={!selectedSlot || selectedDateIndex === null}
+          >
             Anonymous Booking
           </button>
         </div>
-
+        </div>
       </div>
     )
   }
