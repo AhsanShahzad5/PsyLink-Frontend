@@ -34,7 +34,7 @@ const PaymentForm = () => {
   const location = useLocation();
   
   // Get doctor and appointment data from location state
-  const { doctor, selectedDate, selectedTime } = location.state || {};
+  const { doctor, selectedDate, selectedTime, anonymousBooking } = location.state || {};
 
   const user = useRecoilValue(userAtom) || { 
     _id: '', 
@@ -112,12 +112,15 @@ const PaymentForm = () => {
         return;
     }
     
+    // Set patientName based on anonymousBooking
+    const patientName = anonymousBooking ? "Anonymous" : (user.personalInformation?.fullName || user.email);
+    
     // Confirm card payment
     const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: cardElement,
         billing_details: {
-          name: user.personalInformation?.fullName || user.email,
+          name: patientName,
           email: user.email
         }
       }
@@ -144,7 +147,8 @@ const PaymentForm = () => {
             doctorId: doctor.userId,
             appointmentId,
             date: selectedDate,
-            time: selectedTime
+            time: selectedTime,
+            isAnonymous: anonymousBooking,
           })
         });
         

@@ -25,6 +25,7 @@ interface AppointmentData {
   status: string;
   rating?: number;
   review?: string;
+  isAnonymous:boolean;
   createdAt: string;
 }
 
@@ -41,6 +42,7 @@ export default function VideoConsultation() {
     status: '',
     rating: 0,
     review: '',
+    isAnonymous: false,
     createdAt: ''
   });
   const [error, setError] = useState<string>('');
@@ -77,7 +79,7 @@ export default function VideoConsultation() {
   
   }, [])
   
-  console.log("this is appointmentDetails: ",appointment)
+  console.log("this is appointmentDetails in video: ",appointment)
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showPrescriptionPopUp, setShowPrescriptionPopUp] = useState(false);
   const [prescriptionData, setPrescriptionData] = useState({
@@ -496,7 +498,7 @@ export default function VideoConsultation() {
         {/* Chat Section */}
         <Card className="h-[600px] flex flex-col">
           {/* Write Prescription Button - Only shown for doctors */}
-          {user?.role === 'doctor' && (
+          {user?.role === 'doctor' && !appointment.isAnonymous && (
             <div className="p-4 border-b">
               <Button 
                 variant="outline" 

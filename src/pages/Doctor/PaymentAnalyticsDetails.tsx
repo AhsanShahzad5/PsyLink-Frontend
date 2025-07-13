@@ -25,6 +25,7 @@ type PaymentType = {
   patientName: string;
   amount: number;
   createdAt: string;
+  isAnonymous?: boolean; // Add this field to the type
   patientData: {
     personalInformation: {
       fullName: string;
@@ -287,13 +288,16 @@ const PaymentsReceivedAnalytics = () => {
                 key={payment._id}
                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-600 border-2 border-transparent rounded transition-all hover:border-primary hover:rounded-lg p-2"
               >
-                <span>{payment.patientData?.personalInformation?.fullName || payment.patientName}</span>
+                <span>{ payment.patientName || payment.patientData?.personalInformation?.fullName }</span>
                 <img
                   src={stripeIcon}
                   alt="Payment Method"
                   className="h-12 w-12 hidden sm:block"
                 />
-                <span className="font-medium">{payment.patientData?.personalInformation?.phoneNo || "N/A"}</span>
+                {/* Conditionally display phone number based on isAnonymous flag */}
+                <span className="font-medium">
+                  {payment.isAnonymous ? "-" : (payment.patientData?.personalInformation?.phoneNo || "N/A")}
+                </span>
                 <span className="font-medium">Rs {payment.amount}</span>
                 <span className="font-medium">{formatDate(payment.createdAt)}</span>
               </li>

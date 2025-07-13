@@ -260,7 +260,7 @@ const PaymentsReceivedAnalytics = () => {
                                 key={payment._id}
                                 className="flex justify-between items-center text-gray-600"
                             >
-                                <span>{payment.patientData.personalInformation.fullName}</span>
+                                <span>{payment.patientName || payment.patientData.personalInformation.fullName}</span>
                                 <span className="font-medium">Rs {payment.amount}</span>
                             </li>
                         ))

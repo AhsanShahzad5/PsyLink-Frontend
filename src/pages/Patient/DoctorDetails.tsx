@@ -94,6 +94,37 @@ const DoctorProfile: React.FC = () => {
     }
   };
 
+  const handleAnonymousBooking = ()=>{
+    if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
+      alert("Please select a date and time slot.");
+      return;
+    }
+
+    
+    const selectedDateStr = availableDates[selectedDateIndex];
+
+     // Navigate to payment page with doctor and appointment details
+     navigate('/patient/payNow', {
+      state: {
+        doctor: {
+          _id: doctorCard.id,
+          personalDetails: {
+            fullName: fullName
+          },
+          userId: doctorCard.userId,
+          professionalDetails: {
+            specialisation: specialisation,
+            consultationFee: consultationFee
+          }
+        },
+        selectedDate: selectedDateStr,
+        selectedTime: selectedSlot,
+        anonymousBooking : true,
+      }
+    });
+
+  }
+
   // Modified to navigate to payment page
   const handleBookAppointment = () => {
     if (selectedDateIndex === null || !selectedSlot || !doctorCard?.id) {
@@ -119,7 +150,8 @@ const DoctorProfile: React.FC = () => {
           }
         },
         selectedDate: selectedDateStr,
-        selectedTime: selectedSlot
+        selectedTime: selectedSlot,
+        anonymousBooking : false,
       }
     });
   };
@@ -258,7 +290,19 @@ const DoctorProfile: React.FC = () => {
           >
             Proceed to Payment
           </button>
+          <button
+            onClick={handleAnonymousBooking}
+            className={`bg-[#02968A] text-white text-sm font-light py-4 px-8 sm:px-12 rounded-lg ${
+              selectedSlot && selectedDateIndex !== null
+                ? "hover:bg-[#026F6A]"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!selectedSlot || selectedDateIndex === null}
+          >
+            Anonymous Booking
+          </button>
         </div>
+
 
         <hr className="border-gray-400 my-4 p-4" />
 
