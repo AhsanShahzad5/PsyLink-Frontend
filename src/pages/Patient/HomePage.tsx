@@ -239,7 +239,7 @@ const HomePage: React.FC = () => {
                       d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center text-base sm:text-lg md:text-xl font-semibold">
+                  <div className="absolute inset-0 flex items-center justify-center text-base sm:text-lg md:text-xl font-semibold text-black">
                     {currentProgram.tasksCompleted} / {currentProgram.totalTasks}
                   </div>
                 </div>
