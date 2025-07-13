@@ -211,7 +211,7 @@ const OngoingAppointments: React.FC = () => {
   };
 
   return (
-    <div className='bg-white rounded-lg p-6 col-span-2 h-[15rem] overflow-y-auto'>
+    <div className='bg-white rounded-lg p-6 col-span-2 h-[14rem] overflow-y-auto custom-scrollbar'>
       <h2 className="text-2xl font-bold mb-4 text-primary border-b pb-4">Ongoing Appointments</h2>
 
       {loading ? (

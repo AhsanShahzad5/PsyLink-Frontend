@@ -125,7 +125,7 @@ export const HomeUpcomingAppointments = () => {
   // Show loading state
   if (isLoading && appointments.length === 0) {
     return (
-      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[16.6rem] overflow-auto custom-scrollbar">
+      <div className="col-span-2 bg-white rounded-lg shadow-md p-5 h-[14rem] overflow-auto custom-scrollbar">
         <h3 className="text-2xl font-bold mb-4 text-primary border-b pb-4">
           Upcoming Appointments
         </h3>
