@@ -47,6 +47,7 @@ interface HistoryAppointment {
   rating?: number;
   review?: string;
   status: string; // Added status field
+  isAnonymous: boolean;
   imageUrl: string;
 }
 

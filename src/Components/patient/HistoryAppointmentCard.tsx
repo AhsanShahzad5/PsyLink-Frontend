@@ -12,6 +12,7 @@ interface HistoryAppointment {
   rating?: number;
   review?: string;
   status: string; // Added status field
+  isAnonymous: boolean;
   imageUrl: string;
 }
 
@@ -82,13 +83,14 @@ interface HistoryCardProps {
               </div>
               <p className="text-black">
                 {new Date(historyCard.date).toDateString()}
+            {historyCard.isAnonymous && (<span className="text-black">Anonymous Consultation</span>)}
               </p>
             </div>
           </div>
       
           {/* Separator */}
           <hr className="my-4 border-1 border-black mx-auto sm:mx-0 max-w-sm sm:w-auto" />
-      
+
           {/* Reviews and Rating - Only show for completed appointments */}
           {historyCard.status === 'completed' && historyCard.rating && (
             <div className="flex justify-center sm:justify-start items-center text-gray-500">
