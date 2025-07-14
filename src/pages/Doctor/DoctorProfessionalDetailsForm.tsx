@@ -148,8 +148,6 @@ const ProfessionalDetailForm: React.FC = () => {
       ! specialization ||
       ! cnicNumber ||
       ! educationalBackground ||
-      ! availabilityStart ||
-      ! availabilityEnd ||
       ! consultationFee ||
       ! bankAccount ||
       ! imgUrl
@@ -169,8 +167,8 @@ const ProfessionalDetailForm: React.FC = () => {
       licenseImage: imgUrl || "null",
       cnicNumber: cnicNumber,
       availableHours: {
-        startTime: availabilityStart,
-        endTime: availabilityEnd,
+        startTime: "09:00 am",
+        endTime: "09:00 pm",
       },
       consultationFee: consultationFee,
       bankDetails: {
