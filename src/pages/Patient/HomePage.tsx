@@ -238,6 +238,7 @@ const HomePage: React.FC = () => {
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold">
+
                     {currentProgram.tasksCompleted} / {currentProgram.totalTasks}
                   </div>
                 </div>
